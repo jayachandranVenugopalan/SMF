@@ -10,9 +10,6 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentVerificationCodeFrgmentBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class VerificationCodeFrgment :
     BaseFragment<FragmentVerificationCodeFrgmentBinding, VerificationCodeViewModel>(), VerificationCodeViewModel.CallBackInterface {
@@ -45,6 +42,15 @@ class VerificationCodeFrgment :
                 confirmSignUpFunctionality(code)
             }
         }
+
+        // ResendVerificationCode TextView Listener
+        mDataBinding?.otpResend?.setOnClickListener {
+            resendOtpClicked()
+        }
+    }
+
+    private fun resendOtpClicked(){
+        getViewModel()?.resendSignUp(userName)
     }
 
     // Method for confirmSignUp

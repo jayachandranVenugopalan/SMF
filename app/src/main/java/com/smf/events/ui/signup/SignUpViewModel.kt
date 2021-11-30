@@ -21,6 +21,7 @@ class SignUpViewModel(application: Application) : BaseViewModel(application) {
                 viewModelScope.launch {
                     callBackInterface?.callBack("signUpResult")
                 }
+
             },
             { Log.i("AuthQuickstart", "Sign up failed", it)
                 viewModelScope.launch {

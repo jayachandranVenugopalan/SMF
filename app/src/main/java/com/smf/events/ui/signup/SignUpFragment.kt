@@ -3,21 +3,18 @@ package com.smf.events.ui.signup
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.options.AuthSignUpOptions
-import com.amplifyframework.core.Amplify
 import com.google.android.material.tabs.TabLayout
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.SignUpFragmentBinding
-import okhttp3.internal.Util.concat
+import kotlin.math.floor
+import kotlin.math.roundToInt
 
 class SignUpFragment : BaseFragment<SignUpFragmentBinding, SignUpViewModel>(), SignUpViewModel.CallBackInterface {
 
@@ -48,11 +45,11 @@ class SignUpFragment : BaseFragment<SignUpFragmentBinding, SignUpViewModel>(), S
     // Method for SignUp Function
     private fun signUpFunctionality() {
 
-        var firstName = mDataBinding?.editTextFirstName?.text.toString()
-        var lastName = mDataBinding?.editTextLastName?.text.toString()
-        var eMail = mDataBinding?.editTextEmail?.text.toString()
+        var firstName = mDataBinding?.editTextFirstName?.text.toString().trim()
+        var lastName = mDataBinding?.editTextLastName?.text.toString().trim()
+        var eMail = mDataBinding?.editTextEmail?.text.toString().trim()
         var countryCode = mDataBinding?.cpp?.selectedCountryCode
-        var phoneNumber = mDataBinding?.editTextNumber?.text
+        var phoneNumber = mDataBinding?.editTextNumber?.text?.trim()
 
         val options = AuthSignUpOptions.builder()
             .userAttribute(
@@ -66,12 +63,30 @@ class SignUpFragment : BaseFragment<SignUpFragmentBinding, SignUpViewModel>(), S
             .userAttribute(AuthUserAttributeKey.email(), eMail)
             .build()
 
-        userName= lastName.plus(firstName)
+        userName=  createUserName(firstName,lastName)
         password = "Service@123"
 
-        getViewModel()?.signUp( userName,password , options)
+        getViewModel()?.signUp(userName, password, options)
     }
 
+    // Method Creating Unique UserName
+    private fun createUserName(firstName: String, lastName: String) : String{
+        var first4DigitName = ""
+        var last4DigitName = ""
+        var randomValue = floor(Math.random() * (999999 - 100000)) + 100000
+
+        first4DigitName = if (firstName.length > 4) {
+            firstName.substring(0,4)
+        }else{
+            firstName
+        }
+        last4DigitName = if (lastName.length > 4){
+            lastName.substring(0,4)
+        }else{
+            lastName
+        }
+        return last4DigitName.plus(randomValue.roundToInt()).plus(first4DigitName)
+    }
 
     private fun setTabLayout() {
         mDataBinding!!.tabLayout.addTab(mDataBinding!!.tabLayout.newTab().setText("Event organize"))

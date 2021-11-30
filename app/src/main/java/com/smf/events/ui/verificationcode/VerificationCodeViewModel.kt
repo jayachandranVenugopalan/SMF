@@ -36,6 +36,20 @@ class VerificationCodeViewModel @Inject constructor(application: Application) : 
             )
     }
 
+    fun resendSignUp(userName: String) {
+        Amplify.Auth.resendSignUpCode(userName,
+            {result ->
+                if (result.isSignUpComplete){
+                    Log.d("TAG", "resendSignUp: success called")
+                }else{
+                    Log.d("TAG", "resendSignUp: else block called")
+                }
+
+        },{
+                Log.e("TAG", "resendSignUp: error called", it)
+            })
+    }
+
     private var callBackInterface: CallBackInterface? = null
 
     // Initializing CallBack Interface Method
