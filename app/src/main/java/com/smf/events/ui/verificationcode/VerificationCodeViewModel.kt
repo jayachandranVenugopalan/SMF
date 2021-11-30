@@ -43,6 +43,7 @@ class VerificationCodeViewModel @Inject constructor(application: Application) : 
         callBackInterface = callback
     }
 
+    // CallBack Interface
     interface CallBackInterface {
          fun callBack(status : String,flag : String)
     }
