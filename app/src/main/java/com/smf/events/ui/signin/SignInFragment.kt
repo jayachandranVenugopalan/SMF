@@ -16,6 +16,8 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
+import com.amazonaws.mobileconnectors.cognitoauth.Auth
+import com.amplifyframework.core.Amplify
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
@@ -43,16 +45,24 @@ class SignInFragment : BaseFragment<SignInFragmentBinding,SignInViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Sign up your account
-        onSignupclicked()
+        // SignIn Button Listener
+        mDataBinding!!.signinbtn.setOnClickListener {
+            signInClicked()
+        }
+
+       // SignUp Button Listener
+        mDataBinding!!.signupaccbtn.setOnClickListener {
+            onSignupclicked()
+        }
 
     }
 
-    private fun onSignupclicked() {
-        mDataBinding!!.signupaccbtn.setOnClickListener {
-            var action=SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
-            findNavController().navigate(action)
-        }
+    private fun signInClicked(){
+        getViewModel()?.signIn()
+    }
 
+    private fun onSignupclicked() {
+        var action=SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
+        findNavController().navigate(action)
     }
 }

@@ -28,5 +28,6 @@
     <string name="otp_expries_in">OTP expries in</string>
     <string name="did_t_receive_otp">Did\'t receive OTP?</string>
     <string name="_00_30">00:30</string>
+    <string name="submit">Submit</string>
 
 </resources>

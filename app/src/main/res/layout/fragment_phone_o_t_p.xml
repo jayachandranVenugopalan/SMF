@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -42,24 +41,26 @@
             android:textSize="25sp"
             android:text="@string/enter_otp_sent_to_your_number"
             />
+
         <com.chaos.view.PinView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             style="@style/PinWidget.PinView"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:layout_gravity="center"
             android:cursorVisible="true"
             android:inputType="number"
-            app:itemCount="6"
-            app:itemRadius="10dp"
             app:hideLineWhenFilled="false"
-            app:itemWidth="50dp"
+            app:itemCount="6"
             app:itemHeight="50dp"
+            app:itemRadius="10dp"
             app:itemSpacing="20dp"
-            app:lineWidth="1dp"
+            app:itemWidth="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:lineWidth="1dp">
+
         </com.chaos.view.PinView>
         <LinearLayout
             android:padding="10dp"

@@ -4,7 +4,6 @@ package com.example.demodragger.di.modules
 import com.example.demodragger.network.ApiStories
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.smf.events.BuildConfig
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -52,7 +51,7 @@ class ApiModule {
     fun getRetrofit(gson: Gson, okHttpClient: OkHttpClient) : Retrofit {
         return Retrofit.Builder().
         addConverterFactory(GsonConverterFactory.create(gson)).
-        baseUrl(BuildConfig.BASE_URL).client(okHttpClient).build()
+        baseUrl("BuildConfig.BASE_URL").client(okHttpClient).build()
     }
 
     @Singleton
