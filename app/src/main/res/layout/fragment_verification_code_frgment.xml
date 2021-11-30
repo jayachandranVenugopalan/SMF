@@ -12,52 +12,63 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="40dp"
         tools:context=".ui.verificationcode.VerificationCodeFrgment">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="60dp"
-                android:paddingStart="20dp"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
                 android:text="@string/otp_verification"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center"
-                android:textSize="18sp"
-                android:textColor="#902E2E2E"
-                android:text="@string/please_enter_your_verification_code_sent_your_email_id_and_mobile"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:padding="25dp"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:textSize="20sp"
-                android:text="@string/enter_otp_sent_to_your_number"
-                />
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/please_enter_your_verification_code_sent_your_email_id_and_mobile"
+                    android:textColor="#902E2E2E"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:layout_marginTop="50dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/enter_otp_sent_to_your_number"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center">
 
                 <com.chaos.view.PinView
@@ -66,75 +77,82 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginEnd="10dp"
                     android:cursorVisible="true"
                     android:inputType="number"
                     app:hideLineWhenFilled="false"
                     app:itemCount="6"
-                    app:itemHeight="50dp"
+                    app:itemHeight="35dp"
                     app:itemRadius="10dp"
-                    app:itemSpacing="20dp"
-                    app:itemWidth="50dp"
+                    app:itemSpacing="15dp"
+                    app:itemWidth="35dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:lineWidth="1dp"
-                    tools:ignore="SpeakableTextPresentCheck">
+                    app:lineWidth="1dp">
 
                 </com.chaos.view.PinView>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="35dp"
-                android:padding="10dp"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:padding="10dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/otp_expries_in"
-                    />
+                    android:text="@string/otp_expries_in" />
+
                 <TextView
                     android:id="@+id/otp_timer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/_00_30"
-                    />
+                    android:text="@string/_00_30" />
             </LinearLayout>
-            <TextView
-                android:layout_marginTop="50dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:text="@string/did_t_receive_otp" />
 
-            <TextView
-                android:id="@+id/otp_resend"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Resend"
-                android:paddingStart="20dp"
-                android:textColor="@color/lightblue"/>
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/did_t_receive_otp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/otp_resend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Resend"
+                    android:textColor="@color/lightblue" />
+            </LinearLayout>
+
 
         </LinearLayout>
 
         <Button
+
             android:id="@+id/submitBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/submit"
+            android:layout_marginVertical="100dp"
             android:backgroundTint="@color/buttoncolor"
+            android:text="@string/submit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.80">
+            app:layout_constraintStart_toStartOf="parent">
 
         </Button>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

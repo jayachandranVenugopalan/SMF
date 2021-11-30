@@ -1,4 +1,4 @@
-package com.smf.events.ui.Otp
+package com.smf.events.ui.otp
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
