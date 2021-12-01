@@ -17,8 +17,9 @@ import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.SignUpFragmentBinding
 import com.smf.events.helper.ApisResponse
-import com.smf.events.ui.signup.model.Reponsetoken
+
 import com.smf.events.ui.signup.model.UserDetails
+import com.smf.events.ui.signup.model.UserDetailsResponse
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 import kotlin.math.floor
@@ -65,7 +66,7 @@ lateinit var userDetails: UserDetails
     }
 
     // Method for SignUp Function
-    private fun signUpFunctionality() {
+     fun signUpFunctionality() {
 
         firstName = mDataBinding?.editTextFirstName?.text.toString().trim()
         lastName = mDataBinding?.editTextLastName?.text.toString().trim()
@@ -89,9 +90,9 @@ lateinit var userDetails: UserDetails
 
         userName=  createUserName(firstName,lastName)
         password = "Service@123"
-        role="EventOrganiser"
 
-       userDetails=UserDetails(role,firstName,lastName,email,mobileNumber,userName)
+
+        userDetails=UserDetails(role,firstName,lastName,email,mobileNumber,userName)
         getViewModel()?.signUp(userName, password, options)
     }
 
@@ -113,7 +114,7 @@ lateinit var userDetails: UserDetails
         }
         return last4DigitName.plus(randomValue.roundToInt()).plus(first4DigitName)
     }
-    private val serviceTypeObserver = Observer<ApisResponse<Reponsetoken>> { apiResponse ->
+    private val userInfoObserver = Observer<ApisResponse<UserDetailsResponse>> { apiResponse ->
         when (apiResponse) {
             is ApisResponse.Success -> {
                 showToast("success")
@@ -122,7 +123,7 @@ lateinit var userDetails: UserDetails
 
             is ApisResponse.Error -> {
                 showToast(apiResponse.exception.localizedMessage!!)
-                Log.d("TAG", "response: failure")
+                Log.d("TAG", "response: failure ${apiResponse.exception.localizedMessage!!}")
             }
             ApisResponse.LOADING -> {
 
@@ -133,22 +134,43 @@ lateinit var userDetails: UserDetails
         }
     }
     private fun setTabLayout() {
-        mDataBinding!!.tabLayout.addTab(mDataBinding!!.tabLayout.newTab().setText("Event organize"))
-        mDataBinding!!.tabLayout.addTab(
-            mDataBinding!!.tabLayout.newTab().setText("Service provider")
-        )
+        var roles:String?="tabSelected"
+        mDataBinding!!.tabLayout.addTab(mDataBinding!!.tabLayout.newTab().setText("EVENT_ORGANIZER"))
+        mDataBinding!!.tabLayout.addTab(mDataBinding!!.tabLayout.newTab().setText("SERVICE_PROVIDER"))
         mDataBinding!!.tabLayout.tabGravity = TabLayout.GRAVITY_FILL
+        mDataBinding!!.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                roles= tab?.text.toString()
+                Log.d("TAG", "onTabSelected: roles")
+             tabSelected(roles!!)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+        })
+
+    }
+
+    fun tabSelected(roles: String) {
+        Log.d("TAG", "tabSelected: $roles")
+        role=roles
+
     }
 
     override fun callBack(status: String) {
 
         if (status=="signUpResult"){
-            getViewModel()?.setUserDetails(userDetails)?.observe(viewLifecycleOwner,serviceTypeObserver)
+            //Api post call for userDetails
+            getViewModel()?.setUserDetails(userDetails)?.observe(viewLifecycleOwner,userInfoObserver)
             val action = SignUpFragmentDirections.actionSignUpFragmentToVerificationCodeFrgment(userName)
             findNavController().navigate(action)
 
         }else{
-            getViewModel()?.setUserDetails(userDetails)?.observe(viewLifecycleOwner,serviceTypeObserver)
+
             Toast.makeText(requireContext(), "Param Details Not Correct", Toast.LENGTH_SHORT).show()
 
         }

@@ -13,6 +13,15 @@ data class UserDetails(
     var userName:String
 ) : Parcelable
 
-data class Reponsetoken(val token:String)
+//Response
+@Parcelize
+data class UserDetailsResponse(var success:Boolean, var data:Data, var result:Results) : Parcelable
+@Parcelize
+data class Data(var status:String, var statusCode:Int, var profileId:Int, var key:Int) : Parcelable
+
+@Parcelize
+data class Results(var info:String ) : Parcelable
+
+
 
 

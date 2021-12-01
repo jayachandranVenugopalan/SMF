@@ -34,7 +34,7 @@ class SignUpViewModel@Inject constructor(private val signUpRepository: SignUpRep
         )
     }
 
-
+   // passing the userdetails in io to repository
     fun setUserDetails(userDetails: UserDetails) = liveData(Dispatchers.IO) {
         Log.d("TAG", "setUserDetails: $userDetails")
         emit(signUpRepository.setUserDetails(userDetails))
