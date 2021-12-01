@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.amplifyframework.auth.AuthUserAttribute
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.options.AuthSignUpOptions
 import com.google.android.material.tabs.TabLayout
@@ -72,16 +73,18 @@ lateinit var userDetails: UserDetails
         var countryCode = mDataBinding?.cpp?.selectedCountryCode
         var phoneNumber = mDataBinding?.editTextNumber?.text?.trim()
         mobileNumber= "+".plus(countryCode).plus(phoneNumber)
+
+        val attrs = mapOf(
+            AuthUserAttributeKey.email() to email,
+            AuthUserAttributeKey.phoneNumber() to "+".plus(countryCode).plus(phoneNumber)
+        )
+
         val options = AuthSignUpOptions.builder()
             .userAttribute(
                 AuthUserAttributeKey.name(),
                 firstName.plus(" ").plus(lastName)
             )
-            .userAttribute(
-                AuthUserAttributeKey.phoneNumber(),
-                "+".plus(countryCode).plus(phoneNumber)
-            )
-            .userAttribute(AuthUserAttributeKey.email(), email)
+            .userAttributes(attrs.map { AuthUserAttribute(it.key, it.value) })
             .build()
 
         userName=  createUserName(firstName,lastName)
