@@ -4,6 +4,8 @@ import com.smf.events.MainActivity
 import com.smf.events.MainModule
 import com.smf.events.ui.signin.SignInFragment
 import com.smf.events.ui.signin.SignInModule
+import com.smf.events.ui.signup.SignUpFragment
+import com.smf.events.ui.signup.SignUpModule
 import com.smf.events.ui.splash.SplashFragment
 import com.smf.events.ui.splash.SplashModule
 import dagger.Module
@@ -20,4 +22,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [SignInModule::class])
     abstract fun provideSignInFragment():SignInFragment
+
+    @ContributesAndroidInjector(modules = [SignUpModule::class])
+    abstract fun provideSignUpFragment():SignUpFragment
 }

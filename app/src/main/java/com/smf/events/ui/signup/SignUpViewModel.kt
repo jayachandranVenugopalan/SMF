@@ -2,16 +2,18 @@ package com.smf.events.ui.signup
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.amplifyframework.auth.options.AuthSignUpOptions
 import com.amplifyframework.core.Amplify
 import com.smf.events.base.BaseViewModel
-import com.smf.events.ui.verificationcode.VerificationCodeViewModel
+import com.smf.events.helper.ApisResponse
+import com.smf.events.ui.signup.model.UserDetails
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SignUpViewModel(application: Application) : BaseViewModel(application) {
-
+class SignUpViewModel@Inject constructor(private val signUpRepository: SignUpRepository, application: Application) : BaseViewModel(application) {
 
     fun signUp(userName: String, password: String, options: AuthSignUpOptions){
 
@@ -32,6 +34,12 @@ class SignUpViewModel(application: Application) : BaseViewModel(application) {
         )
     }
 
+
+    fun setUserDetails(userDetails: UserDetails) = liveData(Dispatchers.IO) {
+        Log.d("TAG", "setUserDetails: $userDetails")
+        emit(signUpRepository.setUserDetails(userDetails))
+
+    }
 
     private var callBackInterface: CallBackInterface? = null
 
