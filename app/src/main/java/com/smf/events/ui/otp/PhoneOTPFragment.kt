@@ -1,24 +1,39 @@
 package com.smf.events.ui.otp
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import com.amplifyframework.core.Amplify
+import com.smf.events.BR
 import com.smf.events.R
+import com.smf.events.base.BaseFragment
+import com.smf.events.databinding.FragmentPhoneOTPBinding
 
 
-class PhoneOTPFragment : Fragment() {
+class PhoneOTPFragment : BaseFragment<FragmentPhoneOTPBinding,PhoneOTPViewModel>(){
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_phone_o_t_p, container, false)
+
+    override fun getViewModel(): PhoneOTPViewModel? =
+        ViewModelProvider(this).get(PhoneOTPViewModel::class.java)
+
+
+    override fun getBindingVariable(): Int =BR.otpviewmodel
+
+    override fun getContentView(): Int =R.layout.fragment_phone_o_t_p
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        mDataBinding!!.submitBtn.setOnClickListener {
+            submitBtnClicked()
+        }
+
+
     }
-
-
-
-
+    //For confirmSignIn aws
+    private  fun submitBtnClicked(){
+        var code=mDataBinding?.otpemail?.text.toString()
+        Log.d("TAG", "onViewCreated: ${code}")
+        getViewModel()!!.confirmSignIn(code)
+    }
 }

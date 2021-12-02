@@ -16,7 +16,7 @@ import com.smf.events.ui.signup.model.GetUserDetails
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
-class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>() {
+class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),SignInViewModel.CallBackInterface {
 
     private lateinit var mobileNumberWithCountryCode: String
     private lateinit var eMail: String
@@ -39,9 +39,14 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        // Initialize CallBackInterface
+        getViewModel()?.setCallBackInterface(this)
+
         // SignIn Button Listener
         mDataBinding!!.signinbtn.setOnClickListener {
             signInClicked()
+
         }
 
         // SignUp Button Listener
@@ -96,5 +101,13 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>() {
     private fun onSignupclicked() {
         var action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
         findNavController().navigate(action)
+    }
+
+    override fun callBack(status: String) {
+        if (status=="SignInNotCompleted"){
+            findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToPhoneOTPFragment())
+        }else{
+            Log.d("TAG", "callBack: Failue to sign in ")
+        }
     }
 }

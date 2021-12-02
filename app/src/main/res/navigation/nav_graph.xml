@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_phoneOTPFragment"
+            app:destination="@id/phoneOTPFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -42,4 +45,8 @@
             android:name="userName"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/phoneOTPFragment"
+        android:name="com.smf.events.ui.otp.PhoneOTPFragment"
+        android:label="PhoneOTPFragment" />
 </navigation>
