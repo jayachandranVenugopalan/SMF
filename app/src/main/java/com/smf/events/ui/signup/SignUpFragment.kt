@@ -15,7 +15,7 @@ import com.google.android.material.tabs.TabLayout
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
-import com.smf.events.databinding.SignUpFragmentBinding
+import com.smf.events.databinding.FragmentSignupBinding
 import com.smf.events.helper.ApisResponse
 
 import com.smf.events.ui.signup.model.UserDetails
@@ -25,11 +25,11 @@ import javax.inject.Inject
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
-class SignUpFragment : BaseFragment<SignUpFragmentBinding, SignUpViewModel>(), SignUpViewModel.CallBackInterface {
+class SignUpFragment : BaseFragment<FragmentSignupBinding, SignUpViewModel>(), SignUpViewModel.CallBackInterface {
 
     private lateinit var userName: String
     private lateinit var password: String
-    private lateinit var role:String
+    private  var role:String="EVENT_ORGANIZER"
     private lateinit var firstName:String
     private lateinit var lastName:String
     private lateinit  var  email:String
@@ -44,7 +44,7 @@ lateinit var userDetails: UserDetails
 
     override fun getBindingVariable(): Int = BR.signupViewModel
 
-    override fun getContentView(): Int = R.layout.sign_up_fragment
+    override fun getContentView(): Int = R.layout.fragment_signup
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -135,10 +135,11 @@ lateinit var userDetails: UserDetails
     }
     private fun setTabLayout() {
         var roles:String?="tabSelected"
-        mDataBinding!!.tabLayout.addTab(mDataBinding!!.tabLayout.newTab().setText("EVENT_ORGANIZER"))
-        mDataBinding!!.tabLayout.addTab(mDataBinding!!.tabLayout.newTab().setText("SERVICE_PROVIDER"))
-        mDataBinding!!.tabLayout.tabGravity = TabLayout.GRAVITY_FILL
-        mDataBinding!!.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+
+        mDataBinding!!.tablayout.addTab(mDataBinding!!.tablayout.newTab().setText("EVENT_ORGANIZER"))
+        mDataBinding!!.tablayout.addTab(mDataBinding!!.tablayout.newTab().setText("SERVICE_PROVIDER"))
+        mDataBinding!!.tablayout.tabGravity = TabLayout.GRAVITY_FILL
+        mDataBinding!!.tablayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 roles= tab?.text.toString()
                 Log.d("TAG", "onTabSelected: roles")
