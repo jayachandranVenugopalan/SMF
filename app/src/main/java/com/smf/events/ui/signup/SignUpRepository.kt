@@ -2,6 +2,7 @@ package com.smf.events.ui.signup
 
 import com.example.demodragger.network.ApiStories
 import com.smf.events.helper.ApisResponse
+import com.smf.events.ui.signup.model.GetUserDetails
 
 import com.smf.events.ui.signup.model.UserDetails
 import com.smf.events.ui.signup.model.UserDetailsResponse
@@ -20,4 +21,6 @@ class SignUpRepository @Inject constructor(var apiStories: ApiStories){
 
         }
     }
+
+
 }

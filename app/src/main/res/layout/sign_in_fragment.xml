@@ -54,7 +54,7 @@
         tools:ignore="MissingConstraints">
 
         <com.hbb20.CountryCodePicker
-            android:id="@+id/cpp"
+            android:id="@+id/cppSignIn"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
@@ -74,6 +74,7 @@
             android:text="@string/colonen" />
 
         <EditText
+            android:id="@+id/editTextMobileNumber"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
@@ -120,6 +121,7 @@
         tools:ignore="MissingConstraints"
         android:background="@drawable/shapes">
         <EditText
+            android:id="@+id/editTextEmail"
             android:textSize="14sp"
             android:inputType="textEmailAddress"
             android:hint="@string/perter_gmail_com"

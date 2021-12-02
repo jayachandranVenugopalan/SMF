@@ -41,6 +41,7 @@ class SignUpViewModel@Inject constructor(private val signUpRepository: SignUpRep
 
     }
 
+
     private var callBackInterface: CallBackInterface? = null
 
     // Initializing CallBack Interface Method

@@ -91,7 +91,6 @@ lateinit var userDetails: UserDetails
         userName=  createUserName(firstName,lastName)
         password = "Service@123"
 
-
         userDetails=UserDetails(role,firstName,lastName,email,mobileNumber,userName)
         getViewModel()?.signUp(userName, password, options)
     }
@@ -114,6 +113,7 @@ lateinit var userDetails: UserDetails
         }
         return last4DigitName.plus(randomValue.roundToInt()).plus(first4DigitName)
     }
+
     private val userInfoObserver = Observer<ApisResponse<UserDetailsResponse>> { apiResponse ->
         when (apiResponse) {
             is ApisResponse.Success -> {
