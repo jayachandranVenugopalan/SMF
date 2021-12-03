@@ -16,7 +16,8 @@ import com.smf.events.ui.signup.model.GetUserDetails
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
-class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),SignInViewModel.CallBackInterface {
+class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
+    SignInViewModel.CallBackInterface {
 
     private lateinit var mobileNumberWithCountryCode: String
     private lateinit var eMail: String
@@ -38,7 +39,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),Si
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         // Initialize CallBackInterface
         getViewModel()?.setCallBackInterface(this)
@@ -84,8 +84,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),Si
     private val getUserDetailsObserver = Observer<ApisResponse<GetUserDetails>> { apiResponse ->
         when (apiResponse) {
             is ApisResponse.Success -> {
-                Log.d("TAG", "response: ${apiResponse.response.success}")
-                Log.d("TAG", "response: ${apiResponse.response.data.userName}")
                 getViewModel()?.signIn(apiResponse.response.data.userName)
             }
 
@@ -97,17 +95,20 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),Si
         }
     }
 
-    //Method for SignUp Button
+    // Method for SignUp Button
     private fun onSignupclicked() {
         var action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
+        // Navigate to SignUpFragment
         findNavController().navigate(action)
     }
 
+    // CallBackInterface Override Method
     override fun callBack(status: String) {
-        if (status=="SignInNotCompleted"){
-            findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToPhoneOTPFragment())
-        }else{
-            Log.d("TAG", "callBack: Failue to sign in ")
+        if (status == "SignInNotCompleted") {
+            // Navigate to EmailOTPFragment
+            findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment())
+        } else {
+            Log.d("TAG", "callBack: Failure to sign in ")
         }
     }
 }

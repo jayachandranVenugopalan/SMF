@@ -6,7 +6,7 @@ import com.smf.events.ui.signup.model.GetUserDetails
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class SignInRepository  @Inject constructor(var apiStories: ApiStories){
+class SignInRepository @Inject constructor(var apiStories: ApiStories) {
 
     suspend fun getUserDetails(loginName: String): ApisResponse<GetUserDetails> {
 

@@ -21,8 +21,8 @@
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
         <action
-            android:id="@+id/action_signInFragment_to_phoneOTPFragment"
-            app:destination="@id/phoneOTPFragment" />
+            android:id="@+id/action_signInFragment_to_eMailOTPFragment"
+            app:destination="@id/eMailOTPFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -35,9 +35,9 @@
     </fragment>
     <fragment
         android:id="@+id/verificationCodeFrgment"
-        android:name="com.smf.events.ui.verificationcode.VerificationCodeFrgment"
+        android:name="com.smf.events.ui.mobileverificationcode.MobileVerificationCodeFrgment"
         android:label="fragment_verification_code_frgment"
-        tools:layout="@layout/fragment_verification_code_frgment" >
+        tools:layout="@layout/fragment_mobile_verification_code_frgment" >
         <action
             android:id="@+id/action_verificationCodeFrgment_to_signInFragment"
             app:destination="@id/signInFragment" />
@@ -46,7 +46,16 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/phoneOTPFragment"
-        android:name="com.smf.events.ui.otp.PhoneOTPFragment"
-        android:label="PhoneOTPFragment" />
+        android:id="@+id/eMailOTPFragment"
+        android:name="com.smf.events.ui.emailotp.EmailOTPFragment"
+        android:label="PhoneOTPFragment" >
+
+        <action
+            android:id="@+id/action_phoneOTPFragment_to_emailVerificationCodeFragment"
+            app:destination="@id/emailVerificationCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailVerificationCodeFragment"
+        android:name="com.smf.events.ui.emailverificationcode.EmailVerificationCodeFragment"
+        android:label="EmailVerificationCodeFragment" />
 </navigation>

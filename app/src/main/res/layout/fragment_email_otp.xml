@@ -7,11 +7,11 @@
     <data>
 <variable
     name="otpviewmodel"
-    type="com.smf.events.ui.otp.PhoneOTPViewModel" />
+    type="com.smf.events.ui.emailotp.EmailOTPViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        tools:context=".ui.otp.PhoneOTPFragment"
+        tools:context=".ui.emailotp.EmailOTPFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingStart="20dp"
@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/please_enter_your_verification_code_sent_your_email_id_and_mobile"
+                    android:text="@string/please_enter_your_verification_code_sent_your_email"
                     android:textColor="#902E2E2E"
                     android:textSize="18sp" />
 
@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="@string/enter_otp_sent_to_your_number"
+                    android:text="@string/enter_otp_sent_to_your_email"
                     android:textSize="20sp" />
             </LinearLayout>
 

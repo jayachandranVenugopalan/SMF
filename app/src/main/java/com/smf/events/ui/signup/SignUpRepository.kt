@@ -9,7 +9,7 @@ import com.smf.events.ui.signup.model.UserDetailsResponse
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class SignUpRepository @Inject constructor(var apiStories: ApiStories){
+class SignUpRepository @Inject constructor(var apiStories: ApiStories) {
 
     suspend fun setUserDetails(userDetails: UserDetails): ApisResponse<UserDetailsResponse> {
 

@@ -5,7 +5,7 @@
     <data>
         <variable
             name="verificationCodeViewModel"
-            type="com.smf.events.ui.verificationcode.VerificationCodeViewModel" />
+            type="com.smf.events.ui.mobileverificationcode.MobileVerificationCodeViewModel" />
 
     </data>
 
@@ -15,7 +15,7 @@
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:paddingTop="40dp"
-        tools:context=".ui.verificationcode.VerificationCodeFrgment">
+        tools:context=".ui.mobileverificationcode.MobileVerificationCodeFrgment">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/otp_resend"
+                    android:id="@+id/code_resend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Resend"
