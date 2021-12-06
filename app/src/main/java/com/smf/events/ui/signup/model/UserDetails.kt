@@ -23,5 +23,12 @@ data class Data(var status:String, var statusCode:Int, var profileId:Int, var ke
 data class Results(var info:String ) : Parcelable
 
 
-
+@Parcelize
+data class ErrorResponse(
+    var id:Int,
+    var errorMessage:String,
+var errorCode: String,
+var timeStamp: String,
+var exceptionMessage : String
+) : Parcelable
 

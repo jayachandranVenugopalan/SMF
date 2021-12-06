@@ -6,7 +6,10 @@
         <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/drawable/shapes.xml" value="0.14520547945205478" />
         <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout-v21/sign_in_fragment.xml" value="0.12273550724637682" />
         <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/eventorganiser_signup_fragment.xml" value="0.12273550724637682" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/fragment_email_verification_code.xml" value="0.25" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/fragment_mobile_verification_code_frgment.xml" value="0.1162037037037037" />
         <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/fragment_phone_o_t_p.xml" value="0.12273550724637682" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/fragment_signup.xml" value="0.1" />
         <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/fragment_verification_code_frgment.xml" value="0.12273550724637682" />
         <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/serviceprovider_signup_fragment.xml" value="0.33" />
         <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/sign_in_fragment.xml" value="0.12273550724637682" />
@@ -30,9 +33,6 @@
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/events_card_view.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_dash_board.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_email_o_t_p.xml" value="0.12771739130434784" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_email_otp.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_email_verification_code.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_mobile_verification_code_frgment.xml" value="0.33" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_phone_o_t_p.xml" value="0.12771739130434784" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_signup.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_verification_code_frgment.xml" value="0.20416666666666666" />

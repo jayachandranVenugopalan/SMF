@@ -5,5 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 
 abstract class BaseViewModel(application:Application):AndroidViewModel(application) {
+
     var toastMessage: String = ""
 }
