@@ -56,11 +56,21 @@
         <action
             android:id="@+id/action_phoneOTPFragment_to_emailVerificationCodeFragment"
             app:destination="@id/emailVerificationCodeFragment" />
+        <action
+            android:id="@+id/action_eMailOTPFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/emailVerificationCodeFragment"
         android:name="com.smf.events.ui.emailverificationcode.EmailVerificationCodeFragment"
-        android:label="EmailVerificationCodeFragment" />
+        android:label="EmailVerificationCodeFragment" >
+        <action
+            android:id="@+id/action_emailVerificationCodeFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+    </fragment>
     <fragment
         android:id="@+id/dashBoardFragment"
         android:name="com.smf.events.ui.dashboard.DashBoardFragment"

@@ -12,7 +12,6 @@ import javax.inject.Inject
 class EmailOTPViewModel @Inject constructor(application: Application) : BaseViewModel(application) {
 
     fun confirmSignIn(otp: String) {
-
         // Custom Confirm SignIn Function
         Amplify.Auth.confirmSignIn(otp,
             {
@@ -24,6 +23,9 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
                             eMailVerification()
                         } else {
                             Log.i("AuthDemo", "User attributes = successfully entered dashboard")
+                            viewModelScope.launch {
+                                callBackInterface?.callBack("EMailVerifiedTrueGoToDashBoard")
+                            }
                         }
                     },
                     { Log.e("AuthDemo", "Failed to fetch user attributes", it) })
@@ -44,6 +46,13 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
             { Log.e("AuthDemo", "Failed to resend code", it) })
     }
 
+    // OTP Resend SignIn Method
+    fun reSendOTP(userName: String) {
+        Amplify.Auth.signIn(userName, null, {
+            Log.d("TAG", "reSendOTP: called code resented successfully")
+        },
+            { Log.e("AuthQuickstart", "Failed to sign in", it) })
+    }
 
     private var callBackInterface: CallBackInterface? = null
 

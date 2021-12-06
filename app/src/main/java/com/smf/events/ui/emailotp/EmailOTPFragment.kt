@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
@@ -13,6 +14,9 @@ import com.smf.events.databinding.FragmentEmailOtpBinding
 
 class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel>(),
     EmailOTPViewModel.CallBackInterface {
+
+    private val args: EmailOTPFragmentArgs by navArgs()
+    private lateinit var userName: String
 
     override fun getViewModel(): EmailOTPViewModel? =
         ViewModelProvider(this).get(EmailOTPViewModel::class.java)
@@ -23,6 +27,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userName = args.userName
         // Initialize CallBackInterface
         getViewModel()?.setCallBackInterface(this)
 
@@ -45,14 +50,19 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         getViewModel()!!.confirmSignIn(code)
     }
 
+    // Method for ResendingOTP
     private fun resendBtnClicked() {
-
+        getViewModel()?.reSendOTP(userName)
     }
 
     // CallBackInterface Override Method
     override fun callBack(status: String) {
         if (status == "goToEmailVerificationCodePage") {
+            // Navigate to EmailVerificationCodeFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionPhoneOTPFragmentToEmailVerificationCodeFragment())
+        }else if (status == "EMailVerifiedTrueGoToDashBoard"){
+            // Navigate to DashBoardFragment
+            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
         }
     }
 }

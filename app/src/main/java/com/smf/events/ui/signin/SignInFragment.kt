@@ -21,6 +21,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     private lateinit var mobileNumberWithCountryCode: String
     private lateinit var eMail: String
+    private var userName: String? = null
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -51,7 +52,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
         // SignUp Button Listener
         mDataBinding!!.signupaccbtn.setOnClickListener {
-            onSignupclicked()
+            onSignUpClicked()
         }
 
     }
@@ -84,6 +85,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     private val getUserDetailsObserver = Observer<ApisResponse<GetUserDetails>> { apiResponse ->
         when (apiResponse) {
             is ApisResponse.Success -> {
+                userName = apiResponse.response.data.userName
                 getViewModel()?.signIn(apiResponse.response.data.userName)
             }
 
@@ -96,7 +98,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     }
 
     // Method for SignUp Button
-    private fun onSignupclicked() {
+    private fun onSignUpClicked() {
         var action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
         // Navigate to SignUpFragment
         findNavController().navigate(action)
@@ -106,10 +108,11 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     override fun callBack(status: String) {
         if (status == "SignInNotCompleted") {
             // Navigate to EmailOTPFragment
-            findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment())
+            findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment(userName!!))
         } else if (status == "signInCompletedGoToDashBoard") {
             //Navigate to DashBoardFragment
             findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToDashBoardFragment())
+
         }
     }
 }
