@@ -21,6 +21,9 @@ class SignInViewModel @Inject constructor(
         Amplify.Auth.signIn(userName, null, { result ->
             if (result.isSignInComplete) {
                 Log.i("AuthQuickstart", "Sign in succeeded $result")
+                viewModelScope.launch {
+                    callBackInterface?.callBack("signInCompletedGoToDashBoard")
+                }
 
             } else {
                 Log.i("AuthQuickstart", "Sign in not complete $result")

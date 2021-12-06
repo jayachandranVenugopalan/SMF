@@ -107,8 +107,9 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         if (status == "SignInNotCompleted") {
             // Navigate to EmailOTPFragment
             findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment())
-        } else {
-            Log.d("TAG", "callBack: Failure to sign in ")
+        } else if (status == "signInCompletedGoToDashBoard") {
+            //Navigate to DashBoardFragment
+            findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToDashBoardFragment())
         }
     }
 }
