@@ -27,7 +27,7 @@
     <string name="enter_otp_sent_to_your_number">Enter OTP Sent to your number</string>
     <string name="enter_otp_sent_to_your_email">Enter OTP Sent to your number</string>
     <string name="enter_code_sent_to_your_eMail">Enter code Sent to your Email</string>
-    <string name="please_enter_your_verification_code_sent_your_email_id_and_mobile">Please enter your verification code sent your email id and mobile</string>
+    <string name="please_enter_your_verification_code_sent_your_mobile">Please enter your verification code sent your mobile</string>
     <string name="please_enter_your_verification_code_sent_your_email">Please enter your verification code sent your email</string>
     <string name="otp_expries_in">OTP expries in</string>
     <string name="code_expries_in">CODE expries in</string>

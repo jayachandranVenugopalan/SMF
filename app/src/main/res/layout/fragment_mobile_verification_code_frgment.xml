@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/please_enter_your_verification_code_sent_your_email_id_and_mobile"
+                    android:text="@string/please_enter_your_verification_code_sent_your_mobile"
                     android:textColor="#902E2E2E"
                     android:textSize="18sp" />
 

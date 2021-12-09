@@ -38,7 +38,6 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch {
             var errMsg= it.cause!!.message!!.split(".")[0]
         if (errMsg=="CreateAuthChallenge failed with error PhoneNumber not Verified") {
-            callBackInterface!!.awsErrorResponse()
             resendSignUp(userName)
         }else{
             toastMessage=errMsg
