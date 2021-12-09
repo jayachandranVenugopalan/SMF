@@ -30,7 +30,18 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
                     },
                     { Log.e("AuthDemo", "Failed to fetch user attributes", it) })
             },
-            { Log.e("AuthQuickstart", "Failed to confirm signIn", it) })
+            { Log.e("AuthQuickstart", "Failed to confirm signIn ${it.cause!!.message!!.split(".")[0]}", it)
+                viewModelScope.launch {
+                 var errMsg= it.cause!!.message!!.split(".")[0]
+
+                    if (errMsg=="Incorrect username or password" || errMsg=="Invalid session for the user"){
+                        toastMessage="Invalid OTP"
+                        callBackInterface!!.awsErrorreponse()
+                    }else
+                        toastMessage="Enter OTP"
+                    callBackInterface!!.awsErrorreponse()
+            }
+            })
 
     }
 
@@ -43,7 +54,12 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
                     callBackInterface?.callBack("goToEmailVerificationCodePage")
                 }
             },
-            { Log.e("AuthDemo", "Failed to resend code", it) })
+            { Log.e("AuthDemo", "Failed to resend code", it)
+                viewModelScope.launch {
+                var errMsg= it.cause!!.message!!.split(".")[0]
+                toastMessage=errMsg
+                    callBackInterface!!.awsErrorreponse()}
+            })
     }
 
     // OTP Resend SignIn Method
@@ -51,7 +67,15 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
         Amplify.Auth.signIn(userName, null, {
             Log.d("TAG", "reSendOTP: called code resented successfully")
         },
-            { Log.e("AuthQuickstart", "Failed to sign in", it) })
+            { Log.e("AuthQuickstart", "Failed to sign in", it)
+                viewModelScope.launch {
+                    var errMsg= it.cause!!.message!!.split(".")[0]
+                    toastMessage=errMsg
+                    callBackInterface!!.awsErrorreponse()
+                }
+
+
+            })
     }
 
     private var callBackInterface: CallBackInterface? = null
@@ -64,6 +88,7 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
     // CallBack Interface
     interface CallBackInterface {
         fun callBack(status: String)
+        fun awsErrorreponse()
     }
 
 }

@@ -71,5 +71,9 @@ class MobileVerificationCodeFrgment :
 
     }
 
+    override fun awsErrorResponse() {
+        getViewModel()?.toastMessage?.let { showToast(it) }
+    }
+
 
 }

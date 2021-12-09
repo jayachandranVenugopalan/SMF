@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_signInFragment_to_dashBoardFragment"
             app:destination="@id/dashBoardFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_verificationCodeFrgment"
+            app:destination="@id/verificationCodeFrgment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"

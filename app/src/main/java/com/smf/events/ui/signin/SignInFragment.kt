@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder
 import androidx.navigation.fragment.findNavController
 import com.smf.events.BR
 import com.smf.events.R
@@ -86,12 +87,13 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         when (apiResponse) {
             is ApisResponse.Success -> {
                 userName = apiResponse.response.data.userName
+                Log.d("TAG", "reposne: $apiResponse")
                 getViewModel()?.signIn(apiResponse.response.data.userName)
             }
 
-            is ApisResponse.Error -> {
-                showToast(apiResponse.exception.localizedMessage!!)
-                Log.d("TAG", "response: failure ${apiResponse.exception.localizedMessage!!}")
+            is ApisResponse.CustomError -> {
+                showToast(apiResponse.message)
+                Log.d("TAG", "response: failure ${apiResponse.message}")
             }
             else -> {}
         }
@@ -106,13 +108,25 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     // CallBackInterface Override Method
     override fun callBack(status: String) {
-        if (status == "SignInNotCompleted") {
-            // Navigate to EmailOTPFragment
-            findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment(userName!!))
-        } else if (status == "signInCompletedGoToDashBoard") {
-            //Navigate to DashBoardFragment
-            findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToDashBoardFragment())
 
+        when(status){
+            "SignInNotCompleted"->{
+                // Navigate to EmailOTPFragment
+                findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment(userName!!))
+            }
+            "signInCompletedGoToDashBoard"->{
+                //Navigate to DashBoardFragment
+                findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToDashBoardFragment())
+            }
+            "resend success"->{
+                //Navigate to MobileVerificationCode
+                findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToVerificationCodeFrgment(userName!!))
+
+            }
         }
+    }
+
+    override fun awsErrorResponse() {
+        getViewModel()?.toastMessage?.let { showToast(it) }
     }
 }

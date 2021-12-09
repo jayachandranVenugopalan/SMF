@@ -65,4 +65,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
         }
     }
+
+    override fun awsErrorreponse() {
+        getViewModel()?.toastMessage?.let { showToast(it) }
+    }
 }

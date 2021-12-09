@@ -56,4 +56,8 @@ class EmailVerificationCodeFragment :
         }
     }
 
+    override fun awsErrorResponse() {
+        getViewModel()?.toastMessage?.let { showToast(it) }
+    }
+
 }
