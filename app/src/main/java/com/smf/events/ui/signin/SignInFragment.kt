@@ -123,6 +123,9 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToVerificationCodeFrgment(userName!!))
 
             }
+            "resend failure"->{
+
+            }
         }
     }
 

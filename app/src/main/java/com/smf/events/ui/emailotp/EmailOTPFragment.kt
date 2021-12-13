@@ -47,7 +47,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     private fun submitBtnClicked() {
         var code = mDataBinding?.otpemail?.text.toString()
         Log.d("TAG", "onViewCreated: ${code}")
-        getViewModel()!!.confirmSignIn(code)
+        getViewModel()!!.confirmSignIn(code, mDataBinding!!)
     }
 
     // Method for ResendingOTP
@@ -60,7 +60,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         if (status == "goToEmailVerificationCodePage") {
             // Navigate to EmailVerificationCodeFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionPhoneOTPFragmentToEmailVerificationCodeFragment())
-        }else if (status == "EMailVerifiedTrueGoToDashBoard"){
+        } else if (status == "EMailVerifiedTrueGoToDashBoard") {
             // Navigate to DashBoardFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
         }

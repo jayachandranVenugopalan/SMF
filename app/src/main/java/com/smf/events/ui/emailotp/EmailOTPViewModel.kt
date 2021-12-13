@@ -6,13 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.core.Amplify
 import com.smf.events.base.BaseViewModel
+import com.smf.events.databinding.FragmentEmailOtpBinding
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class EmailOTPViewModel @Inject constructor(application: Application) : BaseViewModel(application) {
 
-    fun confirmSignIn(otp: String) {
-        // Custom Confirm SignIn Function
+    // Custom Confirm SignIn Function
+    fun confirmSignIn(otp: String, mDataBinding: FragmentEmailOtpBinding) {
+
         Amplify.Auth.confirmSignIn(otp,
             {
                 Log.i("AuthQuickstart", "Confirmed signIn: $it")
@@ -28,21 +30,28 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
                             }
                         }
                     },
-                    { Log.e("AuthDemo", "Failed to fetch user attributes", it) })
+                    {
+                        Log.e("AuthDemo", "Failed to fetch user attributes", it)
+                        viewModelScope.launch {
+                            toastMessage = "Invalid OTP"
+                            callBackInterface!!.awsErrorreponse()
+                        }
+                    })
             },
-            { Log.e("AuthQuickstart", "Failed to confirm signIn ${it.cause!!.message!!.split(".")[0]}", it)
+            {
+                Log.e(
+                    "AuthQuickstart",
+                    "Failed to confirm signIn ${it.cause!!.message!!.split(".")[0]}",
+                    it
+                )
                 viewModelScope.launch {
-                 var errMsg= it.cause!!.message!!.split(".")[0]
-
-                    if (errMsg=="Incorrect username or password" || errMsg=="Invalid session for the user"){
-                        toastMessage="Invalid OTP"
+                    var errMsg = mDataBinding.otpemail.text.toString()
+                    if (errMsg.isEmpty()) {
+                        toastMessage = "Enter OTP"
                         callBackInterface!!.awsErrorreponse()
-                    }else
-                        toastMessage="Enter OTP"
-                    callBackInterface!!.awsErrorreponse()
-            }
+                    }
+                }
             })
-
     }
 
     // Email Verification
@@ -54,11 +63,13 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
                     callBackInterface?.callBack("goToEmailVerificationCodePage")
                 }
             },
-            { Log.e("AuthDemo", "Failed to resend code", it)
+            {
+                Log.e("AuthDemo", "Failed to resend code", it)
                 viewModelScope.launch {
-                var errMsg= it.cause!!.message!!.split(".")[0]
-                toastMessage=errMsg
-                    callBackInterface!!.awsErrorreponse()}
+                    var errMsg = it.cause!!.message!!.split(".")[0]
+                    toastMessage = errMsg
+                    callBackInterface!!.awsErrorreponse()
+                }
             })
     }
 
@@ -67,14 +78,13 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
         Amplify.Auth.signIn(userName, null, {
             Log.d("TAG", "reSendOTP: called code resented successfully")
         },
-            { Log.e("AuthQuickstart", "Failed to sign in", it)
+            {
+                Log.e("AuthQuickstart", "Failed to sign in", it)
                 viewModelScope.launch {
-                    var errMsg= it.cause!!.message!!.split(".")[0]
-                    toastMessage=errMsg
+                    var errMsg = it.cause!!.message!!.split(".")[0]
+                    toastMessage = errMsg
                     callBackInterface!!.awsErrorreponse()
                 }
-
-
             })
     }
 
