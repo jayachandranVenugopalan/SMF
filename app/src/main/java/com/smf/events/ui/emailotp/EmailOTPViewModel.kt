@@ -4,6 +4,8 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.amplifyframework.auth.AuthUserAttributeKey
+import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
+import com.amplifyframework.auth.result.AuthSessionResult
 import com.amplifyframework.core.Amplify
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentEmailOtpBinding
@@ -17,14 +19,19 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
 
         Amplify.Auth.confirmSignIn(otp,
             {
-                Log.i("AuthQuickstart", "Confirmed signIn: $it")
+                result->
+                Log.i("AuthQuickstart", "Confirmed signIn: ${result.nextStep.additionalInfo}")
+//                Log.i("AuthQuickstart", "Confirmed signIn: $it")
+                fetchSession()
                 Amplify.Auth.fetchUserAttributes(
                     { result ->
-                        Log.i("AuthDemo", "User attributes = $result")
+                        Log.i("AuthDemo", "User attributes = ${result.get(0).key}")
                         if (result[1].value.equals("false")) {
                             eMailVerification()
+
                         } else {
                             Log.i("AuthDemo", "User attributes = successfully entered dashboard")
+
                             viewModelScope.launch {
                                 callBackInterface?.callBack("EMailVerifiedTrueGoToDashBoard")
                             }
@@ -52,6 +59,20 @@ class EmailOTPViewModel @Inject constructor(application: Application) : BaseView
                     }
                 }
             })
+    }
+
+    // Fetch tokens
+    private fun fetchSession(){
+        Amplify.Auth.fetchAuthSession(
+            {
+                val session = it as AWSCognitoAuthSession
+
+                var tokens= AuthSessionResult.success(session.userPoolTokens.value!!.accessToken)
+                Log.d("TAG", "fetchsession: $tokens")
+
+            },
+            { Log.e("AuthQuickStart", "Failed to fetch session", it) }
+        )
     }
 
     // Email Verification

@@ -4,9 +4,6 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.amplifyframework.auth.AuthUserAttribute
-import com.amplifyframework.auth.AuthUserAttributeKey
-import com.amplifyframework.auth.options.AuthSignUpOptions
 import com.amplifyframework.core.Amplify
 import com.smf.events.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
