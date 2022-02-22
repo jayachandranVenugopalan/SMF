@@ -1,12 +1,20 @@
-package com.example.demodragger.di.modules
+package com.smf.events.di.modules
 
 
-import com.example.demodragger.network.ApiStories
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
+import com.amplifyframework.auth.result.AuthSessionResult
+import com.amplifyframework.core.Amplify
+import com.smf.events.network.ApiStories
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.smf.events.BuildConfig
+import com.smf.events.helper.Tokens
 import dagger.Module
 import dagger.Provides
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,16 +27,16 @@ class ApiModule {
 
     @Singleton
     @Provides
-    fun getGson() : Gson {
+    fun getGson(): Gson {
         return GsonBuilder().create()
     }
 
     @Singleton
     @Provides
-    fun provideOKHttpClient(httpLoggingInterceptor : HttpLoggingInterceptor): OkHttpClient {
-
+    fun provideOKHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
-
         okHttpClient
             .connectTimeout(1, TimeUnit.MINUTES)
             .readTimeout(30, TimeUnit.SECONDS)
@@ -49,15 +57,14 @@ class ApiModule {
 
     @Singleton
     @Provides
-    fun getRetrofit(gson: Gson, okHttpClient: OkHttpClient) : Retrofit {
-        return Retrofit.Builder().
-        addConverterFactory(GsonConverterFactory.create(gson)).
-        baseUrl(BuildConfig.base_url).client(okHttpClient).build()
+    fun getRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl(BuildConfig.base_url).client(okHttpClient).build()
     }
 
     @Singleton
     @Provides
-    fun provideApiStories(retrofit: Retrofit) : ApiStories {
+    fun provideApiStories(retrofit: Retrofit): ApiStories {
         return retrofit.create(ApiStories::class.java)
     }
 

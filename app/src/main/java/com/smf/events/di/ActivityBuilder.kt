@@ -4,6 +4,8 @@ import com.smf.events.MainActivity
 import com.smf.events.MainModule
 import com.smf.events.ui.dashboard.DashBoardFragment
 import com.smf.events.ui.dashboard.DashBoardModule
+import com.smf.events.ui.emailotp.EmailOTPFragment
+import com.smf.events.ui.emailotp.EmailOTPModule
 import com.smf.events.ui.signin.SignInFragment
 import com.smf.events.ui.signin.SignInModule
 import com.smf.events.ui.signup.SignUpFragment
@@ -27,6 +29,9 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [SignUpModule::class])
     abstract fun provideSignUpFragment():SignUpFragment
+
+    @ContributesAndroidInjector(modules = [EmailOTPModule::class])
+    abstract fun provideEmailOTPFragment():EmailOTPFragment
 
     @ContributesAndroidInjector(modules = [DashBoardModule::class])
     abstract fun provideDashBoardFragment():DashBoardFragment

@@ -1,35 +1,59 @@
 package com.smf.events.ui.emailotp
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.tokens.CognitoAccessToken
+import com.amplifyframework.core.Amplify
 import com.smf.events.BR
 import com.smf.events.R
+import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailOtpBinding
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.Tokens
+import dagger.android.support.AndroidSupportInjection
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import javax.inject.Inject
 
 
 class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel>(),
-    EmailOTPViewModel.CallBackInterface {
+    EmailOTPViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
     private val args: EmailOTPFragmentArgs by navArgs()
     private lateinit var userName: String
 
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+    @Inject
+    lateinit var tokens: Tokens
+
     override fun getViewModel(): EmailOTPViewModel? =
-        ViewModelProvider(this).get(EmailOTPViewModel::class.java)
+        ViewModelProvider(this, factory).get(EmailOTPViewModel::class.java)
 
     override fun getBindingVariable(): Int = BR.otpviewmodel
 
     override fun getContentView(): Int = R.layout.fragment_email_otp
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userName = args.userName
         // Initialize CallBackInterface
         getViewModel()?.setCallBackInterface(this)
+        // Initialize IdTokenCallBackInterface
+        tokens.setCallBackInterface(this)
 
         // Submit Button Listener
         mDataBinding!!.submitBtn.setOnClickListener {
@@ -40,6 +64,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         mDataBinding?.otpResend?.setOnClickListener {
             resendBtnClicked()
         }
+
 
     }
 
@@ -56,17 +81,55 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     }
 
     // CallBackInterface Override Method
-    override fun callBack(status: String) {
+    override suspend fun callBack(status: String) {
         if (status == "goToEmailVerificationCodePage") {
             // Navigate to EmailVerificationCodeFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionPhoneOTPFragmentToEmailVerificationCodeFragment())
         } else if (status == "EMailVerifiedTrueGoToDashBoard") {
-            // Navigate to DashBoardFragment
-            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
+
+            val getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
+                "MyUser",
+                Context.MODE_PRIVATE
+            )
+            val idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+
+            withContext(Main) {
+                if (idToken.isNotEmpty()) {
+                    tokens.checkTokenExpiry(
+                        requireActivity().applicationContext as SMFApp,
+                        "event_type"
+                    )
+                }
+            }
+
+//            // Navigate to DashBoardFragment
+//            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
         }
     }
 
     override fun awsErrorreponse() {
         getViewModel()?.toastMessage?.let { showToast(it) }
     }
+
+    //Override Method for IdTokenCallBackInterface
+    override suspend fun tokenCallBack(idToken: String, caller: String) {
+        Log.d("TAG", "check tokenCallBack called......................$caller")
+        withContext(Main) {
+            getViewModel()?.getEventTypes(idToken)
+                ?.observe(this@EmailOTPFragment, Observer { apiResponse ->
+                    when (apiResponse) {
+                        is ApisResponse.Success -> {
+                            Log.d("TAG", "check token result: ${apiResponse.response.success}")
+                            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
+                        }
+                        is ApisResponse.Error -> {
+                            Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        }
+                        else -> {}
+                    }
+                })
+        }
+
+    }
+
 }

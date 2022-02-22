@@ -1,5 +1,6 @@
 package com.smf.events.base
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,7 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
         mViewModel = getViewModel()
         mViewDataBinding?.setVariable(getBindingVariable(), mViewModel)
         mViewDataBinding?.executePendingBindings()
+       // mViewDataBinding?.lifecycleOwner = this@BaseActivity
 
     }
 }

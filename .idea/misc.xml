@@ -32,9 +32,11 @@
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/create_event_txt_shape.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/dashboard_new_service_shape.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/event_bidding_shape.xml" value="0.2203125" />
+        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/activity_main.xml" value="0.12952898550724637" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/events_card_view.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_dash_board.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_email_o_t_p.xml" value="0.12771739130434784" />
+        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_email_otp.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_phone_o_t_p.xml" value="0.12771739130434784" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_signup.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_verification_code_frgment.xml" value="0.20416666666666666" />

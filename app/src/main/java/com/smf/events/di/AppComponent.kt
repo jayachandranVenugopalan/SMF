@@ -1,7 +1,7 @@
 package com.example.demodragger.di
 
 import android.app.Application
-import com.example.demodragger.di.modules.ApiModule
+import com.smf.events.di.modules.ApiModule
 import com.example.demodragger.di.modules.AppModule
 import com.smf.events.SMFApp
 import dagger.BindsInstance
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(
-    modules = [AndroidInjectionModule::class,AppModule::class,ApiModule::class,ActivityBuilder::class]
+    modules = [AndroidInjectionModule::class,AppModule::class, ApiModule::class,ActivityBuilder::class]
 )
 interface AppComponent {
 

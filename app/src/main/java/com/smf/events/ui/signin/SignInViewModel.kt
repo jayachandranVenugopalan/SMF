@@ -25,7 +25,6 @@ class SignInViewModel @Inject constructor(
                 }
             } else {
                 Log.i("AuthQuickstart", "Sign in not complete $result")
-
                 viewModelScope.launch {
                     callBackInterface?.callBack("SignInNotCompleted")
                 }
@@ -43,6 +42,8 @@ class SignInViewModel @Inject constructor(
             }
         })
     }
+
+
 
     // ResendSignUpCode
     private fun resendSignUp(userName: String) {

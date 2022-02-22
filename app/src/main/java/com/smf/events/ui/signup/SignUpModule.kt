@@ -1,9 +1,8 @@
 package com.smf.events.ui.signup
 
 import androidx.lifecycle.ViewModelProvider
-import com.example.demodragger.network.ApiStories
+import com.smf.events.network.ApiStories
 import com.smf.events.helper.ViewModelProviderFactory
-import com.smf.events.ui.signin.SignInViewModel
 import dagger.Module
 import dagger.Provides
 

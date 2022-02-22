@@ -26,6 +26,7 @@ import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.util.CognitoServiceConstants
 
 import android.R.attr.password
+import androidx.activity.addCallback
 import com.amazonaws.mobile.client.Callback
 import com.amazonaws.mobile.client.results.SignInState
 import com.amplifyframework.auth.AuthException
@@ -46,8 +47,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     private lateinit var encodedMobileNo:String
     private lateinit var eMail: String
     private var userName: String? = null
-    private var TAG="new message"
-    lateinit var token:AuthSessionResult<AWSCognitoUserPoolTokens>
+
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
@@ -63,6 +63,14 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         super.onAttach(context)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        //restrict user back button
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            requireActivity().finish()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -72,7 +80,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         // SignIn Button Listener
         mDataBinding!!.signinbtn.setOnClickListener {
             signInClicked()
-
         }
 
         // SignUp Button Listener
@@ -144,7 +151,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             }
             "signInCompletedGoToDashBoard"->{
                 //Navigate to DashBoardFragment
-
                 findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToDashBoardFragment())
             }
             "resend success"->{
@@ -161,8 +167,5 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     override fun awsErrorResponse() {
         getViewModel()?.toastMessage?.let { showToast(it) }
     }
-
-
-
 
 }
