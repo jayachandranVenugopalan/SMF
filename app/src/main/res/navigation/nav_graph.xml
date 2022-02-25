@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_splashFragment_to_dashBoardFragment"
             app:destination="@id/dashBoardFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_businessRegistrationFragment"
+            app:destination="@id/businessRegistrationFragment" />
     </fragment>
     <fragment
         android:id="@+id/signInFragment"
@@ -81,4 +84,8 @@
         android:id="@+id/dashBoardFragment"
         android:name="com.smf.events.ui.dashboard.DashBoardFragment"
         android:label="DashBoardFragment" />
+    <fragment
+        android:id="@+id/businessRegistrationFragment"
+        android:name="com.smf.events.ui.businessregistration.BusinessRegistrationFragment"
+        android:label="BusinessRegistrationFragment" />
 </navigation>

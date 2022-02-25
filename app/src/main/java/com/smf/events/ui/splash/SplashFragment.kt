@@ -54,7 +54,8 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     private fun onClickLoginBtn() {
         mDataBinding!!.splashBtn.setOnClickListener {
             // Getting User Inputs
-            var action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
+         //   var action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
+            val action = SplashFragmentDirections.actionSplashFragmentToBusinessRegistrationFragment()
             findNavController().navigate(action)
         }
     }
@@ -62,6 +63,7 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     // Method for Moving DashBoard Screen
     private fun moveToDashBoardScreen() {
         val action = SplashFragmentDirections.actionSplashFragmentToDashBoardFragment()
+
         findNavController().navigate(action)
     }
 }

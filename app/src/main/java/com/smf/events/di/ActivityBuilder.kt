@@ -2,6 +2,8 @@ package com.example.demodragger.di
 
 import com.smf.events.MainActivity
 import com.smf.events.MainModule
+import com.smf.events.ui.businessregistration.BusinessRegistrationFragment
+import com.smf.events.ui.businessregistration.BusinessRegistrationModule
 import com.smf.events.ui.dashboard.DashBoardFragment
 import com.smf.events.ui.dashboard.DashBoardModule
 import com.smf.events.ui.emailotp.EmailOTPFragment
@@ -35,4 +37,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [DashBoardModule::class])
     abstract fun provideDashBoardFragment():DashBoardFragment
+
+    @ContributesAndroidInjector(modules = [BusinessRegistrationModule::class])
+    abstract fun provideBusinessRegistrationFragment():BusinessRegistrationFragment
 }
