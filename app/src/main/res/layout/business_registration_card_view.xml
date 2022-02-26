@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/title_layout"
+            android:id="@+id/business_reg_layout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/title_text"
+                android:id="@+id/tx_businessregname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -54,8 +54,10 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/business_reg_exp_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+           >
 
             <TextView
                 android:id="@+id/text_owner_details"
