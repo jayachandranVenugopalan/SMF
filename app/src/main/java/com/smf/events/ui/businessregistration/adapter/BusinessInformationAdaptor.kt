@@ -19,7 +19,7 @@ class BusinessInformationAdaptor:
         parent: ViewGroup,
         viewType: Int,
     ): BusinessInformationAdaptor.BusinessInfoViewHolder {
-        var itemView =
+        val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.business_information_cardview, parent, false)
         return BusinessInfoViewHolder(itemView)
     }

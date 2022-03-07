@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="2dp"
@@ -61,7 +62,6 @@
             android:id="@+id/add_services_btn"
             android:layout_width="150dp"
             android:layout_height="40dp"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:text="Add services"
             android:gravity="center"
@@ -74,6 +74,17 @@
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/add_service_btn_background"/>
 
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/selected_service_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_services_btn" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

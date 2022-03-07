@@ -3,8 +3,6 @@ package com.smf.events.ui.businessregistration
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +12,7 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentBusinessRegistrationBinding
 import com.smf.events.ui.businessregistration.adapter.AddServiceAdapter
 import com.smf.events.ui.businessregistration.adapter.BusinessInformationAdaptor
-import com.smf.events.ui.businessregistration.adapter.BusinessRegistrationAdapter
+import com.smf.events.ui.businessregistration.adapter.BusinessOwnerInformationAdapter
 import com.smf.events.ui.businessregistration.adapter.OtherInformationAdapter
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -29,7 +27,7 @@ class BusinessRegistrationFragment :
     private lateinit var otherInformationAdaptor: OtherInformationAdapter
     private lateinit var otherInfoRecyclerView: RecyclerView
 
-    private lateinit var businessRegistrationAdapter: BusinessRegistrationAdapter
+    private lateinit var businessOwnerInformationAdapter: BusinessOwnerInformationAdapter
     private lateinit var businessRegRecyclerView: RecyclerView
 
     private lateinit var addServiceAdapter: AddServiceAdapter
@@ -84,11 +82,11 @@ class BusinessRegistrationFragment :
 
     private fun businessRegistrationRecyclerview() {
         businessRegRecyclerView = mDataBinding?.businessOwnerInfoRecycleview!!
-        businessRegistrationAdapter = BusinessRegistrationAdapter()
+        businessOwnerInformationAdapter = BusinessOwnerInformationAdapter()
         businessRegRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        businessRegRecyclerView.adapter = businessRegistrationAdapter
-        businessRegistrationAdapter.notifyDataSetChanged()
+        businessRegRecyclerView.adapter = businessOwnerInformationAdapter
+        businessOwnerInformationAdapter.notifyDataSetChanged()
     }
 
     private fun addServicesRecyclerview() {

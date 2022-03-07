@@ -9,13 +9,18 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
 import com.smf.events.ui.addservicedialog.AddServiceDialog
 import com.smf.events.ui.addservicedialog.model.Services
+import com.smf.events.ui.businessregistration.model.SelectedServices
 
 class AddServiceAdapter(val context: Context) :
     RecyclerView.Adapter<AddServiceAdapter.AddServiceViewHolder>() {
+
+    private lateinit var recyclerViewAdapter: SelectedServicesRecyclerViewAdapter
+    private var serviceList = ArrayList<SelectedServices>()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -24,6 +29,8 @@ class AddServiceAdapter(val context: Context) :
         val itemView =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.add_services_card_view, parent, false)
+        // User Selected Service List
+        serviceList = selectedDataList()
         return AddServiceViewHolder(itemView)
     }
 
@@ -46,6 +53,8 @@ class AddServiceAdapter(val context: Context) :
                     AddServiceDialog.TAG
                 )
             }
+
+            selectedServiceRecyclerViewSetUp(this)
         }
     }
 
@@ -59,7 +68,15 @@ class AddServiceAdapter(val context: Context) :
         var addService: Button = view.findViewById(R.id.add_services_btn)
         var expand: Boolean = false
         var expandablelayout: ConstraintLayout = view.findViewById(R.id.add_service_btn_layout)
+        var selectedServiceRecyclerView: RecyclerView = view.findViewById(R.id.selected_service_recycler_view)
 
+    }
+
+    // Method for selected Services RecyclerView Initialization
+    private fun selectedServiceRecyclerViewSetUp(addServiceViewHolder: AddServiceViewHolder) {
+        addServiceViewHolder.selectedServiceRecyclerView.layoutManager =  GridLayoutManager(context, 3)
+        recyclerViewAdapter = SelectedServicesRecyclerViewAdapter(context, serviceList)
+        addServiceViewHolder.selectedServiceRecyclerView.adapter = recyclerViewAdapter
     }
 
     // Method for ListView Data
@@ -75,5 +92,19 @@ class AddServiceAdapter(val context: Context) :
         dataModel.add(Services("Snakes", "gvhjsa",false))
 
         return  dataModel
+    }
+
+    // Method for User Selected List
+    private fun selectedDataList(): ArrayList<SelectedServices> {
+        var list = ArrayList<SelectedServices>()
+
+        list.add(SelectedServices("Venue"))
+        list.add(SelectedServices("Beauty"))
+        list.add(SelectedServices("Catering"))
+        list.add(SelectedServices("Balloons"))
+        list.add(SelectedServices("Cakes"))
+        list.add(SelectedServices("Snakes"))
+
+        return list
     }
 }
