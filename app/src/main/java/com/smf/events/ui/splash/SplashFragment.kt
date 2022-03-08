@@ -54,8 +54,8 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     private fun onClickLoginBtn() {
         mDataBinding!!.splashBtn.setOnClickListener {
             // Getting User Inputs
-         //   var action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
-            val action = SplashFragmentDirections.actionSplashFragmentToBusinessRegistrationFragment()
+            var action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
+           // val action = SplashFragmentDirections.actionSplashFragmentToBusinessRegistrationFragment()
             findNavController().navigate(action)
         }
     }
