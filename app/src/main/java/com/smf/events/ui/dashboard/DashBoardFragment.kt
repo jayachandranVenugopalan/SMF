@@ -20,7 +20,9 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentDashBoardBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
+import com.smf.events.ui.dashboard.adapter.ActionsAdapter
 import com.smf.events.ui.dashboard.adapter.MyEventsAdapter
+import com.smf.events.ui.dashboard.adapter.StatusAdaptor
 import com.smf.events.ui.dashboard.model.MyEvents
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +39,10 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     private lateinit var myEventsRecyclerView: RecyclerView
     lateinit var adapter: MyEventsAdapter
-
+    private lateinit var myActionRecyclerView: RecyclerView
+    lateinit var actionAdapter: ActionsAdapter
+    private lateinit var myStatusRecyclerView: RecyclerView
+    lateinit var statusAdapter: StatusAdaptor
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
@@ -69,11 +74,28 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         getViewModel().setCallBackInterface(this)
 
         myEventsRecyclerView = mDataBinding?.eventsRecyclerView!!
+     //Initializing actions recyclerview
+        myActionRecyclerView = mDataBinding?.actionsRecyclerview!!
+
+        //Initializing status recyclerview
+        myStatusRecyclerView = mDataBinding?.statusRecyclerview!!
         // MyEvent Recycler
         myEventsRecycler()
 
+        //Actions  Recycler view
+        myActionsStatusRecycler()
+
+        //Status Recycler view
+        myStatusRecycler()
+
         val list = getList()
         adapter.refreshItems(list)
+
+        val listActions = getActionsList()
+        actionAdapter.refreshItems(listActions)
+
+        val listStatus = getStatusList()
+        statusAdapter.refreshItems(listStatus)
 
         mDataBinding?.clickbtn?.setOnClickListener {
             var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
@@ -105,6 +127,22 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         myEventsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         myEventsRecyclerView.adapter = adapter
+    }
+
+    private fun myActionsStatusRecycler(){
+        actionAdapter = ActionsAdapter()
+        myActionRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        myActionRecyclerView.adapter = actionAdapter
+
+    }
+
+    private fun myStatusRecycler(){
+        statusAdapter = StatusAdaptor()
+        myStatusRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        myStatusRecyclerView.adapter = statusAdapter
+
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
@@ -164,6 +202,29 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         list.add(MyEvents("4","Active"))
         list.add(MyEvents( "2","Pending"))
         list.add(MyEvents("1","Draft"))
+        list.add(MyEvents("2","Rejected"))
+        list.add(MyEvents("1","Draft"))
+
+        return list
+
+    }
+
+    private fun getActionsList(): ArrayList<MyEvents> {
+        var list = ArrayList<MyEvents>()
+        list.add(MyEvents("4","New request"))
+        list.add(MyEvents( "2","Send Quotes"))
+        list.add(MyEvents("1","Won Bid"))
+        list.add(MyEvents("2","Rejected"))
+        list.add(MyEvents("1","Draft"))
+
+        return list
+
+    }
+    private fun getStatusList(): ArrayList<MyEvents> {
+        var list = ArrayList<MyEvents>()
+        list.add(MyEvents("4","Bids Submitted"))
+        list.add(MyEvents( "2","Service done"))
+        list.add(MyEvents("1","Request closed"))
         list.add(MyEvents("2","Rejected"))
         list.add(MyEvents("1","Draft"))
 

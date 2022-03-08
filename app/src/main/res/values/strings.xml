@@ -41,5 +41,10 @@
     <string name="services">SERVICES</string>
     <string name="active">Active</string>
     <string name="_4">4</string>
+    <string name="new_request">New request</string>
+    <string name="_12_pending_items">12 pending items</string>
+    <string name="status">Status</string>
+    <string name="_12_status">12 status</string>
+    <string name="actions">Actions</string>
 
 </resources>
