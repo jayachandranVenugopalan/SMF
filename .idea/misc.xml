@@ -18,6 +18,26 @@
         <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/sign_up_fragment.xml" value="0.75" />
         <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/signup_fragment.xml" value="0.18" />
         <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/app/src/main/res/layout/splash_screen_fragment.xml" value="0.12273550724637682" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/drawable-v24/add_service_btn_background.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/drawable/dashboard_new_service_shape.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/drawable/dateshape.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/drawable/dialog_background.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/drawable/edit_text_custom_design.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/drawable/ic__add_icon.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/drawable/ic_checkbox_checked.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/drawable/shapes.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/actions_status_dashboard_cardview.xml" value="0.33" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/add_service_list_view.xml" value="0.11503623188405797" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/award_certificate_add_cardview.xml" value="0.1213768115942029" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/business_information_cardview.xml" value="0.25908372827804105" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/business_registration_card_view.xml" value="0.1" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/businessinformationcardview.xml" value="0.12771739130434784" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/events_card_view.xml" value="0.11503623188405797" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/fragment_business_registration.xml" value="0.12771739130434784" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/fragment_dash_board.xml" value="0.2290836653386454" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/other_info_cardview.xml" value="0.25" />
+        <entry key="..\:/Users/Jayachandran V/AndroidStudioProjects/SMF/new/app/src/main/res/layout/otherinfocardview.xml" value="0.12771739130434784" />
         <entry key="..\:/Users/Jayachandran V/ServiceManagment/app/src/main/res/drawable/shapes.xml" value="0.1015625" />
         <entry key="..\:/Users/Jayachandran V/ServiceManagment/app/src/main/res/layout-v21/sign_in_fragment.xml" value="0.22" />
         <entry key="..\:/Users/Jayachandran V/ServiceManagment/app/src/main/res/layout/activity_main.xml" value="0.18802083333333333" />
@@ -26,47 +46,27 @@
         <entry key="..\:/Users/Jayachandran V/ServiceManagment/app/src/main/res/layout/sign_in_fragment.xml" value="0.33" />
         <entry key="..\:/Users/Jayachandran V/ServiceManagment/app/src/main/res/layout/sign_up_fragment.xml" value="4.0" />
         <entry key="..\:/Users/Jayachandran V/ServiceManagment/app/src/main/res/layout/splash_screen_fragment.xml" value="0.1" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable-v24/add_service_btn_background.xml" value="0.2203125" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/add_btn_background.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/arrow_btn_shape.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/arrow_down.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/arrow_right.xml" value="0.2203125" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/checkbox_selector.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/create_event_txt_shape.xml" value="0.2203125" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/custom_button_round_corner.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/dashboard_new_service_shape.xml" value="0.2203125" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/dialog_background.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/edit_text_custom_design.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/event_bidding_shape.xml" value="0.2203125" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/ic_checkbox_checked.xml" value="0.2203125" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/ic_checkbox_unchecked.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/phone_number_custom_design.xml" value="0.2203125" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/drawable/shapes.xml" value="0.2203125" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/font-v26/font.xml" value="0.234375" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout-v21/add_service_list_view.xml" value="0.17028985507246377" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/actions_status_dashboard_cardview.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/activity_main.xml" value="0.12952898550724637" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/add_service_list_view.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/add_services_card_view.xml" value="0.22" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/add_services_dialog.xml" value="0.22" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/award_certificate_add_cardview.xml" value="0.16530797101449277" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/business_information_cardview.xml" value="0.22" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/business_owner_info_card_view.xml" value="0.16530797101449277" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/business_registration_card_view.xml" value="0.22" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/event_details_card_view.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/business_registration_card_view.xml" value="0.25" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/events_card_view.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_approval_dialog.xml" value="0.25" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_approvl_dialog.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_business_registration.xml" value="0.25" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_dash_board.xml" value="0.25" />
+        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_business_registration.xml" value="0.18" />
+        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_dash_board.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_email_o_t_p.xml" value="0.12771739130434784" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_email_otp.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_phone_o_t_p.xml" value="0.12771739130434784" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_service_provider_dash_board.xml" value="0.19655797101449277" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_signup.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_verification_code_frgment.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/other_info_cardview.xml" value="0.16530797101449277" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/selected_service_card_view.xml" value="0.16530797101449277" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/sign_in_fragment.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/sign_up_fragment.xml" value="1.0" />

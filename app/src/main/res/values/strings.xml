@@ -47,4 +47,25 @@
     <string name="_12_status">12 status</string>
     <string name="actions">Actions</string>
 
+    <string name="sole_properitor">Sole Properitor</string>
+    <string name="partnership">Partnership</string>
+    <string name="llc">LLC</string>
+    <string name="all_services">All services</string>
+    <string name="branches">Branch</string>
+    <string-array name="all_services">
+        <item>@string/all_services</item>
+        <item>@string/sole_properitor</item>
+        <item>@string/partnership</item>
+        <item>@string/llc</item>
+
+    </string-array>
+    <string-array name="branches">
+        <item>@string/branches</item>
+        <item>@string/sole_properitor</item>
+        <item>@string/partnership</item>
+        <item>@string/llc</item>
+
+    </string-array>
+
+
 </resources>

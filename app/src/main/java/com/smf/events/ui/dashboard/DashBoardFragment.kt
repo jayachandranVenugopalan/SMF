@@ -1,21 +1,18 @@
 package com.smf.events.ui.dashboard
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.amazonaws.mobile.client.AWSMobileClient
-import com.amazonaws.mobile.client.Callback
-import com.amazonaws.mobile.client.UserStateDetails
-import com.amplifyframework.core.Amplify
 import com.smf.events.BR
 import com.smf.events.R
-import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentDashBoardBinding
 import com.smf.events.helper.ApisResponse
@@ -30,8 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
-import java.util.concurrent.ForkJoinTask.getPool
 import javax.inject.Inject
 
 class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewModel>(),DashBoardViewModel.CallBackInterface
@@ -67,11 +62,20 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         restrictBackButton()
     }
 
+    @SuppressLint("ResourceType")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var allServices=resources.getStringArray(R.array.all_services)
+        var branch=resources.getStringArray(R.array.branches)
         // Initialize IdTokenCallBackInterface
         tokens.setCallBackInterface(this)
+
+
         getViewModel().setCallBackInterface(this)
+//spinner view for allservices
+        getViewModel().allServices(mDataBinding,allServices)
+ //spinner view for branches
+ getViewModel().branches(mDataBinding,branch)
 
         myEventsRecyclerView = mDataBinding?.eventsRecyclerView!!
      //Initializing actions recyclerview
@@ -195,6 +199,17 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             })
         }
 
+    }
+
+    override fun itemClick(position: Int) {
+
+        if (position==0){
+
+        }else{
+        Toast.makeText(requireContext(),
+            resources.getStringArray(R.array.all_services)[position],
+            Toast.LENGTH_LONG)
+            .show()}
     }
 
     private fun getList(): ArrayList<MyEvents> {

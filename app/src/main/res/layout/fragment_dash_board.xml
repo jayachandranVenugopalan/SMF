@@ -68,56 +68,59 @@
             android:layout_marginTop="@dimen/size_15dp"
             android:id="@+id/spinner_action"
             app:layout_constraintTop_toBottomOf="@id/myEvents_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginStart="@dimen/size_15dp"
-            android:layout_marginLeft="@dimen/size_15dp"
-            android:layout_marginEnd="@dimen/size_15dp">
+            android:layout_marginStart="@dimen/size_12dp"
+            android:layout_marginEnd="@dimen/size_12dp">
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/size_20dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginRight="@dimen/size_20dp"
+               android:layout_marginRight="@dimen/size_30dp"
                 android:background="@drawable/shapes"
                 android:layout_weight="1"
                 >
                 <Spinner
+                    android:padding="@dimen/size_5dp"
                     android:id="@+id/spn_allServices"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/spinner"
                     android:gravity="center"
                     android:spinnerMode="dropdown"
-                    android:textSize="@dimen/size_22sp"
+                    android:textSize="@dimen/size_18sp"
                     >
 
                 </Spinner>
             </LinearLayout>
             <LinearLayout
-                android:layout_marginStart="@dimen/size_20dp"
+                android:layout_marginStart="@dimen/size_30dp"
                 android:layout_weight="1"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/size_18sp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/shapes">
 
                 <Spinner
+                    android:padding="@dimen/size_5dp"
                     android:autofillHints="All Services"
                     android:id="@+id/spn_Branches"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/spinner"
                     android:spinnerMode="dropdown"
-                    android:textSize="@dimen/size_22sp">
+                    android:textSize="@dimen/size_20sp">
 
                 </Spinner>
             </LinearLayout>
 
         </LinearLayout>
         <TextView
-            android:layout_marginTop="@dimen/size_10dp"
+            android:layout_marginTop="@dimen/size_20dp"
             android:layout_marginStart="@dimen/size_10dp"
             android:layout_marginEnd="@dimen/size_10dp"
             android:id="@+id/tx_actions"
