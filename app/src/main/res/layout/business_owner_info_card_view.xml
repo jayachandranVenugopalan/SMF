@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/business_reg_layout"
+            android:id="@+id/business_owner_info_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -24,10 +24,10 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/tx_businessregname"
+                android:id="@+id/business_owner_info_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:padding="10dp"
                 android:gravity="center_vertical"
                 android:text="Business owner Information"
@@ -45,16 +45,16 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:src="@drawable/ic__add_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/tx_businessregname"
+                app:layout_constraintBottom_toBottomOf="@+id/business_owner_info_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tx_businessregname" />
+                app:layout_constraintTop_toTopOf="@+id/business_owner_info_title" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/business_reg_exp_layout"
+            android:id="@+id/business_owner_info_expandable_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
            >

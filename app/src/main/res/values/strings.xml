@@ -36,5 +36,6 @@
     <string name="_00_30">00:30</string>
     <string name="submit">Submit</string>
     <string name="Press_back_again_to_exit">Press back again to exit</string>
+    <string name="business_registration">Business registration</string>
 
 </resources>

@@ -31,7 +31,7 @@ class BusinessOwnerInformationAdapter :
             val isExpandable: Boolean = expand
             expandableLayout.visibility = if (isExpandable) View.VISIBLE else View.GONE
 
-            businessRegName.setOnClickListener {
+            businessOwnerInfoLayout.setOnClickListener {
                 expand = !expand
                 notifyDataSetChanged()
             }
@@ -44,7 +44,7 @@ class BusinessOwnerInformationAdapter :
 
     inner class BusinessRegistrationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var expand: Boolean = false
-        var businessRegName: ConstraintLayout = view.findViewById(R.id.business_reg_layout)
-        var expandableLayout: ConstraintLayout = view.findViewById(R.id.business_reg_exp_layout)
+        var businessOwnerInfoLayout: ConstraintLayout = view.findViewById(R.id.business_owner_info_layout)
+        var expandableLayout: ConstraintLayout = view.findViewById(R.id.business_owner_info_expandable_layout)
     }
 }

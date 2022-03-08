@@ -41,7 +41,7 @@ class AddServiceAdapter(val context: Context) :
             val isExpandable: Boolean = expand
             expandablelayout.visibility = if (isExpandable) View.VISIBLE else View.GONE
 
-            addServiceBtn.setOnClickListener {
+            addServiceLayout.setOnClickListener {
                 expand = !expand
                 notifyDataSetChanged()
             }
@@ -67,31 +67,34 @@ class AddServiceAdapter(val context: Context) :
         var addServiceBtn: ImageView = view.findViewById(R.id.add_btn)
         var addService: Button = view.findViewById(R.id.add_services_btn)
         var expand: Boolean = false
+        var addServiceLayout: ConstraintLayout = view.findViewById(R.id.add_services_layout)
         var expandablelayout: ConstraintLayout = view.findViewById(R.id.add_service_btn_layout)
-        var selectedServiceRecyclerView: RecyclerView = view.findViewById(R.id.selected_service_recycler_view)
+        var selectedServiceRecyclerView: RecyclerView =
+            view.findViewById(R.id.selected_service_recycler_view)
 
     }
 
     // Method for selected Services RecyclerView Initialization
     private fun selectedServiceRecyclerViewSetUp(addServiceViewHolder: AddServiceViewHolder) {
-        addServiceViewHolder.selectedServiceRecyclerView.layoutManager =  GridLayoutManager(context, 3)
+        addServiceViewHolder.selectedServiceRecyclerView.layoutManager =
+            GridLayoutManager(context, 3)
         recyclerViewAdapter = SelectedServicesRecyclerViewAdapter(context, serviceList)
         addServiceViewHolder.selectedServiceRecyclerView.adapter = recyclerViewAdapter
     }
 
     // Method for ListView Data
-    private fun getDataModelList(): ArrayList<Services>{
+    private fun getDataModelList(): ArrayList<Services> {
 
         var dataModel = ArrayList<Services>()
 
-        dataModel.add(Services("Venue", "gvhjsa",false))
-        dataModel.add(Services("Beauty", "gvhjsa",false))
-        dataModel.add(Services("Catering", "gvhjsa",false))
-        dataModel.add(Services("Balloons", "gvhjsa",false))
-        dataModel.add(Services("Cakes","gvhjsa", false))
-        dataModel.add(Services("Snakes", "gvhjsa",false))
+        dataModel.add(Services("Venue", "gvhjsa", false))
+        dataModel.add(Services("Beauty", "gvhjsa", false))
+        dataModel.add(Services("Catering", "gvhjsa", false))
+        dataModel.add(Services("Balloons", "gvhjsa", false))
+        dataModel.add(Services("Cakes", "gvhjsa", false))
+        dataModel.add(Services("Snakes", "gvhjsa", false))
 
-        return  dataModel
+        return dataModel
     }
 
     // Method for User Selected List
