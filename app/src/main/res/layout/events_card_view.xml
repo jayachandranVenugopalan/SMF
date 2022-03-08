@@ -4,95 +4,42 @@
     android:id="@+id/events_card_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="190dp"
-    android:layout_height="150dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="6dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginEnd="5dp"
-    android:layout_marginRight="5dp">
+    android:layout_width="@dimen/size_95dp"
+    android:layout_height="@dimen/size_95dp"
+    app:cardCornerRadius="@dimen/size_8dp"
+    android:layout_marginTop="@dimen/size_10dp"
+    android:layout_marginEnd="@dimen/size_5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:id="@+id/relativeLayout"
+        <TextView
+            android:id="@+id/number_text"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/dark_gray"
+            android:layout_height="wrap_content"
+            android:text="@string/_4"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/black"
+            android:textSize="@dimen/size_22sp"
+            android:layout_marginTop="@dimen/size_20dp"
+            android:layout_marginStart="@dimen/size_10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/event_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="5dp"
-                android:text="Sana Wedding"
-                android:textColor="@color/white"
-                android:layout_marginLeft="10dp"/>
-
-            <TextView
-                android:id="@+id/event_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:text="Jun 11"
-                android:textColor="@color/white" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
+        <TextView
+            android:id="@+id/title_text"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/active"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="@dimen/size_14sp"
+            android:layout_marginStart="@dimen/size_10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+            app:layout_constraintTop_toBottomOf="@+id/number_text" />
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/event_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="18dp"
-                android:layout_marginTop="22dp"
-                android:background="@color/dark_gray"
-                app:shapeAppearanceOverlay="@style/circular" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="88dp"
-                android:layout_marginTop="22dp"
-                android:text="Status" />
-
-            <TextView
-                android:id="@+id/event_status"
-                android:layout_width="85dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="88dp"
-                android:layout_marginTop="45dp"
-                android:background="@drawable/event_bidding_shape"
-                android:gravity="center"
-                android:padding="3dp"
-                android:text="in bidding"
-                android:textColor="@color/black" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="90dp"
-                android:src="@drawable/arrow_down" />
-
-        </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

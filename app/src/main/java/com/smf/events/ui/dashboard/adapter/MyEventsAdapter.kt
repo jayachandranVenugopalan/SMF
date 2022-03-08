@@ -1,5 +1,6 @@
 package com.smf.events.ui.dashboard.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,37 +15,33 @@ class MyEventsAdapter: RecyclerView.Adapter<MyEventsAdapter.MyEventViewHolder>()
     private var onClickListener: OnServiceClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyEventViewHolder {
-        var itemView =
+        val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.events_card_view, parent, false)
         return MyEventViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: MyEventViewHolder, position: Int) {
-        holder.eventName.text =" Sana Wedding"
-        holder.eventDate.text =  "Jun 11"
-        holder.eventStatus.text = "in bidding"
-        // holder.onBind(myEventsList[position])
+         holder.onBind(myEventsList[position])
 
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return myEventsList.size
     }
     inner class MyEventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var eventName = view.findViewById<TextView>(R.id.event_title)
-        var eventDate = view.findViewById<TextView>(R.id.event_date)
-        var eventStatus = view.findViewById<TextView>(R.id.event_status)
+        var titleText = view.findViewById<TextView>(R.id.title_text)
+        var numberText = view.findViewById<TextView>(R.id.number_text)
 
-//        // Method For Fixing xml views and Values
-//        fun onBind(myEvents: MyEvents) {
-//            eventName.text = myEvents.eventName
-//            eventDate.text =  myEvents.eventDate
-//            eventStatus.text = myEvents.eventStatus
-//
-//        }
+        // Method For Fixing xml views and Values
+        fun onBind(myEvents: MyEvents) {
+            titleText.text = myEvents.titleText
+            numberText.text =  myEvents.numberText
+
+        }
     }
 
     //Method For Refreshing Invoices
+    @SuppressLint("NotifyDataSetChanged")
     fun refreshItems(invoice: List<MyEvents>) {
         myEventsList.clear()
         myEventsList.addAll(invoice)

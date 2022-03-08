@@ -37,5 +37,9 @@
     <string name="submit">Submit</string>
     <string name="Press_back_again_to_exit">Press back again to exit</string>
     <string name="business_registration">Business registration</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="services">SERVICES</string>
+    <string name="active">Active</string>
+    <string name="_4">4</string>
 
 </resources>

@@ -21,6 +21,7 @@ import com.smf.events.databinding.FragmentDashBoardBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.dashboard.adapter.MyEventsAdapter
+import com.smf.events.ui.dashboard.model.MyEvents
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -70,6 +71,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         myEventsRecyclerView = mDataBinding?.eventsRecyclerView!!
         // MyEvent Recycler
         myEventsRecycler()
+
+        val list = getList()
+        adapter.refreshItems(list)
 
         mDataBinding?.clickbtn?.setOnClickListener {
             var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
@@ -152,6 +156,18 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 }
             })
         }
+
+    }
+
+    private fun getList(): ArrayList<MyEvents> {
+        var list = ArrayList<MyEvents>()
+        list.add(MyEvents("4","Active"))
+        list.add(MyEvents( "2","Pending"))
+        list.add(MyEvents("1","Draft"))
+        list.add(MyEvents("2","Rejected"))
+        list.add(MyEvents("1","Draft"))
+
+        return list
 
     }
 }
