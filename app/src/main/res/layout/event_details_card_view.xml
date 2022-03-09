@@ -1,16 +1,263 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView
+<androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/event_details_card_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="500dp"
-    app:cardCornerRadius="@dimen/size_8dp">
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/size_8dp"
+    app:cardElevation="@dimen/size_20dp"
+    android:background="@drawable/event_detail_cardview_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/event_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/size_12dp"
+            android:layout_marginTop="@dimen/size_12dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="@string/saras_birthday"
+            android:textSize="@dimen/size_18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/quote_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/quote"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="@dimen/size_15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/event_title_text"
+            app:layout_constraintEnd_toStartOf="@+id/amount_text"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/event_title_text"
+            app:layout_constraintTop_toTopOf="@+id/event_title_text" />
+
+        <TextView
+            android:id="@+id/amount_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/size_12dp"
+            android:text="@string/_2500"
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="@dimen/size_18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/quote_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/quote_text_view" />
+
+        <TextView
+            android:id="@+id/code_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/size_12dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/ca4215254265"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/size_18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_title_text" />
+
+        <TextView
+            android:id="@+id/event_type_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/size_12dp"
+            android:text="@string/fork_amp_spoon_catering"
+            android:textSize="@dimen/size_15sp"
+            android:fontFamily="@font/poppins_semibold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/code_text" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="@dimen/size_120dp"
+            android:layout_height="@dimen/size_55dp"
+            android:background="@drawable/corner_radius_background"
+            android:padding="@dimen/size_10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/event_type_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintStart_toEndOf="@+id/event_type_text"
+            app:layout_constraintTop_toBottomOf="@+id/code_text"
+            >
+
+            <TextView
+                android:id="@+id/text_bid_cut_off"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/bid_cut_off"
+                android:textColor="@color/dark_gray"
+                android:textSize="@dimen/size_10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/mar"
+                android:textSize="@dimen/size_14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_bid_cut_off" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/date_title_text_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/size_20dp"
+            android:layout_marginStart="@dimen/size_12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_type_text">
+
+            <TextView
+                android:layout_width="@dimen/size_100dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="@string/event_date"
+                android:textSize="@dimen/size_15sp" />
+
+            <TextView
+                android:layout_width="@dimen/size_100dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="@string/service_date"
+                android:textSize="@dimen/size_15sp"
+                android:layout_marginStart="@dimen/size_10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/date_text_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/size_2dp"
+            android:layout_marginStart="@dimen/size_12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date_title_text_layout">
+
+            <TextView
+                android:id="@+id/event_date"
+                android:layout_width="@dimen/size_100dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/aug_26"
+                android:textSize="@dimen/size_18sp" />
+
+            <TextView
+                android:id="@+id/service_date"
+                android:layout_width="@dimen/size_100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/size_10dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/_12_aug"
+                android:textSize="@dimen/size_18sp" />
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/new_req_layout"
+            android:paddingBottom="@dimen/size_10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/size_12dp"
+            android:layout_marginRight="@dimen/size_12dp"
+            android:layout_marginTop="@dimen/size_8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date_text_layout">
+
+            <ImageView
+                android:id="@+id/right_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow_right"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/ner_request_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/size_10dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/New_Request"
+                android:textSize="@dimen/size_15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/right_arrow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/right_arrow"
+                app:layout_constraintTop_toTopOf="@+id/right_arrow" />
+
+
+            <ImageView
+                android:id="@+id/like_imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button_round_corner"
+                android:padding="@dimen/size_5dp"
+                android:src="@drawable/unlike_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
+                app:layout_constraintEnd_toStartOf="@+id/unlike_imageView"
+                app:layout_constraintHorizontal_bias="0.9"
+                app:layout_constraintStart_toEndOf="@+id/ner_request_text"
+                app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
+
+
+            <ImageView
+                android:id="@+id/unlike_imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button_round_corner"
+                android:padding="@dimen/size_5dp"
+                android:src="@drawable/like_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
+                app:layout_constraintEnd_toStartOf="@+id/right_arrow_imageView"
+                app:layout_constraintHorizontal_bias="0.93"
+                app:layout_constraintStart_toEndOf="@+id/ner_request_text"
+                app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
+
+
+            <ImageView
+                android:id="@+id/right_arrow_imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button_round_corner"
+                android:padding="@dimen/size_5dp"
+                android:src="@drawable/right_arrow_forward"
+                app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/right_arrow"
+                app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

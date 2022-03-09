@@ -52,6 +52,18 @@
     <string name="llc">LLC</string>
     <string name="all_services">All services</string>
     <string name="branches">Branch</string>
+    <string name="New_Request">New Request</string>
+    <string name="fork_amp_spoon_catering"><![CDATA[Fork & Spoon - Catering]]></string>
+    <string name="saras_birthday">Saras Birthday</string>
+    <string name="quote">Quote:</string>
+    <string name="_2500">$2500</string>
+    <string name="ca4215254265">CA4215254265</string>
+    <string name="bid_cut_off">Bid cut_off</string>
+    <string name="mar">MAR</string>
+    <string name="event_date">Event date</string>
+    <string name="service_date">Service Date</string>
+    <string name="aug_26">Aug 26</string>
+    <string name="_12_aug">12 Aug</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>
