@@ -26,6 +26,7 @@ import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.util.CognitoServiceConstants
 
 import android.R.attr.password
+import android.content.Intent
 import androidx.activity.addCallback
 import com.amazonaws.mobile.client.Callback
 import com.amazonaws.mobile.client.results.SignInState
@@ -37,6 +38,7 @@ import com.amplifyframework.auth.result.AuthSessionResult
 import com.amplifyframework.auth.result.AuthSignInResult
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.Consumer
+import com.smf.events.ui.dashboard.DashBoardActivity
 import java.lang.Exception
 
 
@@ -156,7 +158,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             "resend success"->{
                 //Navigate to MobileVerificationCode
                 findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToVerificationCodeFrgment(userName!!))
-
             }
             "resend failure"->{
 

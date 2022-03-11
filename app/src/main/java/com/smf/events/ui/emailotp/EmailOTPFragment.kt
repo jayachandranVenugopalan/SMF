@@ -1,6 +1,7 @@
 package com.smf.events.ui.emailotp
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -17,6 +18,7 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailOtpBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
+import com.smf.events.ui.dashboard.DashBoardActivity
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO

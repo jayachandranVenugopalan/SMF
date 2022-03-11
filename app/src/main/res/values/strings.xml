@@ -64,6 +64,7 @@
     <string name="service_date">Service Date</string>
     <string name="aug_26">Aug 26</string>
     <string name="_12_aug">12 Aug</string>
+    <string name="_3_new_request">3 New request</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>

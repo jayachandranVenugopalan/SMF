@@ -1,6 +1,7 @@
 package com.smf.events.ui.splash
 
 import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.View
@@ -10,6 +11,7 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.SplashScreenFragmentBinding
+import com.smf.events.ui.dashboard.DashBoardActivity
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -62,6 +64,9 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
 
     // Method for Moving DashBoard Screen
     private fun moveToDashBoardScreen() {
+
+//        startActivity(Intent(requireContext(), DashBoardActivity::class.java))
+//        requireActivity().finish()
         val action = SplashFragmentDirections.actionSplashFragmentToDashBoardFragment()
 
         findNavController().navigate(action)

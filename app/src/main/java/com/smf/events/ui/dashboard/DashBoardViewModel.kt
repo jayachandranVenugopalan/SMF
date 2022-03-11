@@ -15,7 +15,7 @@ import com.amplifyframework.auth.result.AuthSessionResult
 import com.amplifyframework.core.Amplify
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseViewModel
-import com.smf.events.databinding.FragmentDashBoardBinding
+import com.smf.events.databinding.ActivityDashBoardBinding
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ class DashBoardViewModel  @Inject constructor(
     }
 
 @SuppressLint("ResourceType")
-fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: Array<String>) {
+fun allServices(mDataBinding: ActivityDashBoardBinding?, resources: Array<String>) {
 
     val spin = mDataBinding!!.spnAllServices
     spin.onItemSelectedListener = this
@@ -46,7 +46,7 @@ fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: Array<String
     spin.adapter = ad
 }
     @SuppressLint("ResourceType")
-    fun branches(mDataBinding: FragmentDashBoardBinding?, resources: Array<String>) {
+    fun branches(mDataBinding: ActivityDashBoardBinding?, resources: Array<String>) {
 
         val spin = mDataBinding!!.spnBranches
         spin.onItemSelectedListener = this

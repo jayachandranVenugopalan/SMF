@@ -1,5 +1,6 @@
 package com.smf.events.ui.emailverificationcode
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
@@ -8,6 +9,7 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailVerificationCodeBinding
+import com.smf.events.ui.dashboard.DashBoardActivity
 
 
 class EmailVerificationCodeFragment :
@@ -52,12 +54,13 @@ class EmailVerificationCodeFragment :
     override fun callBack(status: String) {
         if (status == "EmailVerifiedGoToDashBoard") {
             //Navigate to DashBoardFragment
-            findNavController().navigate(EmailVerificationCodeFragmentDirections.actionEmailVerificationCodeFragmentToDashBoardFragment())
+           findNavController().navigate(EmailVerificationCodeFragmentDirections.actionEmailVerificationCodeFragmentToDashBoardFragment())
+
         }
     }
 
     override fun awsErrorResponse() {
-        getViewModel()?.toastMessage?.let { showToast(it) }
+        showToast(getViewModel().toastMessage)
     }
 
 }

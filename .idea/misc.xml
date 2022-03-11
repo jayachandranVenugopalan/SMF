@@ -48,6 +48,7 @@
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/font-v26/font.xml" value="0.234375" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout-v21/add_service_list_view.xml" value="0.17028985507246377" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/actions_status_dashboard_cardview.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/activity_dash_board.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/activity_main.xml" value="0.12952898550724637" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/add_service_list_view.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/add_services_card_view.xml" value="0.22" />
@@ -58,10 +59,12 @@
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/business_registration_card_view.xml" value="0.22" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/event_details_card_view.xml" value="0.22" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/events_card_view.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_action_details.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_actions_and_status.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_approval_dialog.xml" value="0.25" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_approvl_dialog.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_business_registration.xml" value="0.25" />
-        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_dash_board.xml" value="0.25" />
+        <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_dash_board.xml" value="0.22" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_email_o_t_p.xml" value="0.12771739130434784" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_email_otp.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/P Vigneshwaran/SMF/app/src/main/res/layout/fragment_phone_o_t_p.xml" value="0.12771739130434784" />
@@ -81,5 +84,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.20416666666666666" />
+      </ProjectState>
+    </option>
   </component>
 </project>

@@ -8,6 +8,11 @@ import com.smf.events.ui.dashboard.DashBoardFragment
 import com.smf.events.ui.dashboard.DashBoardModule
 import com.smf.events.ui.emailotp.EmailOTPFragment
 import com.smf.events.ui.emailotp.EmailOTPModule
+import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
+import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusModule
+import com.smf.events.ui.actiondetails.ActionDetailsFragment
+import com.smf.events.ui.actiondetails.ActionDetailsModule
+import com.smf.events.ui.dashboard.DashBoardActivity
 import com.smf.events.ui.signin.SignInFragment
 import com.smf.events.ui.signin.SignInModule
 import com.smf.events.ui.signup.SignUpFragment
@@ -40,4 +45,13 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [BusinessRegistrationModule::class])
     abstract fun provideBusinessRegistrationFragment():BusinessRegistrationFragment
+
+    @ContributesAndroidInjector(modules = [ActionsAndStatusModule::class])
+    abstract fun provideActionsAndStatusFragment(): ActionsAndStatusFragment
+
+    @ContributesAndroidInjector(modules = [ActionDetailsModule::class])
+    abstract fun provideActionDetailsFragment(): ActionDetailsFragment
+
+    @ContributesAndroidInjector(modules = [DashBoardModule::class])
+    abstract fun provideDashBoardActivity(): DashBoardActivity
 }

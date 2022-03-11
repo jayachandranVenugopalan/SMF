@@ -13,11 +13,11 @@
             android:id="@+id/action_splashFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
         <action
-            android:id="@+id/action_splashFragment_to_dashBoardFragment"
-            app:destination="@id/dashBoardFragment" />
-        <action
             android:id="@+id/action_splashFragment_to_businessRegistrationFragment"
             app:destination="@id/businessRegistrationFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
     </fragment>
     <fragment
         android:id="@+id/signInFragment"
@@ -30,11 +30,11 @@
             android:id="@+id/action_signInFragment_to_eMailOTPFragment"
             app:destination="@id/eMailOTPFragment" />
         <action
-            android:id="@+id/action_signInFragment_to_dashBoardFragment"
-            app:destination="@id/dashBoardFragment" />
-        <action
             android:id="@+id/action_signInFragment_to_verificationCodeFrgment"
             app:destination="@id/verificationCodeFrgment" />
+        <action
+            android:id="@+id/action_signInFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -65,12 +65,13 @@
         <action
             android:id="@+id/action_phoneOTPFragment_to_emailVerificationCodeFragment"
             app:destination="@id/emailVerificationCodeFragment" />
-        <action
-            android:id="@+id/action_eMailOTPFragment_to_dashBoardFragment"
-            app:destination="@id/dashBoardFragment" />
+
         <argument
             android:name="userName"
             app:argType="string" />
+        <action
+            android:id="@+id/action_eMailOTPFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
     </fragment>
     <fragment
         android:id="@+id/emailVerificationCodeFragment"
@@ -81,11 +82,11 @@
             app:destination="@id/dashBoardFragment" />
     </fragment>
     <fragment
-        android:id="@+id/dashBoardFragment"
-        android:name="com.smf.events.ui.dashboard.DashBoardFragment"
-        android:label="DashBoardFragment" />
-    <fragment
         android:id="@+id/businessRegistrationFragment"
         android:name="com.smf.events.ui.businessregistration.BusinessRegistrationFragment"
         android:label="BusinessRegistrationFragment" />
+    <fragment
+        android:id="@+id/dashBoardFragment"
+        android:name="com.smf.events.ui.dashboard.DashBoardFragment"
+        android:label="DashBoardFragment" />
 </navigation>

@@ -3,6 +3,7 @@ package com.smf.events.base
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -34,5 +35,9 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
         mViewDataBinding?.executePendingBindings()
        // mViewDataBinding?.lifecycleOwner = this@BaseActivity
 
+    }
+
+    fun showToast(msg: String) {
+        Toast.makeText(this.applicationContext, msg, Toast.LENGTH_LONG).show()
     }
 }
