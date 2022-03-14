@@ -82,10 +82,12 @@ class DashBoardFragment : BaseFragment<ActivityDashBoardBinding, DashBoardViewMo
         val list = getList()
         adapter.refreshItems(list)
 
-        requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.action_and_status_layout, ActionsAndStatusFragment())
-            .setReorderingAllowed(true)
-            .commit()
+        actionAndStatusFragment()
+
+        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+        Log.d("TAG", "onViewCreated spRegId: ${getSharedPreferences.getString("spRegId","")}")
+        Log.d("TAG", "onViewCreated idtoken: ${getSharedPreferences.getString("IdToken","")}")
+        Log.d("TAG", "onViewCreated roleId: ${getSharedPreferences.getString("roleId","")}")
 
 //        mDataBinding?.clickbtn?.setOnClickListener {
 //            var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
@@ -197,5 +199,12 @@ class DashBoardFragment : BaseFragment<ActivityDashBoardBinding, DashBoardViewMo
 
     }
 
+    // Action And Status UI setUp
+    private fun actionAndStatusFragment(){
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.action_and_status_layout, ActionsAndStatusFragment())
+            .setReorderingAllowed(true)
+            .commit()
+    }
 
 }

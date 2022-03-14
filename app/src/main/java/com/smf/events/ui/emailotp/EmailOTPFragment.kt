@@ -2,6 +2,7 @@ package com.smf.events.ui.emailotp
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -34,6 +35,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
     @Inject
     lateinit var tokens: Tokens
 
@@ -103,9 +105,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                     )
                 }
             }
-
-//            // Navigate to DashBoardFragment
-//            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
         }
     }
 
@@ -117,11 +116,28 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         Log.d("TAG", "check tokenCallBack called......................$caller")
         withContext(Main) {
-            getViewModel()?.getEventTypes(idToken)
+
+            // Getting Service Provider Reg Id and Role Id
+            getViewModel()?.getLoginInfo(idToken)
                 ?.observe(this@EmailOTPFragment, Observer { apiResponse ->
                     when (apiResponse) {
                         is ApisResponse.Success -> {
-                            Log.d("TAG", "check token result: ${apiResponse.response.success}")
+                            // Initialize RegId And RoleId to Shared Preference
+                            val sharedPreferences =
+                                requireContext().getSharedPreferences(
+                                    "MyUser",
+                                    Context.MODE_PRIVATE
+                                )
+                            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                            editor.putString(
+                                "spRegId",
+                                apiResponse.response.data.spRegId.toString()
+                            )
+                            editor.putString(
+                                "roleId",
+                                apiResponse.response.data.roleId.toString()
+                            )
+                            editor.apply()
                             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
                         }
                         is ApisResponse.Error -> {

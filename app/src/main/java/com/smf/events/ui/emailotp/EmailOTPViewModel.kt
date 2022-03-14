@@ -88,6 +88,7 @@ class EmailOTPViewModel @Inject constructor(
                 Log.i("AuthDemo", "User attributes = $session")
                 var idToken =
                     AuthSessionResult.success(session.userPoolTokens.value!!.idToken).value
+                Log.i("AuthDemo", "idToken = $idToken")
                 setToken(idToken!!)
             },
             { Log.e("AuthQuickStart", "Failed to fetch session", it) }
@@ -103,9 +104,9 @@ class EmailOTPViewModel @Inject constructor(
         editor?.apply()
     }
 
-    // EventType Api
-    fun getEventTypes(idToken: String) = liveData(Dispatchers.IO) {
-        emit(eMailOTPRepository.getEventTypes(idToken))
+    // Method For Getting Service Provider Reg Id and Role Id
+    fun getLoginInfo(idToken: String) = liveData(Dispatchers.IO) {
+        emit(eMailOTPRepository.getLoginInfo(idToken))
     }
 
     // Email Verification

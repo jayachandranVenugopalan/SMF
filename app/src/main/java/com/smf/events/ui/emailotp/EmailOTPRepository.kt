@@ -1,22 +1,19 @@
 package com.smf.events.ui.emailotp
 
-import android.util.Log
-import com.smf.events.SMFApp
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.EvenTypes
-import com.smf.events.helper.Tokens
 import com.smf.events.network.ApiStories
-import kotlinx.coroutines.*
+import com.smf.events.ui.emailotp.model.GetLoginInfo
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class EmailOTPRepository @Inject constructor(var apiStories: ApiStories)  {
 
 
-    suspend fun getEventTypes(idToken: String): ApisResponse<EvenTypes> {
+    suspend fun getLoginInfo(idToken: String): ApisResponse<GetLoginInfo> {
 
         return try {
-            val getResponse = apiStories.getEventTypes(idToken)
+            val getResponse = apiStories.getLoginInfo(idToken)
             ApisResponse.Success(getResponse)
 
         } catch (e: HttpException) {
