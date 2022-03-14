@@ -62,7 +62,7 @@ class ActionDetailsFragment :
         //Actions Recycler view
         myActionsStatusRecycler()
 
-
+        
         val listActions = getActionsList()
         actionDetailsAdapter.refreshItems(listActions)
 

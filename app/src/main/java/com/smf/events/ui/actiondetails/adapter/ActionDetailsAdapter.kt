@@ -9,9 +9,11 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
 import com.smf.events.ui.dashboard.model.MyEvents
+import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 
 class ActionDetailsAdapter(val context: Context) :
     RecyclerView.Adapter<ActionDetailsAdapter.ActionDetailsViewHolder>() {
@@ -31,6 +33,10 @@ class ActionDetailsAdapter(val context: Context) :
     override fun onBindViewHolder(holder: ActionDetailsViewHolder, position: Int) {
         holder.onBind(myEventsList[position])
 
+holder.likeButton.setOnClickListener {
+    QuoteDetailsDialog.newInstance()
+        .show(  (context as FragmentActivity).supportFragmentManager, QuoteDetailsDialog.TAG)
+}
     }
 
 
@@ -52,7 +58,7 @@ class ActionDetailsAdapter(val context: Context) :
         var amount: TextView = view.findViewById(R.id.amount_text)
         var code: TextView = view.findViewById(R.id.code_text)
 
-
+var likeButton:ImageView=view.findViewById(R.id.like_imageView)
         fun onBind(myEvents: MyEvents) {
             amount.text = myEvents.numberText
             code.text = myEvents.titleText
@@ -62,6 +68,17 @@ class ActionDetailsAdapter(val context: Context) :
         }
 
 
+    }
+    private var callBackInterface: CallBackInterface? = null
+
+    // Initializing CallBack Interface Method
+    fun setCallBackInterface(callback: CallBackInterface) {
+        callBackInterface = callback
+    }
+
+    // CallBack Interface
+    interface CallBackInterface {
+        suspend fun callBack(status: String)
     }
 
 }

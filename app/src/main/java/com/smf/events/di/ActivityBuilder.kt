@@ -13,6 +13,8 @@ import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusModule
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
 import com.smf.events.ui.actiondetails.ActionDetailsModule
 import com.smf.events.ui.dashboard.DashBoardActivity
+import com.smf.events.ui.quotebrief.QuoteBriefFragment
+import com.smf.events.ui.quotebrief.QuoteBriefModule
 import com.smf.events.ui.signin.SignInFragment
 import com.smf.events.ui.signin.SignInModule
 import com.smf.events.ui.signup.SignUpFragment
@@ -54,4 +56,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [DashBoardModule::class])
     abstract fun provideDashBoardActivity(): DashBoardActivity
+
+    @ContributesAndroidInjector(modules = [QuoteBriefModule::class])
+    abstract fun provideQuoteBriefFragment(): QuoteBriefFragment
 }

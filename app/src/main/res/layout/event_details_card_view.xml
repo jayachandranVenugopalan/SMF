@@ -221,21 +221,21 @@
 
 
             <ImageView
-                android:id="@+id/like_imageView"
+                android:id="@+id/unlike_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/custom_button_round_corner"
                 android:padding="@dimen/size_5dp"
                 android:src="@drawable/unlike_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
-                app:layout_constraintEnd_toStartOf="@+id/unlike_imageView"
+                app:layout_constraintEnd_toStartOf="@+id/like_imageView"
                 app:layout_constraintHorizontal_bias="0.9"
                 app:layout_constraintStart_toEndOf="@+id/ner_request_text"
                 app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
 
 
             <ImageView
-                android:id="@+id/unlike_imageView"
+                android:id="@+id/like_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/custom_button_round_corner"

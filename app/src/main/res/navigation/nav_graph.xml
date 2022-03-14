@@ -88,5 +88,17 @@
     <fragment
         android:id="@+id/dashBoardFragment"
         android:name="com.smf.events.ui.dashboard.DashBoardFragment"
-        android:label="DashBoardFragment" />
+        android:label="DashBoardFragment" >
+        <action
+            android:id="@+id/action_dashBoardFragment_to_quoteBriefFragment"
+            app:destination="@id/quoteBriefFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/quoteBriefFragment"
+        android:name="com.smf.events.ui.quotebrief.QuoteBriefFragment"
+        android:label="QuoteBriefFragment" >
+        <action
+            android:id="@+id/action_quoteBriefFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+    </fragment>
 </navigation>

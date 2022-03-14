@@ -40,6 +40,9 @@
     <dimen name="size_300dp">300dp</dimen>
     <dimen name="size_350dp">350dp</dimen>
     <dimen name="size_10sp">10sp</dimen>
+    <dimen name="size_50dp">50dp</dimen>
+    <dimen name="size_400dp">400dp</dimen>
+    <dimen name="size_500dp">500dp</dimen>
 
     <dimen name="size_12sp">12sp</dimen>
     <dimen name="size_13sp">13sp</dimen>
