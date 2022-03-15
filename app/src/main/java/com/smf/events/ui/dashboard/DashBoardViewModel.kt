@@ -104,4 +104,14 @@ fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: Array<String
     override fun onNothingSelected(p0: AdapterView<*>?) {
 
     }
+
+    // Method For Getting Service Counts
+    fun getServiceCount(idToken: String, spRegId: Int) = liveData(Dispatchers.IO) {
+        emit(dashBoardRepository.getServiceCount(idToken, spRegId))
+    }
+
+    // Method For Getting All Service
+    fun getAllServices(idToken: String, spRegId: Int) = liveData(Dispatchers.IO) {
+        emit(dashBoardRepository.getAllServices(idToken, spRegId))
+    }
 }

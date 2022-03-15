@@ -1,7 +1,6 @@
 package com.smf.events.ui.emailotp
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.tokens.CognitoAccessToken
-import com.amplifyframework.core.Amplify
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.SMFApp
@@ -19,10 +16,8 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailOtpBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
-import com.smf.events.ui.dashboard.DashBoardActivity
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import javax.inject.Inject
 
@@ -149,5 +144,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         }
 
     }
+
+
+
 
 }

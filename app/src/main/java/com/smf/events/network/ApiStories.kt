@@ -29,26 +29,26 @@ interface ApiStories {
     @GET("epm-service/api/app-services/service-counts/{sp-reg-id}")
     suspend fun getServiceCount(
         @Header("Authorization") idToken: String,
-        @Path("sp-reg-id") spRegId: String
+        @Path("sp-reg-id") spRegId: Int
     ): ServiceCount
 
     @GET("epm-service/api/app-services/services/{sp-reg-id}")
     suspend fun getAllServices(
         @Header("Authorization") idToken: String,
-        @Path("sp-reg-id") spRegId: String
+        @Path("sp-reg-id") spRegId: Int
     ): AllServices
 
     @GET("epm-service/api/app-services/service-branches/{sp-reg-id}")
     suspend fun getServicesBranches(
         @Header("Authorization") idToken: String,
-        @Path("sp-reg-id") spRegId: String,
+        @Path("sp-reg-id") spRegId: Int,
         @Query("serviceCategoryId") serviceCategoryId: Int
     ): Branches
 
     @GET("epm-service/api/app-services/service-provider-bidding-counts/{sp-reg-id}")
     suspend fun getActionAndStatus(
         @Header("Authorization") idToken: String,
-        @Path("sp-reg-id") spRegId: String,
+        @Path("sp-reg-id") spRegId: Int,
         @Query("serviceCategoryId") serviceCategoryId: Int,
         @Query("serviceVendorOnboardingId") serviceVendorOnboardingId: Int
     ): ActionAndStatus

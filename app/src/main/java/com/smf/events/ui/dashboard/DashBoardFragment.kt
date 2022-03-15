@@ -66,8 +66,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         // Initialize IdTokenCallBackInterface
         tokens.setCallBackInterface(this)
 
-
         getViewModel().setCallBackInterface(this)
+
+        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+        Log.d("TAG", "onViewCreated spRegId: ${getSharedPreferences.getString("spRegId","")}")
+        Log.d("TAG", "onViewCreated idtoken: ${getSharedPreferences.getString("IdToken","")}")
+        Log.d("TAG", "onViewCreated roleId: ${getSharedPreferences.getString("roleId","")}")
+
+       // sample(idToken, apiResponse.response.data.spRegId, apiResponse.response.data.roleId)
 
         //spinner view for allservices
         getViewModel().allServices(mDataBinding, allServices)
@@ -84,10 +90,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
         actionAndStatusFragment()
 
-        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        Log.d("TAG", "onViewCreated spRegId: ${getSharedPreferences.getString("spRegId","")}")
-        Log.d("TAG", "onViewCreated idtoken: ${getSharedPreferences.getString("IdToken","")}")
-        Log.d("TAG", "onViewCreated roleId: ${getSharedPreferences.getString("roleId","")}")
 
 //        mDataBinding?.clickbtn?.setOnClickListener {
 //            var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
@@ -205,6 +207,44 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             .add(R.id.action_and_status_layout, ActionsAndStatusFragment())
             .setReorderingAllowed(true)
             .commit()
+    }
+
+    fun sample(idToken: String, spRegId: Int, roleId: Int) {
+
+        // Getting Service Provider Reg Id and Role Id
+        getViewModel().getServiceCount(idToken,spRegId)
+            .observe(viewLifecycleOwner, Observer { apiResponse ->
+
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d("TAG", "sample: ${apiResponse.response.success}")
+                        Log.d("TAG", "sample: ${apiResponse.response.data.activeServiceCount}")
+
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {}
+                }
+            })
+
+        // Getting All Service
+        getViewModel().getAllServices(idToken,spRegId)
+            .observe(viewLifecycleOwner, Observer { apiResponse ->
+
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d("TAG", "sample: ${apiResponse.response.success}")
+                        Log.d("TAG", "sample: ${apiResponse.response.data[0].customerServiceCategory}")
+
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {}
+                }
+            })
+
     }
 
 }
