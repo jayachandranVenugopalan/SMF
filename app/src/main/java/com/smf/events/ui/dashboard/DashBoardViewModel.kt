@@ -34,12 +34,12 @@ class DashBoardViewModel  @Inject constructor(
 //    }
 
 @SuppressLint("ResourceType")
-fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: Array<String>) {
+fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: ArrayList<String>) {
 
     val spin = mDataBinding!!.spnAllServices
     spin.onItemSelectedListener = this
 
-    val ad: ArrayAdapter<*> = ArrayAdapter<Any?>(getApplication(),R.layout.simple_spinner_item,resources)
+    val ad: ArrayAdapter<String> = ArrayAdapter<String>(getApplication(),R.layout.simple_spinner_item,resources)
     // set simple layout resource file
     // for each item of spinner
     ad.setDropDownViewResource(

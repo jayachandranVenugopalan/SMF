@@ -52,7 +52,7 @@ class DashBoardActivity : BaseActivity<FragmentDashBoardBinding, DashBoardViewMo
 
     override fun onStart() {
         super.onStart()
-        val allServices = resources.getStringArray(R.array.all_services)
+        val allServices = ArrayList<String>()
         val branch = resources.getStringArray(R.array.branches)
         // Initialize IdTokenCallBackInterface
         tokens.setCallBackInterface(this)
