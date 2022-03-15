@@ -8,14 +8,13 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.lifecycle.liveData
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.amplifyframework.auth.result.AuthSessionResult
 import com.amplifyframework.core.Amplify
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseViewModel
-import com.smf.events.databinding.ActivityDashBoardBinding
+import com.smf.events.databinding.FragmentDashBoardBinding
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -30,7 +29,7 @@ class DashBoardViewModel  @Inject constructor(
     }
 
 @SuppressLint("ResourceType")
-fun allServices(mDataBinding: ActivityDashBoardBinding?, resources: Array<String>) {
+fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: Array<String>) {
 
     val spin = mDataBinding!!.spnAllServices
     spin.onItemSelectedListener = this
@@ -46,7 +45,7 @@ fun allServices(mDataBinding: ActivityDashBoardBinding?, resources: Array<String
     spin.adapter = ad
 }
     @SuppressLint("ResourceType")
-    fun branches(mDataBinding: ActivityDashBoardBinding?, resources: Array<String>) {
+    fun branches(mDataBinding: FragmentDashBoardBinding?, resources: Array<String>) {
 
         val spin = mDataBinding!!.spnBranches
         spin.onItemSelectedListener = this

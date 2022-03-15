@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseActivity
-import com.smf.events.databinding.ActivityDashBoardBinding
+import com.smf.events.databinding.FragmentDashBoardBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class DashBoardActivity : BaseActivity<ActivityDashBoardBinding, DashBoardViewModel>(),
+class DashBoardActivity : BaseActivity<FragmentDashBoardBinding, DashBoardViewModel>(),
     DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
     private lateinit var myEventsRecyclerView: RecyclerView
@@ -38,7 +38,7 @@ class DashBoardActivity : BaseActivity<ActivityDashBoardBinding, DashBoardViewMo
 
     override fun getBindingVariable(): Int = BR.dashBoardViewModel
 
-    override fun getContentView(): Int = R.layout.activity_dash_board
+    override fun getContentView(): Int = R.layout.fragment_dash_board
 
     @Inject
     lateinit var tokens: Tokens
