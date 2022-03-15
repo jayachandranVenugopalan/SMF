@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
 import com.smf.events.R
+import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentDashBoardBinding
 import com.smf.events.helper.ApisResponse
@@ -30,7 +31,9 @@ import javax.inject.Inject
 
 class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewModel>(),
     DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
-
+     var spRedId:Int=0
+    lateinit var idToken:String
+    var roleId:Int=0
     private lateinit var myEventsRecyclerView: RecyclerView
     lateinit var adapter: MyEventsAdapter
 
@@ -72,8 +75,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         Log.d("TAG", "onViewCreated spRegId: ${getSharedPreferences.getString("spRegId","")}")
         Log.d("TAG", "onViewCreated idtoken: ${getSharedPreferences.getString("IdToken","")}")
         Log.d("TAG", "onViewCreated roleId: ${getSharedPreferences.getString("roleId","")}")
+        spRedId= getSharedPreferences.getString("spRegId","")!!.toInt()
+        idToken="Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        roleId=getSharedPreferences.getString("roleId","")!!.toInt()
 
-       // sample(idToken, apiResponse.response.data.spRegId, apiResponse.response.data.roleId)
+
+
+
+
 
         //spinner view for allservices
         getViewModel().allServices(mDataBinding, allServices)
@@ -97,7 +106,21 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 //            clickBtn(idToken)
 //        }
 
+
+
+
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (idToken.isNotEmpty()) {
+            tokens.checkTokenExpiry(
+                requireActivity().applicationContext as SMFApp,
+                "event_type" )
+        }
+    }
+
 
     private fun clickBtn(idToken: String) {
         Log.d("TAG", "check clickBtn dashboard before $idToken")
@@ -125,20 +148,23 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         Log.d("TAG", "check clickBtn dashboard after ")
         withContext(Main) {
-            getViewModel().get184Types(idToken)
-                .observe(this@DashBoardFragment, Observer { apiResponse ->
-                    when (apiResponse) {
-                        is ApisResponse.Success -> {
-                            Log.d("TAG", "token 184 result: ${apiResponse.response.success}")
-                            Log.d("TAG", "token 184 result: ${apiResponse.response.result.info}")
-                            showToast("ok")
-                        }
-                        is ApisResponse.Error -> {
-                            Log.d("TAG", "token 184 result: ${apiResponse.exception}")
-                            showToast("Not ok")
-                        }
-                    }
-                })
+//            getViewModel().get184Types(idToken)
+//                .observe(this@DashBoardFragment, Observer { apiResponse ->
+//                    when (apiResponse) {
+//                        is ApisResponse.Success -> {
+//                            Log.d("TAG", "token 184 result: ${apiResponse.response.success}")
+//                            Log.d("TAG", "token 184 result: ${apiResponse.response.result.info}")
+//                            showToast("ok")
+//                        }
+//                        is ApisResponse.Error -> {
+//                            Log.d("TAG", "token 184 result: ${apiResponse.exception}")
+//                            showToast("Not ok")
+//                        }
+//                    }
+//
+//
+//                })
+            sample(idToken, spRedId,roleId)
         }
     }
 
@@ -180,6 +206,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         if (position == 0) {
 
         } else {
+
             Toast.makeText(
                 requireContext(),
                 resources.getStringArray(R.array.all_services)[position],
@@ -187,6 +214,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             )
                 .show()
         }
+              getBranches()
+
     }
 
     private fun getList(): ArrayList<MyEvents> {
@@ -218,7 +247,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         Log.d("TAG", "sample: ${apiResponse.response.success}")
-                        Log.d("TAG", "sample: ${apiResponse.response.data.activeServiceCount}")
+                      //  Log.d("TAG", "sample: ${apiResponse.response.data.activeServiceCount}")
 
                     }
                     is ApisResponse.Error -> {
@@ -235,7 +264,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         Log.d("TAG", "sample: ${apiResponse.response.success}")
-                        Log.d("TAG", "sample: ${apiResponse.response.data[0].customerServiceCategory}")
+                        Log.d("TAG", "sample: ${apiResponse.response.data}")
 
                     }
                     is ApisResponse.Error -> {
@@ -246,5 +275,47 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             })
 
     }
+
+    fun getActionAndStatus(IdToken: String, spRedId: Int, i: Int, serviceVendorOnboardingId: Int) {
+        getViewModel().getActionAndStatus(IdToken, spRedId,288,serviceVendorOnboardingId)
+            .observe(viewLifecycleOwner, Observer { apiResponse ->
+
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d("TAG", "sample: ${apiResponse.response.success}")
+                        Log.d("TAG", "sample: ${apiResponse.response}")
+
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {}
+                }
+            })
+
+    }
+
+    fun getBranches(){
+        getViewModel().getServicesBranches(idToken,spRedId,288)
+            .observe(viewLifecycleOwner, Observer { apiResponse ->
+
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d("TAG", "sample: ${apiResponse.response.success}")
+                        //  Log.d("TAG", "sample: ${apiResponse.response.datas.serviceVendorOnboardingId}")
+                        Log.d("TAG", "sample: ${apiResponse.response.datas[0].branchName}")
+                        var serviceVendorOnboardingId:Int?=apiResponse.response.datas[0].serviceVendorOnboardingId.toInt()
+                        getActionAndStatus(idToken,spRedId,288,serviceVendorOnboardingId!!)
+
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {}
+                }
+            })
+
+    }
+
 
 }

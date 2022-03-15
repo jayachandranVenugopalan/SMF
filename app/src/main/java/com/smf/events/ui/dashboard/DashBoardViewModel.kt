@@ -28,6 +28,11 @@ class DashBoardViewModel  @Inject constructor(
         emit(dashBoardRepository.get184Types(idToken))
     }
 
+//    fun getServicesBranches(idToken: String,spRegId:String,serviceCategoryId:Int) = liveData(Dispatchers.IO) {
+//        Log.d("TAG", "setUserDetails: $idToken,spRegId,serviceCategoryId")
+//        emit(dashBoardRepository.getServicesBranches(idToken,spRegId,serviceCategoryId))
+//    }
+
 @SuppressLint("ResourceType")
 fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: Array<String>) {
 
@@ -43,6 +48,8 @@ fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: Array<String
     // Set the ArrayAdapter (ad) data on the
     // Spinner which binds data to spinner
     spin.adapter = ad
+
+
 }
     @SuppressLint("ResourceType")
     fun branches(mDataBinding: FragmentDashBoardBinding?, resources: Array<String>) {
@@ -113,5 +120,13 @@ fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: Array<String
     // Method For Getting All Service
     fun getAllServices(idToken: String, spRegId: Int) = liveData(Dispatchers.IO) {
         emit(dashBoardRepository.getAllServices(idToken, spRegId))
+    }
+
+    fun getServicesBranches(idToken: String, spRegId: Int,serviceCategoryId:Int) = liveData(Dispatchers.IO) {
+        emit(dashBoardRepository.getServicesBranches(idToken, spRegId,serviceCategoryId))
+    }
+
+    fun getActionAndStatus(idToken: String, spRegId: Int,serviceCategoryId:Int,serviceVendorOnboardingId:Int) = liveData(Dispatchers.IO) {
+        emit(dashBoardRepository.getActionAndStatus(idToken, spRegId,serviceCategoryId,serviceVendorOnboardingId))
     }
 }
