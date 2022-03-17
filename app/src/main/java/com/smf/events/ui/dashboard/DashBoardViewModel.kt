@@ -18,10 +18,11 @@ import com.smf.events.databinding.FragmentDashBoardBinding
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class DashBoardViewModel  @Inject constructor(
+
+class DashBoardViewModel @Inject constructor(
     private val dashBoardRepository: DashBoardRepository,
-    application: Application
-) : BaseViewModel(application) ,AdapterView.OnItemSelectedListener{
+    application: Application,
+) : BaseViewModel(application), AdapterView.OnItemSelectedListener {
 
     // EventType Api
     fun get184Types(idToken: String) = liveData(Dispatchers.IO) {
@@ -33,31 +34,27 @@ class DashBoardViewModel  @Inject constructor(
 //        emit(dashBoardRepository.getServicesBranches(idToken,spRegId,serviceCategoryId))
 //    }
 
-@SuppressLint("ResourceType")
-fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: ArrayList<String>) {
-
-    val spin = mDataBinding!!.spnAllServices
-    spin.onItemSelectedListener = this
-
-    val ad: ArrayAdapter<String> = ArrayAdapter<String>(getApplication(),R.layout.simple_spinner_item,resources)
-    // set simple layout resource file
-    // for each item of spinner
-    ad.setDropDownViewResource(
-        android.R.layout.simple_spinner_dropdown_item)
-
-    // Set the ArrayAdapter (ad) data on the
-    // Spinner which binds data to spinner
-    spin.adapter = ad
-
-
-}
     @SuppressLint("ResourceType")
-    fun branches(mDataBinding: FragmentDashBoardBinding?, resources: Array<String>) {
+    fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: ArrayList<String>) {
 
-        val spin = mDataBinding!!.spnBranches
-        spin.onItemSelectedListener = this
+        val spin = mDataBinding!!.spnAllServices
 
-        val ad: ArrayAdapter<*> = ArrayAdapter<Any?>(getApplication(),R.layout.simple_spinner_item,resources)
+        spin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long,
+            ) {
+                callBackInterface?.itemClick(position)
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        val ad: ArrayAdapter<String> =
+            ArrayAdapter<String>(getApplication(), R.layout.simple_spinner_item, resources)
         // set simple layout resource file
         // for each item of spinner
         ad.setDropDownViewResource(
@@ -66,9 +63,31 @@ fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: ArrayList<St
         // Set the ArrayAdapter (ad) data on the
         // Spinner which binds data to spinner
         spin.adapter = ad
+
+
     }
+
+    @SuppressLint("ResourceType")
+    fun branches(
+        mDataBinding: FragmentDashBoardBinding?,
+        resources: ArrayList<String>,
+    ) {
+        //  resources1=resources as ArrayList
+
+        var spin = mDataBinding!!.spnBranches
+
+        spin.onItemSelectedListener = this
+
+        var ad: ArrayAdapter<*> =
+            ArrayAdapter<Any?>(getApplication(), android.R.layout.simple_spinner_item,
+                resources as List<Any?>)
+        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        ad.notifyDataSetChanged()
+        mDataBinding?.spnBranches?.adapter = ad
+    }
+
     // Fetch tokens
-      fun fetchSession() {
+    fun fetchSession() {
         Amplify.Auth.fetchAuthSession(
             {
                 val session = it as AWSCognitoAuthSession
@@ -101,11 +120,16 @@ fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: ArrayList<St
     // CallBack Interface
     interface CallBackInterface {
         fun callBack(token: String)
-        fun itemClick(msg:Int)
+        fun itemClick(msg: Int)
+        fun branchItemClick(branchPos: Int)
     }
 
-    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-        callBackInterface?.itemClick(position)
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position1: Int, p3: Long) {
+
+        //  var branchId=resources1[position].bramchId
+
+        callBackInterface?.branchItemClick(position1)
+
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -122,11 +146,22 @@ fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: ArrayList<St
         emit(dashBoardRepository.getAllServices(idToken, spRegId))
     }
 
-    fun getServicesBranches(idToken: String, spRegId: Int,serviceCategoryId:Int) = liveData(Dispatchers.IO) {
-        emit(dashBoardRepository.getServicesBranches(idToken, spRegId,serviceCategoryId))
-    }
+    // Method For Getting Branches
+    fun getServicesBranches(idToken: String, spRegId: Int, serviceCategoryId: Int) =
+        liveData(Dispatchers.IO) {
+            emit(dashBoardRepository.getServicesBranches(idToken, spRegId, serviceCategoryId))
+        }
 
-    fun getActionAndStatus(idToken: String, spRegId: Int,serviceCategoryId:Int,serviceVendorOnboardingId:Int) = liveData(Dispatchers.IO) {
-        emit(dashBoardRepository.getActionAndStatus(idToken, spRegId,serviceCategoryId,serviceVendorOnboardingId))
+    // Method For Getting ActionANd Status
+    fun getActionAndStatus(
+        idToken: String,
+        spRegId: Int,
+        serviceCategoryId: Int,
+        serviceVendorOnboardingId: Int,
+    ) = liveData(Dispatchers.IO) {
+        emit(dashBoardRepository.getActionAndStatus(idToken,
+            spRegId,
+            serviceCategoryId,
+            serviceVendorOnboardingId))
     }
 }

@@ -2,32 +2,38 @@ package com.smf.events.ui.actionandstatusdashboard
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.findFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
-import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionsAndStatusBinding
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
 import com.smf.events.ui.dashboard.adapter.StatusAdaptor
+import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ActionsAndStatusFragment :
-    BaseFragment<FragmentActionsAndStatusBinding, ActionsAndStatusViewModel>(), ActionsAdapter.OnActionCardClickListener {
+    BaseFragment<FragmentActionsAndStatusBinding, ActionsAndStatusViewModel>(),
+    ActionsAdapter.OnActionCardClickListener {
 
     private lateinit var myActionRecyclerView: RecyclerView
     lateinit var actionAdapter: ActionsAdapter
     private lateinit var myStatusRecyclerView: RecyclerView
     lateinit var statusAdapter: StatusAdaptor
+    private lateinit var actionDisposable: Disposable
+    lateinit var actionAndStatusData: ActionAndStatusCount
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -47,7 +53,7 @@ class ActionsAndStatusFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        actionAndStatusData = ActionAndStatusCount(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         //Initializing actions recyclerview
         myActionRecyclerView = mDataBinding?.actionsRecyclerview!!
 
@@ -60,11 +66,43 @@ class ActionsAndStatusFragment :
         //Status Recycler view
         myStatusRecycler()
 
-        val listActions = getActionsList()
+        val listActions = getActionsList(actionAndStatusData)
         actionAdapter.refreshItems(listActions)
 
-        val listStatus = getStatusList()
+        val listStatus = getStatusList(actionAndStatusData)
         statusAdapter.refreshItems(listStatus)
+
+        actionDisposable = RxBus.listen(RxEvent.ActionAndStatus::class.java).subscribe {
+
+            Log.d("TAG", "onViewCreated:${it.actionAndStatusCount} ")
+            var actions = it.actionAndStatusCount
+            actionAndStatusData = ActionAndStatusCount(actions.bidRequestedActionsCount,
+                actions.bidSubmittedStatusCount,
+                actions.bidSubmittedActionCount,
+                actions.bidRejectedStatusCount,
+                actions.bidRejectedActionCount,
+                actions.pendingForQuoteActionCount,
+                actions.wonBidStatusCount,
+                actions.lostBidStatusCount,
+                actions.bidTimedOutStatusCount,
+                actions.serviceDoneStatusCount,
+                actions.statusCount,
+                actions.actionCount
+            )
+            Log.d("TAG", "actionAndStatusData: ${actionAndStatusData}")
+
+            Log.d("TAG", "actionAndStatusData1: ${actionAndStatusData}")
+
+            val listActions1 = getActionsList(actionAndStatusData)
+            actionAdapter.refreshItems(listActions1)
+
+            val listStatus = getStatusList(actionAndStatusData)
+            statusAdapter.refreshItems(listStatus)
+
+            getViewModel()?.actionAndStatusCount(mDataBinding!!, actionAndStatusData)
+        }
+
+
     }
 
 
@@ -85,25 +123,28 @@ class ActionsAndStatusFragment :
 
     }
 
-    private fun getActionsList(): ArrayList<MyEvents> {
+    private fun getActionsList(actionAndStatusData: ActionAndStatusCount?): ArrayList<MyEvents> {
         var list = ArrayList<MyEvents>()
-        list.add(MyEvents("4", "New request"))
-        list.add(MyEvents("2", "Send Quotes"))
-        list.add(MyEvents("1", "Won Bid"))
-        list.add(MyEvents("2", "Rejected"))
-        list.add(MyEvents("1", "Draft"))
+        list.add(MyEvents(actionAndStatusData?.bidRequestedActionsCount.toString(), "New request"))
+        list.add(MyEvents(actionAndStatusData?.pendingForQuoteActionCount.toString(),
+            "Send Quotes"))
+        list.add(MyEvents(actionAndStatusData?.wonBidStatusCount.toString(), "Won Bid"))
+        list.add(MyEvents(actionAndStatusData?.bidRejectedActionCount.toString(), "Rejected"))
+        list.add(MyEvents(actionAndStatusData?.bidSubmittedActionCount.toString(), "Bid Submitted"))
 
         return list
 
     }
 
-    private fun getStatusList(): ArrayList<MyEvents> {
+    private fun getStatusList(actionAndStatusData: ActionAndStatusCount): ArrayList<MyEvents> {
         var list = ArrayList<MyEvents>()
-        list.add(MyEvents("4", "Bids Submitted"))
-        list.add(MyEvents("2", "Service done"))
-        list.add(MyEvents("1", "Request closed"))
-        list.add(MyEvents("2", "Rejected"))
-        list.add(MyEvents("1", "Draft"))
+        list.add(MyEvents(actionAndStatusData?.bidSubmittedStatusCount.toString(),
+            "Bids Submitted"))
+        list.add(MyEvents(actionAndStatusData?.serviceDoneStatusCount.toString(), "Service done"))
+        list.add(MyEvents(actionAndStatusData?.bidTimedOutStatusCount.toString(), "Bid TimeOut"))
+        list.add(MyEvents(actionAndStatusData?.wonBidStatusCount.toString(), "Won Bid"))
+        list.add(MyEvents(actionAndStatusData?.bidRejectedStatusCount.toString(), "Rejected"))
+        list.add(MyEvents(actionAndStatusData?.lostBidStatusCount.toString(), "Lost Bid"))
 
         return list
 
@@ -114,11 +155,15 @@ class ActionsAndStatusFragment :
 
         val actionDetails = ActionDetailsFragment()
 
-        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.action_and_status_layout, actionDetails)
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.action_and_status_layout, actionDetails)
             .addToBackStack(ActionsAndStatusFragment::class.java.name)
             .commit()
 
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!actionDisposable.isDisposed) actionDisposable.dispose()
+    }
 }

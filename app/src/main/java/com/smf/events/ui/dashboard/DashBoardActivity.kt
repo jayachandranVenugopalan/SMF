@@ -53,7 +53,7 @@ class DashBoardActivity : BaseActivity<FragmentDashBoardBinding, DashBoardViewMo
     override fun onStart() {
         super.onStart()
         val allServices = ArrayList<String>()
-        val branch = resources.getStringArray(R.array.branches)
+        val branch = ArrayList<String>()
         // Initialize IdTokenCallBackInterface
         tokens.setCallBackInterface(this)
 
@@ -62,7 +62,7 @@ class DashBoardActivity : BaseActivity<FragmentDashBoardBinding, DashBoardViewMo
         //spinner view for allservices
         getViewModel().allServices(getViewDataBinding(), allServices)
         //spinner view for branches
-        getViewModel().branches(getViewDataBinding(), branch)
+         //  getViewModel().branches(getViewDataBinding(), branch)
 
         myEventsRecyclerView = getViewDataBinding()?.eventsRecyclerView!!
 
@@ -176,6 +176,10 @@ class DashBoardActivity : BaseActivity<FragmentDashBoardBinding, DashBoardViewMo
             )
                 .show()
         }
+    }
+
+    override fun branchItemClick(position: Int) {
+
     }
 
     private fun getList(): ArrayList<MyEvents> {

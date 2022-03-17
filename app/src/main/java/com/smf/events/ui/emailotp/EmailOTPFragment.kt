@@ -124,13 +124,13 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                                     Context.MODE_PRIVATE
                                 )
                             val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                            editor.putString(
+                            editor.putInt(
                                 "spRegId",
-                                apiResponse.response.data.spRegId.toString()
+                                apiResponse.response.data.spRegId
                             )
-                            editor.putString(
+                            editor.putInt(
                                 "roleId",
-                                apiResponse.response.data.roleId.toString()
+                                apiResponse.response.data.roleId
                             )
                             editor.apply()
                             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())

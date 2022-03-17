@@ -19,3 +19,4 @@ data class DatasNew(val spRegId:Int,
                  val branchName:String)
 
 data class Result(val info: String)
+

@@ -44,24 +44,51 @@ class DashBoardRepository @Inject constructor(var apiStories: ApiStories) {
             ApisResponse.Error(e)
         }
     }
-    suspend fun getServicesBranches(idToken: String, spRegId: Int,serviceCategoryId:Int): ApisResponse<Branches> {
+
+    suspend fun getServicesBranches(
+        idToken: String,
+        spRegId: Int,
+        serviceCategoryId: Int,
+    ): ApisResponse<Branches> {
 
         return try {
-            val getResponse = apiStories.getServicesBranches(idToken, spRegId,serviceCategoryId)
-            ApisResponse.Success(getResponse)
+            if (serviceCategoryId == 0) {
+                val getResponse = apiStories.getServicesBranchesforAllservice(idToken, spRegId)
+                ApisResponse.Success(getResponse)
+            } else {
+                val getResponse =
+                    apiStories.getServicesBranches(idToken, spRegId, serviceCategoryId)
+                ApisResponse.Success(getResponse)
+            }
 
         } catch (e: HttpException) {
             ApisResponse.Error(e)
         }
     }
-    suspend fun getActionAndStatus(idToken: String, spRegId: Int,serviceCategoryId:Int,serviceVendorOnboardingId:Int): ApisResponse<ActionAndStatus> {
+
+    suspend fun getActionAndStatus(
+        idToken: String,
+        spRegId: Int,
+        serviceCategoryId: Int,
+        serviceVendorOnboardingId: Int,
+    ): ApisResponse<ActionAndStatus> {
 
         return try {
-            val getResponse = apiStories.getActionAndStatus(idToken, spRegId,serviceCategoryId,serviceVendorOnboardingId)
-            ApisResponse.Success(getResponse)
+            if (serviceVendorOnboardingId == 0) {
+                val getResponse = apiStories.getActionAndStatusForAll(idToken, spRegId)
+                ApisResponse.Success(getResponse)
+            } else {
+
+                val getResponse = apiStories.getActionAndStatus(idToken,
+                    spRegId,
+                    serviceCategoryId,
+                    serviceVendorOnboardingId)
+                ApisResponse.Success(getResponse)
+            }
 
         } catch (e: HttpException) {
             ApisResponse.Error(e)
         }
     }
+
 }
