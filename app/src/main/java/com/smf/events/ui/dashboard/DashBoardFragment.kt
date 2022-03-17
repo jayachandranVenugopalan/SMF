@@ -25,7 +25,6 @@ import com.smf.events.ui.dashboard.adapter.MyEventsAdapter
 import com.smf.events.ui.dashboard.model.*
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -117,7 +116,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
 
         val branchdataspinner = branchSpinner
-        getViewModel().branches(mDataBinding, branchdataspinner)
+        getViewModel().branches(mDataBinding, branchdataspinner,idToken, spRegId,serviceCategoryId,0)
 
         actionAndStatusFragment()
     }
@@ -176,14 +175,15 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     //All Service spinner view clicked
     override fun itemClick(position: Int) {
 
-        if (position == 0 && serviceList[position].serviceName == "All Service") {
+        if ( serviceList[position].serviceName == "All Service") {
             var branchSpinner: ArrayList<String> = ArrayList()
             branchSpinner.add(0,"Branches")
 
             val branchdataspinner = branchSpinner
-            getViewModel().branches(mDataBinding, branchdataspinner)
+            getViewModel().branches(mDataBinding, branchdataspinner,idToken, spRegId,serviceCategoryId,0)
             getActionAndStatus(0)
-        } else {
+        }
+        if ( serviceList[position].serviceName != "All Service") {
             //getBranches()
             Toast.makeText(
                 requireContext(),
@@ -194,12 +194,11 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             serviceCategoryId = (serviceList[position].serviceCategoryId.toInt())
             Log.d("TAG", "itemClick: $branchListSpinner")
             getBranches(serviceCategoryId)
-            Log.d("TAG", "itemClick1: $branchListSpinner")
             branchListSpinner.clear()
         }
     }
     //Branch spinner view clicked
-    override fun branchItemClick(serviceVendorOnboardingId: Int) {
+    override fun branchItemClick(serviceVendorOnboardingId: Int, name: String?) {
 
         Log.d("TAG", "branchItemClick: $serviceVendorOnboardingId")
 
@@ -207,10 +206,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         Log.d("TAG",
             "branchItemClick serviceVendorOnboardingId: ${branchListSpinner[serviceVendorOnboardingId].branchId}")
 
+if(name=="Branches"){
+    getActionAndStatus(0)
+}else {
+    getActionAndStatus(branchListSpinner[serviceVendorOnboardingId].branchId)
 
-        getActionAndStatus(branchListSpinner[serviceVendorOnboardingId].branchId)
-
-
+}
     }
 
     private fun getServiceCountList(data: Datas): ArrayList<MyEvents> {
@@ -332,7 +333,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                             serviceDoneStatusCount,
                             statusCount,
                             actionCount)
-                        Log.d("TAG", "getActionAndStatus: $actionAndStatusData")
+
                         RxBus.publish(RxEvent.ActionAndStatus(actionAndStatusData))
 
                     }
@@ -355,7 +356,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     is ApisResponse.Success -> {
                         Log.d("TAG", "sample: ${apiResponse.response.success}")
 
-                        Log.d("TAG", "itemClickinsideapi: $branchListSpinner")
                        // branchListSpinner.add(BranchDatas("Branches", 0))
                         var branchTypeItems: List<DatasNew> = apiResponse.response.datas
                         for (i in branchTypeItems.indices) {
@@ -375,7 +375,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         }
 
                         val branchData = branchList
-                        getViewModel()?.branches(mDataBinding, branchData)
+                        getViewModel()?.branches(mDataBinding, branchData,idToken, spRegId,serviceCategoryId,0)
 
                     }
                     is ApisResponse.Error -> {

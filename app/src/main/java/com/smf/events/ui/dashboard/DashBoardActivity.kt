@@ -178,7 +178,7 @@ class DashBoardActivity : BaseActivity<FragmentDashBoardBinding, DashBoardViewMo
         }
     }
 
-    override fun branchItemClick(position: Int) {
+    override fun branchItemClick(position: Int, name: String?) {
 
     }
 

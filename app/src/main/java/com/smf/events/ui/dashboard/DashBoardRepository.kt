@@ -1,5 +1,6 @@
 package com.smf.events.ui.dashboard
 
+import android.util.Log
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.EvenTypes
 import com.smf.events.network.ApiStories
@@ -52,18 +53,20 @@ class DashBoardRepository @Inject constructor(var apiStories: ApiStories) {
     ): ApisResponse<Branches> {
 
         return try {
-            if (serviceCategoryId == 0) {
-                val getResponse = apiStories.getServicesBranchesforAllservice(idToken, spRegId)
-                ApisResponse.Success(getResponse)
-            } else {
+//            if (serviceCategoryId == 0) {
+//                val getResponse = apiStories.getServicesBranchesforAllservice(idToken, spRegId)
+//                ApisResponse.Success(getResponse)
+//
+//            } else {
                 val getResponse =
                     apiStories.getServicesBranches(idToken, spRegId, serviceCategoryId)
                 ApisResponse.Success(getResponse)
-            }
+ //}
 
         } catch (e: HttpException) {
             ApisResponse.Error(e)
         }
+
     }
 
     suspend fun getActionAndStatus(
@@ -74,7 +77,7 @@ class DashBoardRepository @Inject constructor(var apiStories: ApiStories) {
     ): ApisResponse<ActionAndStatus> {
 
         return try {
-            if (serviceVendorOnboardingId == 0) {
+            if (serviceCategoryId==0||serviceVendorOnboardingId == 0) {
                 val getResponse = apiStories.getActionAndStatusForAll(idToken, spRegId)
                 ApisResponse.Success(getResponse)
             } else {

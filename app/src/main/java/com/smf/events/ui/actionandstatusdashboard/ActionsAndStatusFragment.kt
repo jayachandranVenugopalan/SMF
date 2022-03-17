@@ -108,9 +108,6 @@ class ActionsAndStatusFragment :
                 actions.statusCount,
                 actions.actionCount
             )
-            Log.d("TAG", "actionAndStatusData: ${actionAndStatusData}")
-
-            Log.d("TAG", "actionAndStatusData1: ${actionAndStatusData}")
 
             val listActions1 = getActionsList(actionAndStatusData)
             actionAdapter.refreshItems(listActions1)
