@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,12 +12,15 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionsAndStatusBinding
+import com.smf.events.helper.ApisResponse
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
 import com.smf.events.ui.dashboard.adapter.StatusAdaptor
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
+import com.smf.events.ui.dashboard.model.BranchDatas
+import com.smf.events.ui.dashboard.model.DatasNew
 import com.smf.events.ui.dashboard.model.MyEvents
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
@@ -35,6 +39,13 @@ class ActionsAndStatusFragment :
     private lateinit var actionDisposable: Disposable
     lateinit var actionAndStatusData: ActionAndStatusCount
 
+    var spRegId: Int = 0
+    lateinit var idToken: String
+    var roleId: Int = 0
+    var serviceCategoryId: Int? = null
+    var serviceVendorOnboardingId: Int? = null
+    var bidStatus: String = "BID REQUESTED"
+
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
@@ -49,6 +60,13 @@ class ActionsAndStatusFragment :
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("TAG", "onCreate: called")
+
+        setIdTokenAndSpRegId()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,7 +94,8 @@ class ActionsAndStatusFragment :
 
             Log.d("TAG", "onViewCreated:${it.actionAndStatusCount} ")
             var actions = it.actionAndStatusCount
-            actionAndStatusData = ActionAndStatusCount(actions.bidRequestedActionsCount,
+            actionAndStatusData = ActionAndStatusCount(
+                actions.bidRequestedActionsCount,
                 actions.bidSubmittedStatusCount,
                 actions.bidSubmittedActionCount,
                 actions.bidRejectedStatusCount,
@@ -126,8 +145,12 @@ class ActionsAndStatusFragment :
     private fun getActionsList(actionAndStatusData: ActionAndStatusCount?): ArrayList<MyEvents> {
         var list = ArrayList<MyEvents>()
         list.add(MyEvents(actionAndStatusData?.bidRequestedActionsCount.toString(), "New request"))
-        list.add(MyEvents(actionAndStatusData?.pendingForQuoteActionCount.toString(),
-            "Send Quotes"))
+        list.add(
+            MyEvents(
+                actionAndStatusData?.pendingForQuoteActionCount.toString(),
+                "Send Quotes"
+            )
+        )
         list.add(MyEvents(actionAndStatusData?.wonBidStatusCount.toString(), "Won Bid"))
         list.add(MyEvents(actionAndStatusData?.bidRejectedActionCount.toString(), "Rejected"))
         list.add(MyEvents(actionAndStatusData?.bidSubmittedActionCount.toString(), "Bid Submitted"))
@@ -138,8 +161,12 @@ class ActionsAndStatusFragment :
 
     private fun getStatusList(actionAndStatusData: ActionAndStatusCount): ArrayList<MyEvents> {
         var list = ArrayList<MyEvents>()
-        list.add(MyEvents(actionAndStatusData?.bidSubmittedStatusCount.toString(),
-            "Bids Submitted"))
+        list.add(
+            MyEvents(
+                actionAndStatusData?.bidSubmittedStatusCount.toString(),
+                "Bids Submitted"
+            )
+        )
         list.add(MyEvents(actionAndStatusData?.serviceDoneStatusCount.toString(), "Service done"))
         list.add(MyEvents(actionAndStatusData?.bidTimedOutStatusCount.toString(), "Bid TimeOut"))
         list.add(MyEvents(actionAndStatusData?.wonBidStatusCount.toString(), "Won Bid"))
@@ -153,13 +180,55 @@ class ActionsAndStatusFragment :
     // Action Card Click Listener Interface Method
     override fun actionCardClick(myEvents: MyEvents) {
 
-        val actionDetails = ActionDetailsFragment()
+        showToast(myEvents.titleText)
 
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.action_and_status_layout, actionDetails)
-            .addToBackStack(ActionsAndStatusFragment::class.java.name)
-            .commit()
+        when (myEvents.titleText) {
+            "New request" -> {
+                newRequestApiCall()
+            }
+            else -> {
+                Log.d("TAG", "newRequestApiCallsample :else block")
+            }
+        }
 
+    }
+
+    private fun newRequestApiCall() {
+        getViewModel().getNewRequest(
+            idToken,
+            spRegId,
+            serviceCategoryId,
+            serviceVendorOnboardingId,
+            bidStatus
+        )
+            .observe(viewLifecycleOwner, Observer { apiResponse ->
+
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d("TAG", "newRequestApiCallsample : ${apiResponse.response.success}")
+
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .replace(R.id.action_and_status_layout, ActionDetailsFragment())
+                            .addToBackStack(ActionsAndStatusFragment::class.java.name)
+                            .commit()
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
+                }
+            })
+    }
+
+    private fun setIdTokenAndSpRegId() {
+        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
+            "MyUser",
+            Context.MODE_PRIVATE
+        )
+        spRegId = getSharedPreferences.getInt("spRegId", 0)
+        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        roleId = getSharedPreferences.getInt("roleId", 0)
     }
 
     override fun onDestroy() {

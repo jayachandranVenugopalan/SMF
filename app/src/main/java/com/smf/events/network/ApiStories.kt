@@ -2,6 +2,7 @@ package com.smf.events.network
 
 
 import com.smf.events.helper.EvenTypes
+import com.smf.events.ui.actionandstatusdashboard.model.NewRequestList
 import com.smf.events.ui.dashboard.model.ActionAndStatus
 import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
@@ -62,6 +63,25 @@ interface ApiStories {
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int
     ): ActionAndStatus
+
+
+    @GET("epm-service/api/app-services/bidding-request-info/{sp-reg-id}")
+    suspend fun getNewRequest(
+        @Header("Authorization") idToken: String,
+        @Path("sp-reg-id") spRegId: Int,
+        @Query("serviceCategoryId") serviceCategoryId: Int?,
+        @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int?,
+        @Query("bidStatus") bidStatus: String
+    ): NewRequestList
+
+
+
+
+
+
+
+
+
 
 
 }
