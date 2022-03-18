@@ -6,6 +6,7 @@
     <dimen name="textHeader">24sp</dimen>
     <dimen name="size_1dp">1dp</dimen>
     <dimen name="size_2dp">2dp</dimen>
+    <dimen name="size_3dp">3dp</dimen>
     <dimen name="size_5dp">5dp</dimen>
     <dimen name="size_4dp">4dp</dimen>
     <dimen name="size_8dp">8dp</dimen>
@@ -42,6 +43,7 @@
     <dimen name="size_300dp">300dp</dimen>
     <dimen name="size_350dp">350dp</dimen>
     <dimen name="size_10sp">10sp</dimen>
+    <dimen name="size_45dp">45dp</dimen>
     <dimen name="size_50dp">50dp</dimen>
     <dimen name="size_400dp">400dp</dimen>
     <dimen name="size_500dp">500dp</dimen>

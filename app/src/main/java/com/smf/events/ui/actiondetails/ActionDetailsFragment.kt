@@ -2,6 +2,7 @@ package com.smf.events.ui.actiondetails
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +16,9 @@ import com.smf.events.databinding.FragmentActionsAndStatusBinding
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusViewModel
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
+import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
+import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.dashboard.model.MyEvents
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -27,7 +30,7 @@ class ActionDetailsFragment :
     private lateinit var myActionDetailsRecyclerView: RecyclerView
     lateinit var actionDetailsAdapter: ActionDetailsAdapter
     private var closeBtn: ImageView? = null
-
+    private var myList = ArrayList<ServiceProviderBidRequestDto>()
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -45,6 +48,13 @@ class ActionDetailsFragment :
         super.onAttach(context)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val args = arguments
+        myList = args?.getParcelableArrayList<ServiceProviderBidRequestDto>("list") as ArrayList
+        Log.d("TAG", "newRequestApiCall actionDetailFragment : $myList")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -59,8 +69,8 @@ class ActionDetailsFragment :
         //Actions Recycler view
         myActionsStatusRecycler()
 
-        
-        val listActions = getActionsList()
+
+        val listActions = getActionsDetailsList()
         actionDetailsAdapter.refreshItems(listActions)
 
 
@@ -71,6 +81,37 @@ class ActionDetailsFragment :
         myActionDetailsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         myActionDetailsRecyclerView.adapter = actionDetailsAdapter
+
+    }
+
+    private fun getActionsDetailsList(): ArrayList<ActionDetails> {
+        var list = ArrayList<ActionDetails>()
+
+        for (i in myList.indices) {
+            list.add(
+                ActionDetails(
+                    myList[i].bidRequestId,
+                    myList[i].serviceCategoryId,
+                    myList[i].eventId,
+                    myList[i].eventDate,
+                    myList[i].eventName,
+                    myList[i].serviceName,
+                    myList[i].serviceDate,
+                    myList[i].bidRequestedDate,
+                    myList[i].biddingCutOffDate,
+                    myList[i].costingType,
+                    myList[i].cost,
+                    myList[i].latestBidValue,
+                    myList[i].bidStatus,
+                    myList[i].isExistingUser,
+                    myList[i].eventServiceDescriptionId,
+                    myList[i].branchName,
+                    myList[i].timeLeft
+                )
+            )
+        }
+
+        return list
 
     }
 

@@ -13,19 +13,17 @@ import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionsAndStatusBinding
 import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
+import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
 import com.smf.events.ui.dashboard.adapter.StatusAdaptor
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
-import com.smf.events.ui.dashboard.model.BranchDatas
-import com.smf.events.ui.dashboard.model.DatasNew
 import com.smf.events.ui.dashboard.model.MyEvents
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ActionsAndStatusFragment :
@@ -44,7 +42,6 @@ class ActionsAndStatusFragment :
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
-    var bidStatus: String = "BID REQUESTED"
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -109,6 +106,12 @@ class ActionsAndStatusFragment :
                 actions.actionCount
             )
 
+            if (it.serviceAndCategoryId.serviceCategoryId != 0) {
+                serviceCategoryId = it.serviceAndCategoryId.serviceCategoryId
+                serviceVendorOnboardingId = it.serviceAndCategoryId.serviceVendorOnboardingId
+
+            }
+
             val listActions1 = getActionsList(actionAndStatusData)
             actionAdapter.refreshItems(listActions1)
 
@@ -118,9 +121,7 @@ class ActionsAndStatusFragment :
             getViewModel()?.actionAndStatusCount(mDataBinding!!, actionAndStatusData)
         }
 
-
     }
-
 
     private fun myActionsStatusRecycler() {
         actionAdapter = ActionsAdapter(requireContext())
@@ -181,7 +182,7 @@ class ActionsAndStatusFragment :
 
         when (myEvents.titleText) {
             "New request" -> {
-                newRequestApiCall()
+                newRequestApiCall(AppConstants.BID_REQUESTED)
             }
             else -> {
                 Log.d("TAG", "newRequestApiCallsample :else block")
@@ -190,24 +191,22 @@ class ActionsAndStatusFragment :
 
     }
 
-    private fun newRequestApiCall() {
+    private fun newRequestApiCall(bidRequested: String) {
         getViewModel().getNewRequest(
             idToken,
             spRegId,
             serviceCategoryId,
             serviceVendorOnboardingId,
-            bidStatus
+            bidRequested
         )
             .observe(viewLifecycleOwner, Observer { apiResponse ->
-
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        Log.d("TAG", "newRequestApiCallsample : ${apiResponse.response.success}")
-
-                        requireActivity().supportFragmentManager.beginTransaction()
-                            .replace(R.id.action_and_status_layout, ActionDetailsFragment())
-                            .addToBackStack(ActionsAndStatusFragment::class.java.name)
-                            .commit()
+                        Log.d(
+                            "TAG",
+                            "newRequestApiCall : ${apiResponse.response.data.serviceProviderBidRequestDtos}"
+                        )
+                        goToActionDetailsFragmentWithDetails(apiResponse.response.data.serviceProviderBidRequestDtos)
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
@@ -216,6 +215,20 @@ class ActionsAndStatusFragment :
                     }
                 }
             })
+    }
+
+    // Method For Calling ActionDetailsFragment With Action Details
+    private fun goToActionDetailsFragmentWithDetails(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>) {
+        val args = Bundle()
+        args.putParcelableArrayList("list", serviceProviderBidRequestDtos as ArrayList)
+
+        val actionDetailsFragment = ActionDetailsFragment()
+        actionDetailsFragment.arguments = args
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.action_and_status_layout, actionDetailsFragment)
+            .addToBackStack(ActionsAndStatusFragment::class.java.name)
+            .commit()
     }
 
     private fun setIdTokenAndSpRegId() {

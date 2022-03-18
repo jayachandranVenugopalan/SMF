@@ -116,7 +116,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
 
         val branchdataspinner = branchSpinner
-        getViewModel().branches(mDataBinding, branchdataspinner,idToken, spRegId,serviceCategoryId,0)
+        getViewModel().branches(
+            mDataBinding,
+            branchdataspinner,
+            idToken,
+            spRegId,
+            serviceCategoryId,
+            0
+        )
 
         actionAndStatusFragment()
     }
@@ -175,15 +182,22 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     //All Service spinner view clicked
     override fun itemClick(position: Int) {
 
-        if ( serviceList[position].serviceName == "All Service") {
+        if (serviceList[position].serviceName == "All Service") {
             var branchSpinner: ArrayList<String> = ArrayList()
-            branchSpinner.add(0,"Branches")
+            branchSpinner.add(0, "Branches")
 
             val branchdataspinner = branchSpinner
-            getViewModel().branches(mDataBinding, branchdataspinner,idToken, spRegId,serviceCategoryId,0)
+            getViewModel().branches(
+                mDataBinding,
+                branchdataspinner,
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                0
+            )
             getActionAndStatus(0)
         }
-        if ( serviceList[position].serviceName != "All Service") {
+        if (serviceList[position].serviceName != "All Service") {
             //getBranches()
             Toast.makeText(
                 requireContext(),
@@ -197,21 +211,24 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             branchListSpinner.clear()
         }
     }
+
     //Branch spinner view clicked
     override fun branchItemClick(serviceVendorOnboardingId: Int, name: String?) {
 
         Log.d("TAG", "branchItemClick: $serviceVendorOnboardingId")
 
 
-        Log.d("TAG",
-            "branchItemClick serviceVendorOnboardingId: ${branchListSpinner[serviceVendorOnboardingId].branchId}")
+        Log.d(
+            "TAG",
+            "branchItemClick serviceVendorOnboardingId: ${branchListSpinner[serviceVendorOnboardingId].branchId}"
+        )
 
-if(name=="Branches"){
-    getActionAndStatus(0)
-}else {
-    getActionAndStatus(branchListSpinner[serviceVendorOnboardingId].branchId)
+        if (name == "Branches") {
+            getActionAndStatus(0)
+        } else {
+            getActionAndStatus(branchListSpinner[serviceVendorOnboardingId].branchId)
 
-}
+        }
     }
 
     private fun getServiceCountList(data: Datas): ArrayList<MyEvents> {
@@ -232,7 +249,8 @@ if(name=="Branches"){
             .setReorderingAllowed(true)
             .commit()
     }
-   //Counts And AllService ApiCall
+
+    //Counts And AllService ApiCall
     private fun getAllServiceAndCounts() {
 
         // Getting Service Provider Reg Id and Role Id
@@ -264,7 +282,7 @@ if(name=="Branches"){
                         Log.d("TAG", "sample: ${apiResponse.response.data.size}")
 
                         serviceList.add(ServicesData("All Service", 0))
-                       branchListSpinner.add(BranchDatas("Branches", 0))
+                        branchListSpinner.add(BranchDatas("Branches", 0))
                         apiResponse.response.data.forEach {
                             serviceList.add(ServicesData(it.serviceName, it.serviceCategoryId))
                         }
@@ -284,14 +302,17 @@ if(name=="Branches"){
         // getActionAndStatus(0)
 
     }
+
     //Action and Status ApiCall
     private fun getActionAndStatus(serviceVendorOnboardingId: Int) {
 
 
-        getViewModel().getActionAndStatus(idToken,
+        getViewModel().getActionAndStatus(
+            idToken,
             spRegId,
             serviceCategoryId,
-            serviceVendorOnboardingId)
+            serviceVendorOnboardingId
+        )
             .observe(viewLifecycleOwner, Observer { apiResponse ->
 
                 when (apiResponse) {
@@ -321,7 +342,8 @@ if(name=="Branches"){
                         var statusCount: Int = apiResponse.response.actionandStatus.statusCount
                         var actionCount: Int = apiResponse.response.actionandStatus.actionCount
 
-                        actionAndStatusData = ActionAndStatusCount(newRequestAction,
+                        actionAndStatusData = ActionAndStatusCount(
+                            newRequestAction,
                             bidSubmittedStatusCount,
                             bidSubmittedAction,
                             bidRejectedStatusCount,
@@ -332,9 +354,17 @@ if(name=="Branches"){
                             bidTimedOutStatusCount,
                             serviceDoneStatusCount,
                             statusCount,
-                            actionCount)
+                            actionCount
+                        )
 
-                        RxBus.publish(RxEvent.ActionAndStatus(actionAndStatusData))
+
+                        RxBus.publish(
+                            RxEvent.ActionAndStatus(
+                                actionAndStatusData, ServiceAndCategoryId(
+                                    serviceCategoryId, serviceVendorOnboardingId
+                                )
+                            )
+                        )
 
                     }
                     is ApisResponse.Error -> {
@@ -346,6 +376,7 @@ if(name=="Branches"){
             })
 
     }
+
     //Branch ApiCall
     private fun getBranches(serviceCategoryId: Int) {
 
@@ -356,7 +387,7 @@ if(name=="Branches"){
                     is ApisResponse.Success -> {
                         Log.d("TAG", "sample: ${apiResponse.response.success}")
 
-                       // branchListSpinner.add(BranchDatas("Branches", 0))
+                        // branchListSpinner.add(BranchDatas("Branches", 0))
                         var branchTypeItems: List<DatasNew> = apiResponse.response.datas
                         for (i in branchTypeItems.indices) {
                             val branchName: String =
@@ -375,7 +406,14 @@ if(name=="Branches"){
                         }
 
                         val branchData = branchList
-                        getViewModel()?.branches(mDataBinding, branchData,idToken, spRegId,serviceCategoryId,0)
+                        getViewModel()?.branches(
+                            mDataBinding,
+                            branchData,
+                            idToken,
+                            spRegId,
+                            serviceCategoryId,
+                            0
+                        )
 
                     }
                     is ApisResponse.Error -> {

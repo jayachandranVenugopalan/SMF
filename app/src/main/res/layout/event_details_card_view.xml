@@ -36,22 +36,24 @@
             android:id="@+id/quote_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/quote"
+            android:layout_marginEnd="8dp"
             android:fontFamily="@font/poppins_regular"
+            android:text="@string/quote"
             android:textSize="@dimen/size_15sp"
             app:layout_constraintBottom_toBottomOf="@+id/event_title_text"
             app:layout_constraintEnd_toStartOf="@+id/amount_text"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/event_title_text"
-            app:layout_constraintTop_toTopOf="@+id/event_title_text" />
+            app:layout_constraintTop_toTopOf="@+id/event_title_text"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/amount_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/size_12dp"
-            android:text="@string/_2500"
             android:fontFamily="@font/poppins_semibold"
+            android:text="@string/_2500"
             android:textSize="@dimen/size_18sp"
             app:layout_constraintBottom_toBottomOf="@+id/quote_text_view"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,8 +75,9 @@
 
         <TextView
             android:id="@+id/event_type_text"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/size_200dp"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/size_2dp"
             android:layout_marginStart="@dimen/size_12dp"
             android:text="@string/fork_amp_spoon_catering"
             android:textSize="@dimen/size_15sp"
@@ -86,15 +89,14 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="@dimen/size_120dp"
-            android:layout_height="@dimen/size_55dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/corner_radius_background"
             android:padding="@dimen/size_10dp"
             app:layout_constraintBottom_toBottomOf="@+id/event_type_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toEndOf="@+id/event_type_text"
-            app:layout_constraintTop_toBottomOf="@+id/code_text"
-            >
+            app:layout_constraintTop_toTopOf="@+id/event_type_text">
 
             <TextView
                 android:id="@+id/text_bid_cut_off"
@@ -110,7 +112,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/text_month"
+                android:id="@+id/cutoff_month_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
@@ -120,6 +122,28 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_bid_cut_off" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/CircularDeterminateProgressBar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/text_bid_cut_off"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/progress_date_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="22"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
+                app:layout_constraintEnd_toEndOf="@+id/progress_bar"
+                app:layout_constraintStart_toStartOf="@+id/progress_bar"
+                app:layout_constraintTop_toTopOf="@+id/progress_bar" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
