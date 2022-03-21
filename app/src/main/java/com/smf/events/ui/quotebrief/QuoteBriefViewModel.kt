@@ -4,11 +4,13 @@ import android.app.Application
 import android.graphics.Color
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.liveData
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentQuoteBriefBinding
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class QuoteBriefViewModel   @Inject constructor(application: Application): BaseViewModel(application) {
+class QuoteBriefViewModel   @Inject constructor(val quoteBriefRepository: QuoteBriefRepository,application: Application): BaseViewModel(application) {
 
 
 
@@ -58,6 +60,7 @@ exp=!exp
         mDataBinding!!.check2Complete.visibility=View.VISIBLE
        mDataBinding!!.check3Inprogress.visibility=View.VISIBLE
         mDataBinding!!.processflow2.setBackgroundColor(Color.BLACK)
+
     }
     fun progress3Completed(mDataBinding: FragmentQuoteBriefBinding?) {
         mDataBinding!!.check3Completed.visibility=View.VISIBLE
@@ -69,5 +72,8 @@ exp=!exp
 
     }
 
-
+    fun getQuoteBrief(idToken: String, bidRequestId: Int) = liveData(
+        Dispatchers.IO) {
+        emit(quoteBriefRepository.getQuoteBrief(idToken, bidRequestId))
+    }
 }

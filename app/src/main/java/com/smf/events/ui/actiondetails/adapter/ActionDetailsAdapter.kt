@@ -2,6 +2,7 @@ package com.smf.events.ui.actiondetails.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actiondetails.model.ActionDetails
 import java.time.Month
 
@@ -93,6 +96,16 @@ class ActionDetailsAdapter(val context: Context) :
             var cost: String? =position.cost
             var latestBidValue: String? =position.latestBidValue
             var branchName:String=position.branchName
+
+            val sharedPreferences =
+                context.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            editor.putInt("bidRequestId", bidRequestId)
+            editor.apply()
+
+
+
+
             if (costingType!="Bidding") {
                 callBackInterface?.callBack("Bidding",bidRequestId,costingType,bidStatus,cost,latestBidValue,branchName)
             }else{

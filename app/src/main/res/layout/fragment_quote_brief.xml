@@ -563,6 +563,7 @@
                         <TextView
                             android:textSize="@dimen/size_16sp"
                             android:textColor="@color/black"
+                            android:id="@+id/serviced_by"
                             android:fontFamily="@font/poppins_regular"
                             android:layout_weight="1.5"
                             android:layout_width="match_parent"
@@ -590,6 +591,7 @@
                             android:textSize="@dimen/size_16sp"
                             android:textColor="@color/black"
                             android:lines="3"
+                            android:id="@+id/address"
                             android:fontFamily="@font/poppins_regular"
                             android:layout_weight="1.5"
                             android:layout_width="match_parent"
@@ -618,6 +620,7 @@
                             android:textSize="@dimen/size_16sp"
                             android:textColor="@color/black"
                             android:lines="2"
+                            android:id="@+id/customer_rating"
                             android:fontFamily="@font/poppins_regular"
                             android:layout_weight="1.5"
                             android:layout_width="match_parent"
@@ -649,7 +652,7 @@
                             android:layout_weight="1.5"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="9 Aug 2022"
+                            android:text="NA"
                             />
                     </LinearLayout>
 

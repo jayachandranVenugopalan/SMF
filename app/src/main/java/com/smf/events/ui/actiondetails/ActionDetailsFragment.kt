@@ -15,6 +15,8 @@ import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionDetailsBinding
 import com.smf.events.helper.ApisResponse
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
@@ -154,6 +156,8 @@ class ActionDetailsFragment :
         branchName: String
     ) {
                postQuoteDetails(bidRequestId, costingType,bidStatus,cost,latestBidValue,branchName)
+
+
     }
     fun postQuoteDetails(
         bidRequestId: Int,

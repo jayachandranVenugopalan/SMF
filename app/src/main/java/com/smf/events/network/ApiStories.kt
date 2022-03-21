@@ -8,6 +8,7 @@ import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
 import com.smf.events.ui.dashboard.model.ServiceCount
 import com.smf.events.ui.emailotp.model.GetLoginInfo
+import com.smf.events.ui.quotebrief.model.QuoteBrief
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuote
 import com.smf.events.ui.signup.model.GetUserDetails
 import com.smf.events.ui.signup.model.UserDetails
@@ -83,7 +84,11 @@ interface ApiStories {
     ): NewRequestList
 
 
-
+    @GET("epm-service/api/app-services/order-info/{bid-request-Id}")
+    suspend fun getQuoteBrief(
+        @Header("Authorization") idToken: String,
+        @Path("bid-request-Id") bidRequestId: Int
+    ): QuoteBrief
 
 
 
