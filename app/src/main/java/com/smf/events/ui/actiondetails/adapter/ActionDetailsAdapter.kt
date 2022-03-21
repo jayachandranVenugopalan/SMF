@@ -9,11 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
 import com.smf.events.ui.actiondetails.model.ActionDetails
-import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import java.time.Month
 
 class ActionDetailsAdapter(val context: Context) :
@@ -34,13 +32,9 @@ class ActionDetailsAdapter(val context: Context) :
     override fun onBindViewHolder(holder: ActionDetailsViewHolder, position: Int) {
 
         holder.onBind(myEventsList[position])
+        holder.details(myEventsList[position],holder)
 
-        holder.likeButton.setOnClickListener {
-            Log.d("TAG", "onBindViewHolder bidRequestId: ${myEventsList[position].bidRequestId} ")
-            Log.d("TAG", "onBindViewHolder costingType: ${myEventsList[position].costingType} ")
-            QuoteDetailsDialog.newInstance()
-                .show((context as FragmentActivity).supportFragmentManager, QuoteDetailsDialog.TAG)
-        }
+
     }
 
 
@@ -88,8 +82,25 @@ class ActionDetailsAdapter(val context: Context) :
             progressDateNumber.text = dateFormat(actionDetails.biddingCutOffDate).substring(0, 2)
         }
 
+        fun details(position: ActionDetails,holder: ActionDetailsViewHolder){
 
-    }
+        holder.likeButton.setOnClickListener {
+
+
+            var bidRequestId:Int=position.bidRequestId
+            var costingType:String=position.costingType
+            var bidStatus:String=position.bidStatus
+            var cost: String? =position.cost
+            var latestBidValue: String? =position.latestBidValue
+            var branchName:String=position.branchName
+            if (costingType!="Bidding") {
+                callBackInterface?.callBack("Bidding",bidRequestId,costingType,bidStatus,cost,latestBidValue,branchName)
+            }else{
+                com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog.newInstance(bidRequestId,costingType,bidStatus,cost,latestBidValue,branchName)
+                    .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager, com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog.TAG)}
+        }
+
+    }}
 
     // Method For Date And Month Arrangement To Display UI
     private fun dateFormat(input: String): String {
@@ -111,7 +122,15 @@ class ActionDetailsAdapter(val context: Context) :
 
     // CallBack Interface
     interface CallBackInterface {
-        suspend fun callBack(status: String)
+         fun callBack(
+             status: String,
+             bidRequestId: Int,
+             costingType: String,
+             bidStatus: String,
+             cost: String?,
+             latestBidValue: String?,
+             branchName: String
+         )
     }
 
 }

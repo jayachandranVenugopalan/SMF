@@ -5,27 +5,31 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionDetailsBinding
-import com.smf.events.databinding.FragmentActionsAndStatusBinding
+import com.smf.events.helper.ApisResponse
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
-import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusViewModel
-import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
+import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter.CallBackInterface
 import com.smf.events.ui.actiondetails.model.ActionDetails
+import com.smf.events.ui.dashboard.DashBoardFragmentDirections
 import com.smf.events.ui.dashboard.model.MyEvents
+import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
+import com.smf.events.ui.quotedetailsdialog.model.BiddingQuote
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
 
 class ActionDetailsFragment :
-    BaseFragment<FragmentActionDetailsBinding, ActionDetailsViewModel>() {
+    BaseFragment<FragmentActionDetailsBinding, ActionDetailsViewModel>(), CallBackInterface {
 
     private lateinit var myActionDetailsRecyclerView: RecyclerView
     lateinit var actionDetailsAdapter: ActionDetailsAdapter
@@ -70,6 +74,7 @@ class ActionDetailsFragment :
         myActionsStatusRecycler()
 
 
+
         val listActions = getActionsDetailsList()
         actionDetailsAdapter.refreshItems(listActions)
 
@@ -81,6 +86,7 @@ class ActionDetailsFragment :
         myActionDetailsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         myActionDetailsRecyclerView.adapter = actionDetailsAdapter
+        actionDetailsAdapter.setCallBackInterface(this)
 
     }
 
@@ -138,5 +144,51 @@ class ActionDetailsFragment :
         }
     }
 
+    override  fun callBack(
+        status: String,
+        bidRequestId: Int,
+        costingType: String,
+        bidStatus: String,
+        cost: String?,
+        latestBidValue: String?,
+        branchName: String
+    ) {
+               postQuoteDetails(bidRequestId, costingType,bidStatus,cost,latestBidValue,branchName)
+    }
+    fun postQuoteDetails(
+        bidRequestId: Int,
+        costingType: String,
+        bidStatus: String,
+        cost: String?,
+        latestBidValue: String?,
+        branchName: String
+    ) {
+        var getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
+            "MyUser",
+            Context.MODE_PRIVATE
+        )
+
+        var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        Log.d(QuoteDetailsDialog.TAG, "PostQuoteDetails: $idToken")
+        var
+        biddingQuote= BiddingQuote(bidRequestId,bidStatus,branchName,"",cost,costingType,"USD($)",null,null,null,null,0)
+        getViewModel().postQuoteDetails(idToken,bidRequestId,biddingQuote)
+            .observe(viewLifecycleOwner, Observer { apiResponse ->
+
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+
+                        Log.d("TAG", "check token result: ${(apiResponse.response)}")
+                        findNavController().navigate(DashBoardFragmentDirections.actionDashBoardFragmentToQuoteBriefFragment())
+//                        activity.dismiss()
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
+                }
+            })
+    }
 
 }

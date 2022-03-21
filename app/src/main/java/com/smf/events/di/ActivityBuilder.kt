@@ -15,6 +15,8 @@ import com.smf.events.ui.actiondetails.ActionDetailsModule
 import com.smf.events.ui.dashboard.DashBoardActivity
 import com.smf.events.ui.quotebrief.QuoteBriefFragment
 import com.smf.events.ui.quotebrief.QuoteBriefModule
+import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
+import com.smf.events.ui.quotedetailsdialog.QuoteDetailsModule
 import com.smf.events.ui.signin.SignInFragment
 import com.smf.events.ui.signin.SignInModule
 import com.smf.events.ui.signup.SignUpFragment
@@ -59,4 +61,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [QuoteBriefModule::class])
     abstract fun provideQuoteBriefFragment(): QuoteBriefFragment
+
+    @ContributesAndroidInjector(modules = [QuoteDetailsModule::class])
+    abstract fun provideQuoteDetailsDialog(): QuoteDetailsDialog
 }

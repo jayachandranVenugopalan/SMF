@@ -8,6 +8,7 @@ import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
 import com.smf.events.ui.dashboard.model.ServiceCount
 import com.smf.events.ui.emailotp.model.GetLoginInfo
+import com.smf.events.ui.quotedetailsdialog.model.BiddingQuote
 import com.smf.events.ui.signup.model.GetUserDetails
 import com.smf.events.ui.signup.model.UserDetails
 import com.smf.events.ui.signup.model.UserDetailsResponse
@@ -72,6 +73,13 @@ interface ApiStories {
         @Query("serviceCategoryId") serviceCategoryId: Int?,
         @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int?,
         @Query("bidStatus") bidStatus: String
+    ): NewRequestList
+
+    @PUT("epm-service/api/app-services/accept-bid/{bid-request-id}")
+    suspend fun postQuoteDetails(
+        @Header("Authorization") idToken: String,
+        @Path("bid-request-id") bidRequestId: Int,
+       @Body biddingQuote: BiddingQuote
     ): NewRequestList
 
 

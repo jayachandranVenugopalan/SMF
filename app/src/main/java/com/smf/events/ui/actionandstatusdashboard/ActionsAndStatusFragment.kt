@@ -177,10 +177,7 @@ class ActionsAndStatusFragment :
 
     // Action Card Click Listener Interface Method
     override fun actionCardClick(myEvents: MyEvents) {
-
-        showToast(myEvents.titleText)
-
-        when (myEvents.titleText) {
+                when (myEvents.titleText) {
             "New request" -> {
                 newRequestApiCall(AppConstants.BID_REQUESTED)
             }
