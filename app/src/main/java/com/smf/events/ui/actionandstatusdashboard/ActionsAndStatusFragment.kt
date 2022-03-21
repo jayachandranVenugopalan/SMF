@@ -60,6 +60,8 @@ class ActionsAndStatusFragment :
         super.onCreate(savedInstanceState)
         Log.d("TAG", "onCreate: ActionsAndStatusFragment called")
         setIdTokenAndSpRegId()
+        serviceCategoryIdAndServiceOnboardingIdSetup()
+
     }
 
     override fun onStart() {
@@ -72,7 +74,7 @@ class ActionsAndStatusFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        actionAndStatusData = ActionAndStatusCount(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
         //Initializing actions recyclerview
         myActionRecyclerView = mDataBinding?.actionsRecyclerview!!
 
@@ -84,12 +86,6 @@ class ActionsAndStatusFragment :
 
         //Status Recycler view
         myStatusRecycler()
-
-        val listActions = getActionsList(actionAndStatusData)
-        actionAdapter.refreshItems(listActions)
-
-        val listStatus = getStatusList(actionAndStatusData)
-        statusAdapter.refreshItems(listStatus)
 
 
     }
@@ -254,12 +250,6 @@ class ActionsAndStatusFragment :
 
     private fun recyclerViewListUpdation() {
 
-//        if (it.serviceAndCategoryId.serviceCategoryId != 0) {
-//            serviceCategoryId = it.serviceAndCategoryId.serviceCategoryId
-//            serviceVendorOnboardingId = it.serviceAndCategoryId.serviceVendorOnboardingId
-//
-//        }
-
         val listActions1 = getActionsList(actionAndStatusData)
         actionAdapter.refreshItems(listActions1)
 
@@ -270,6 +260,20 @@ class ActionsAndStatusFragment :
             "${actionAndStatusData?.actionCount.toString()} PendingItems"
         mDataBinding?.txPendingstatus?.text =
             "${actionAndStatusData?.statusCount.toString()} Status"
+    }
+
+    private fun serviceCategoryIdAndServiceOnboardingIdSetup() {
+        val args = arguments
+        if (args?.getInt("serviceCategoryId") == 0) {
+            if (args.getInt("serviceVendorOnboardingId") == 0) {
+                serviceCategoryId = null
+                serviceVendorOnboardingId = null
+            }
+        } else {
+            serviceCategoryId = args?.getInt("serviceCategoryId")
+            serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
+
+        }
     }
 
 }

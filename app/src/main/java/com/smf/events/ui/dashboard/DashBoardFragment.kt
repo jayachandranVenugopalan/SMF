@@ -18,8 +18,6 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentDashBoardBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
-import com.smf.events.rxbus.RxBus
-import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.dashboard.adapter.MyEventsAdapter
 import com.smf.events.ui.dashboard.model.*
@@ -41,6 +39,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     lateinit var adapter: MyEventsAdapter
     var serviceList = ArrayList<ServicesData>()
     var serviceCategoryId: Int = 0
+    var serviceVendorOnboardingId: Int = 0
     var branchListSpinner = ArrayList<BranchDatas>()
 
     @Inject
@@ -105,20 +104,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         //spinner view for allservices
         getViewModel().allServices(mDataBinding, allServices)
 
-        //spinner view for branches
-        var branchSpinner: ArrayList<String> = ArrayList()
-
-        val branchdataspinner = branchSpinner
-        getViewModel().branches(
-            mDataBinding,
-            branchdataspinner,
-            idToken,
-            spRegId,
-            serviceCategoryId,
-            0
-        )
-
-        actionAndStatusFragment()
+        //actionAndStatusFragment()
     }
 
 
@@ -188,7 +174,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 serviceCategoryId,
                 0
             )
-            // getActionAndStatus(0)
+
         }
         if (serviceList[position].serviceName != "All Service") {
             //getBranches()
@@ -208,9 +194,18 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     //Branch spinner view clicked
     override fun branchItemClick(serviceVendorOnboardingId: Int, name: String?) {
 
-        Log.d("TAG", "branchItemClick serviceCategoryId: $serviceCategoryId")
-        Log.d("TAG", "branchItemClick serviceVendorOnboardingId: ${branchListSpinner[serviceVendorOnboardingId].branchId}")
+        Log.d("TAG", "branchItemClick serviceCategoryId11 $serviceCategoryId")
+        this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
+        Log.d(
+            "TAG",
+            "branchItemClick serviceVendorOnboardingId11: ${branchListSpinner[serviceVendorOnboardingId].branchId}"
+        )
+        Log.d("TAG", "branchItemClick serviceVendorOnboardingId11: $serviceVendorOnboardingId")
 
+        actionAndStatusFragment(
+            serviceCategoryId,
+            branchListSpinner[serviceVendorOnboardingId].branchId
+        )
     }
 
     private fun getServiceCountList(data: Datas): ArrayList<MyEvents> {
@@ -225,9 +220,16 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     // Action And Status UI setUp
-    private fun actionAndStatusFragment() {
+    private fun actionAndStatusFragment(serviceCategoryId: Int, branchId: Int) {
+
+        var args = Bundle()
+        args.putInt("serviceCategoryId", serviceCategoryId)
+        args.putInt("serviceVendorOnboardingId", branchId)
+        var actionAndStatusFragment = ActionsAndStatusFragment()
+        actionAndStatusFragment.arguments = args
+
         requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.action_and_status_layout, ActionsAndStatusFragment())
+            .replace(R.id.action_and_status_layout, actionAndStatusFragment)
             .setReorderingAllowed(true)
             .commit()
     }
