@@ -34,9 +34,7 @@ class ActionsAndStatusFragment :
     lateinit var actionAdapter: ActionsAdapter
     private lateinit var myStatusRecyclerView: RecyclerView
     lateinit var statusAdapter: StatusAdaptor
-    private lateinit var actionDisposable: Disposable
     lateinit var actionAndStatusData: ActionAndStatusCount
-
     var spRegId: Int = 0
     lateinit var idToken: String
     var roleId: Int = 0
@@ -53,7 +51,6 @@ class ActionsAndStatusFragment :
 
     override fun getContentView(): Int = R.layout.fragment_actions_and_status
 
-
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -61,9 +58,16 @@ class ActionsAndStatusFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "onCreate: called")
-
+        Log.d("TAG", "onCreate: ActionsAndStatusFragment called")
         setIdTokenAndSpRegId()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("TAG", "onCreate: ActionsAndStatusFragment called onstart $serviceCategoryId")
+        Log.d("TAG", "onCreate: ActionsAndStatusFragment called onstart $serviceVendorOnboardingId")
+        actionAndStatusApiCall()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,39 +91,6 @@ class ActionsAndStatusFragment :
         val listStatus = getStatusList(actionAndStatusData)
         statusAdapter.refreshItems(listStatus)
 
-        actionDisposable = RxBus.listen(RxEvent.ActionAndStatus::class.java).subscribe {
-
-            Log.d("TAG", "onViewCreated:${it.actionAndStatusCount} ")
-            var actions = it.actionAndStatusCount
-            actionAndStatusData = ActionAndStatusCount(
-                actions.bidRequestedActionsCount,
-                actions.bidSubmittedStatusCount,
-                actions.bidSubmittedActionCount,
-                actions.bidRejectedStatusCount,
-                actions.bidRejectedActionCount,
-                actions.pendingForQuoteActionCount,
-                actions.wonBidStatusCount,
-                actions.lostBidStatusCount,
-                actions.bidTimedOutStatusCount,
-                actions.serviceDoneStatusCount,
-                actions.statusCount,
-                actions.actionCount
-            )
-
-            if (it.serviceAndCategoryId.serviceCategoryId != 0) {
-                serviceCategoryId = it.serviceAndCategoryId.serviceCategoryId
-                serviceVendorOnboardingId = it.serviceAndCategoryId.serviceVendorOnboardingId
-
-            }
-
-            val listActions1 = getActionsList(actionAndStatusData)
-            actionAdapter.refreshItems(listActions1)
-
-            val listStatus = getStatusList(actionAndStatusData)
-            statusAdapter.refreshItems(listStatus)
-
-            getViewModel()?.actionAndStatusCount(mDataBinding!!, actionAndStatusData)
-        }
 
     }
 
@@ -177,7 +148,7 @@ class ActionsAndStatusFragment :
 
     // Action Card Click Listener Interface Method
     override fun actionCardClick(myEvents: MyEvents) {
-                when (myEvents.titleText) {
+        when (myEvents.titleText) {
             "New request" -> {
                 newRequestApiCall(AppConstants.BID_REQUESTED)
             }
@@ -238,8 +209,67 @@ class ActionsAndStatusFragment :
         roleId = getSharedPreferences.getInt("roleId", 0)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (!actionDisposable.isDisposed) actionDisposable.dispose()
+    private fun actionAndStatusApiCall() {
+        getViewModel().getActionAndStatus(
+            idToken,
+            spRegId,
+            serviceCategoryId,
+            serviceVendorOnboardingId
+        )
+            .observe(viewLifecycleOwner, Observer { apiResponse ->
+
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d(
+                            "TAG",
+                            "sample ActionsAndStatusFragment: ${apiResponse.response.success}"
+                        )
+                        Log.d("TAG", "sample ActionsAndStatusFragment: ${apiResponse.response}")
+
+                        actionAndStatusData = ActionAndStatusCount(
+                            apiResponse.response.actionandStatus.bidRequestedActionsCount,
+                            apiResponse.response.actionandStatus.bidSubmittedStatusCount,
+                            apiResponse.response.actionandStatus.bidSubmittedActionCount,
+                            apiResponse.response.actionandStatus.bidRejectedStatusCount,
+                            apiResponse.response.actionandStatus.bidRejectedActionCount,
+                            apiResponse.response.actionandStatus.pendingForQuoteActionCount,
+                            apiResponse.response.actionandStatus.wonBidStatusCount,
+                            apiResponse.response.actionandStatus.lostBidStatusCount,
+                            apiResponse.response.actionandStatus.bidTimedOutStatusCount,
+                            apiResponse.response.actionandStatus.serviceDoneStatusCount,
+                            apiResponse.response.actionandStatus.statusCount,
+                            apiResponse.response.actionandStatus.actionCount
+                        )
+
+                        recyclerViewListUpdation()
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
+                }
+            })
     }
+
+    private fun recyclerViewListUpdation() {
+
+//        if (it.serviceAndCategoryId.serviceCategoryId != 0) {
+//            serviceCategoryId = it.serviceAndCategoryId.serviceCategoryId
+//            serviceVendorOnboardingId = it.serviceAndCategoryId.serviceVendorOnboardingId
+//
+//        }
+
+        val listActions1 = getActionsList(actionAndStatusData)
+        actionAdapter.refreshItems(listActions1)
+
+        val listStatus = getStatusList(actionAndStatusData)
+        statusAdapter.refreshItems(listStatus)
+
+        mDataBinding?.txPendtingitems?.text =
+            "${actionAndStatusData?.actionCount.toString()} PendingItems"
+        mDataBinding?.txPendingstatus?.text =
+            "${actionAndStatusData?.statusCount.toString()} Status"
+    }
+
 }

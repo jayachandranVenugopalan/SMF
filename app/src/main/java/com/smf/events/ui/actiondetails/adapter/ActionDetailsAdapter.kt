@@ -35,7 +35,7 @@ class ActionDetailsAdapter(val context: Context) :
     override fun onBindViewHolder(holder: ActionDetailsViewHolder, position: Int) {
 
         holder.onBind(myEventsList[position])
-        holder.details(myEventsList[position],holder)
+        holder.details(myEventsList[position], holder)
 
 
     }
@@ -72,9 +72,9 @@ class ActionDetailsAdapter(val context: Context) :
         @SuppressLint("SetTextI18n")
         fun onBind(actionDetails: ActionDetails) {
             if (actionDetails.costingType == "Bidding") {
-                amount.text = "$ ${actionDetails.latestBidValue}"
+                amount.text = "$${actionDetails.latestBidValue}"
             }
-            amount.text = "$ ${actionDetails.cost}"
+            amount.text = "$${actionDetails.cost}"
             eventName.text = actionDetails.eventName
             eventType.text = "${actionDetails.branchName} - ${actionDetails.serviceName}"
             code.text = actionDetails.eventServiceDescriptionId.toString()
@@ -85,35 +85,55 @@ class ActionDetailsAdapter(val context: Context) :
             progressDateNumber.text = dateFormat(actionDetails.biddingCutOffDate).substring(0, 2)
         }
 
-        fun details(position: ActionDetails,holder: ActionDetailsViewHolder){
+        fun details(position: ActionDetails, holder: ActionDetailsViewHolder) {
 
-        holder.likeButton.setOnClickListener {
-
-
-            var bidRequestId:Int=position.bidRequestId
-            var costingType:String=position.costingType
-            var bidStatus:String=position.bidStatus
-            var cost: String? =position.cost
-            var latestBidValue: String? =position.latestBidValue
-            var branchName:String=position.branchName
-
-            val sharedPreferences =
-                context.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-            val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            editor.putInt("bidRequestId", bidRequestId)
-            editor.apply()
+            holder.likeButton.setOnClickListener {
 
 
+                var bidRequestId: Int = position.bidRequestId
+                var costingType: String = position.costingType
+                var bidStatus: String = position.bidStatus
+                var cost: String? = position.cost
+                var latestBidValue: String? = position.latestBidValue
+                var branchName: String = position.branchName
+
+                val sharedPreferences =
+                    context.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                editor.putInt("bidRequestId", bidRequestId)
+                editor.apply()
 
 
-            if (costingType!="Bidding") {
-                callBackInterface?.callBack("Bidding",bidRequestId,costingType,bidStatus,cost,latestBidValue,branchName)
-            }else{
-                com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog.newInstance(bidRequestId,costingType,bidStatus,cost,latestBidValue,branchName)
-                    .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager, com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog.TAG)}
+
+
+                if (costingType != "Bidding") {
+                    callBackInterface?.callBack(
+                        "Bidding",
+                        bidRequestId,
+                        costingType,
+                        bidStatus,
+                        cost,
+                        latestBidValue,
+                        branchName
+                    )
+                } else {
+                    com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog.newInstance(
+                        bidRequestId,
+                        costingType,
+                        bidStatus,
+                        cost,
+                        latestBidValue,
+                        branchName
+                    )
+                        .show(
+                            (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                            com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog.TAG
+                        )
+                }
+            }
+
         }
-
-    }}
+    }
 
     // Method For Date And Month Arrangement To Display UI
     private fun dateFormat(input: String): String {
@@ -135,15 +155,15 @@ class ActionDetailsAdapter(val context: Context) :
 
     // CallBack Interface
     interface CallBackInterface {
-         fun callBack(
-             status: String,
-             bidRequestId: Int,
-             costingType: String,
-             bidStatus: String,
-             cost: String?,
-             latestBidValue: String?,
-             branchName: String
-         )
+        fun callBack(
+            status: String,
+            bidRequestId: Int,
+            costingType: String,
+            bidStatus: String,
+            cost: String?,
+            latestBidValue: String?,
+            branchName: String
+        )
     }
 
 }

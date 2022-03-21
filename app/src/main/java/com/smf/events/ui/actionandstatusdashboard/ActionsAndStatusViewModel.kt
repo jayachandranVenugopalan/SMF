@@ -13,16 +13,23 @@ class ActionsAndStatusViewModel @Inject constructor(
     application: Application
 ) :
     BaseViewModel(application) {
-    fun actionAndStatusCount(
-        mDataBinding: FragmentActionsAndStatusBinding,
-        actionAndStatusData: ActionAndStatusCount
-    ) {
-        mDataBinding.txPendtingitems.text =
-            "${actionAndStatusData?.actionCount.toString()} PendingItems"
-        mDataBinding.txPendingstatus.text = "${actionAndStatusData?.statusCount.toString()} Status"
 
+    // Method For Getting Action And Status
+    fun getActionAndStatus(
+        idToken: String,
+        spRegId: Int,
+        serviceCategoryId: Int?,
+        serviceVendorOnboardingId: Int?,
+    ) = liveData(Dispatchers.IO) {
+        emit(
+            actionsAndStatusRepository.getActionAndStatus(
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                serviceVendorOnboardingId
+            )
+        )
     }
-
 
     // Method For Get New Request
     fun getNewRequest(

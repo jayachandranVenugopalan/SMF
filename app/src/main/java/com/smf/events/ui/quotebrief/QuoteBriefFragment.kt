@@ -112,7 +112,7 @@ when (apiResponse.response.data.bidStatus){
         if (response.data.costingType=="Bidding") {
             mDataBinding?.txJobAmount?.text = "$"
         }else{
-            mDataBinding?.txJobAmount?.text = "$"
+            mDataBinding?.txJobAmount?.text = "$${response.data.cost}"
         }
         mDataBinding?.txJobIdnum?.text= response.data.eventServiceDescriptionId.toString()
         mDataBinding?.txEventdateValue?.text=dateFormat(response.data.eventDate)

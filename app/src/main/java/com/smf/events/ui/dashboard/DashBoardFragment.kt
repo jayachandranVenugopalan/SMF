@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewModel>(),
     DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
-    lateinit var rep: Any
+
     var spRegId: Int = 0
     lateinit var idToken: String
     var roleId: Int = 0
@@ -41,7 +41,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     lateinit var adapter: MyEventsAdapter
     var serviceList = ArrayList<ServicesData>()
     var serviceCategoryId: Int = 0
-    lateinit var actionAndStatusData: ActionAndStatusCount
     var branchListSpinner = ArrayList<BranchDatas>()
 
     @Inject
@@ -92,11 +91,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             )
         }
 
-
     }
 
     private fun setAllService() {
-
         var allServiceList: ArrayList<String> = ArrayList()
         serviceList.forEach {
             allServiceList.add(it.serviceName)
@@ -195,7 +192,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 serviceCategoryId,
                 0
             )
-            getActionAndStatus(0)
+            // getActionAndStatus(0)
         }
         if (serviceList[position].serviceName != "All Service") {
             //getBranches()
@@ -224,9 +221,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         )
 
         if (name == "Branches") {
-            getActionAndStatus(0)
+
         } else {
-            getActionAndStatus(branchListSpinner[serviceVendorOnboardingId].branchId)
+            //  getActionAndStatus(branchListSpinner[serviceVendorOnboardingId].branchId)
 
         }
     }
@@ -291,81 +288,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
 
                         setAllService()
-                    }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
-                    }
-                    else -> {
-                    }
-                }
-            })
-        // getActionAndStatus(0)
-
-    }
-
-    //Action and Status ApiCall
-    private fun getActionAndStatus(serviceVendorOnboardingId: Int) {
-
-
-        getViewModel().getActionAndStatus(
-            idToken,
-            spRegId,
-            serviceCategoryId,
-            serviceVendorOnboardingId
-        )
-            .observe(viewLifecycleOwner, Observer { apiResponse ->
-
-                when (apiResponse) {
-                    is ApisResponse.Success -> {
-                        Log.d("TAG", "sample: ${apiResponse.response.success}")
-                        Log.d("TAG", "sample: ${apiResponse.response}")
-                        var newRequestAction: Int =
-                            apiResponse.response.actionandStatus.bidRequestedActionsCount
-                        var bidSubmittedStatusCount: Int =
-                            apiResponse.response.actionandStatus.bidSubmittedStatusCount
-                        var bidSubmittedAction: Int =
-                            apiResponse.response.actionandStatus.bidSubmittedActionCount
-                        var bidRejectedStatusCount: Int =
-                            apiResponse.response.actionandStatus.bidRejectedStatusCount
-                        var bidRejectedActionCount: Int =
-                            apiResponse.response.actionandStatus.bidRejectedActionCount
-                        var pendingForQuoteActionCount: Int =
-                            apiResponse.response.actionandStatus.pendingForQuoteActionCount
-                        var wonBidStatusCount: Int =
-                            apiResponse.response.actionandStatus.wonBidStatusCount
-                        var lostBidStatusCount: Int =
-                            apiResponse.response.actionandStatus.lostBidStatusCount
-                        var bidTimedOutStatusCount: Int =
-                            apiResponse.response.actionandStatus.bidTimedOutStatusCount
-                        var serviceDoneStatusCount: Int =
-                            apiResponse.response.actionandStatus.serviceDoneStatusCount
-                        var statusCount: Int = apiResponse.response.actionandStatus.statusCount
-                        var actionCount: Int = apiResponse.response.actionandStatus.actionCount
-
-                        actionAndStatusData = ActionAndStatusCount(
-                            newRequestAction,
-                            bidSubmittedStatusCount,
-                            bidSubmittedAction,
-                            bidRejectedStatusCount,
-                            bidRejectedActionCount,
-                            pendingForQuoteActionCount,
-                            wonBidStatusCount,
-                            lostBidStatusCount,
-                            bidTimedOutStatusCount,
-                            serviceDoneStatusCount,
-                            statusCount,
-                            actionCount
-                        )
-
-
-                        RxBus.publish(
-                            RxEvent.ActionAndStatus(
-                                actionAndStatusData, ServiceAndCategoryId(
-                                    serviceCategoryId, serviceVendorOnboardingId
-                                )
-                            )
-                        )
-
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")

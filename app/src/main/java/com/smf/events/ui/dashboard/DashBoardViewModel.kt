@@ -83,10 +83,10 @@ class DashBoardViewModel @Inject constructor(
 
         }
         if (name=="Branches"){
-            getActionAndStatus(idToken,spRegId,0,0)
+
         }
         else{
-            getActionAndStatus(idToken, spRegId, serviceCategoryId, serviceVendorOnboardingId)
+
         }
         var spin = mDataBinding!!.spnBranches
 
@@ -166,16 +166,5 @@ class DashBoardViewModel @Inject constructor(
             emit(dashBoardRepository.getServicesBranches(idToken, spRegId, serviceCategoryId))
         }
 
-    // Method For Getting ActionANd Status
-    fun getActionAndStatus(
-        idToken: String,
-        spRegId: Int,
-        serviceCategoryId: Int,
-        serviceVendorOnboardingId: Int,
-    ) = liveData(Dispatchers.IO) {
-        emit(dashBoardRepository.getActionAndStatus(idToken,
-            spRegId,
-            serviceCategoryId,
-            serviceVendorOnboardingId))
-    }
+
 }

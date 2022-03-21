@@ -57,15 +57,9 @@ interface ApiStories {
     suspend fun getActionAndStatus(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
-        @Query("serviceCategoryId") serviceCategoryId: Int,
-        @Query("serviceVendorOnboardingId") serviceVendorOnboardingId: Int
+        @Query("serviceCategoryId") serviceCategoryId: Int?,
+        @Query("serviceVendorOnboardingId") serviceVendorOnboardingId: Int?
     ): ActionAndStatus
-    @GET("epm-service/api/app-services/service-provider-bidding-counts/{sp-reg-id}")
-    suspend fun getActionAndStatusForAll(
-        @Header("Authorization") idToken: String,
-        @Path("sp-reg-id") spRegId: Int
-    ): ActionAndStatus
-
 
     @GET("epm-service/api/app-services/bidding-request-info/{sp-reg-id}")
     suspend fun getNewRequest(
