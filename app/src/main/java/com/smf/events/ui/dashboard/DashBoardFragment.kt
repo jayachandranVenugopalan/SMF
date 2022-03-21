@@ -108,10 +108,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         //spinner view for branches
         var branchSpinner: ArrayList<String> = ArrayList()
 
-        branchListSpinner.forEach {
-            branchSpinner.add(it.branchName)
-        }
-
         val branchdataspinner = branchSpinner
         getViewModel().branches(
             mDataBinding,
@@ -212,20 +208,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     //Branch spinner view clicked
     override fun branchItemClick(serviceVendorOnboardingId: Int, name: String?) {
 
-        Log.d("TAG", "branchItemClick: $serviceVendorOnboardingId")
+        Log.d("TAG", "branchItemClick serviceCategoryId: $serviceCategoryId")
+        Log.d("TAG", "branchItemClick serviceVendorOnboardingId: ${branchListSpinner[serviceVendorOnboardingId].branchId}")
 
-
-        Log.d(
-            "TAG",
-            "branchItemClick serviceVendorOnboardingId: ${branchListSpinner[serviceVendorOnboardingId].branchId}"
-        )
-
-        if (name == "Branches") {
-
-        } else {
-            //  getActionAndStatus(branchListSpinner[serviceVendorOnboardingId].branchId)
-
-        }
     }
 
     private fun getServiceCountList(data: Datas): ArrayList<MyEvents> {
@@ -285,7 +270,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         }
 
                         Log.d("TAG", "sample: mapdata $serviceList")
-
 
                         setAllService()
                     }

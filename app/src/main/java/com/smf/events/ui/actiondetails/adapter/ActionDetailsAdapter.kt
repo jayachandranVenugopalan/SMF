@@ -72,9 +72,12 @@ class ActionDetailsAdapter(val context: Context) :
         @SuppressLint("SetTextI18n")
         fun onBind(actionDetails: ActionDetails) {
             if (actionDetails.costingType == "Bidding") {
-                amount.text = "$${actionDetails.latestBidValue}"
+                if (actionDetails.latestBidValue.isNullOrEmpty()){
+                    amount.text = "$"
+                }else{
+                    amount.text = "$${actionDetails.latestBidValue}"
+                }
             }
-            amount.text = "$${actionDetails.cost}"
             eventName.text = actionDetails.eventName
             eventType.text = "${actionDetails.branchName} - ${actionDetails.serviceName}"
             code.text = actionDetails.eventServiceDescriptionId.toString()
@@ -88,7 +91,6 @@ class ActionDetailsAdapter(val context: Context) :
         fun details(position: ActionDetails, holder: ActionDetailsViewHolder) {
 
             holder.likeButton.setOnClickListener {
-
 
                 var bidRequestId: Int = position.bidRequestId
                 var costingType: String = position.costingType
