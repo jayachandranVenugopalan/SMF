@@ -116,7 +116,6 @@ class QuoteDetailsDialog(
                     fileName = filePath?.substring(filePath.lastIndexOf("/")+1);
                     Log.d(TAG, "logoUploader: $fileUri")
                     if (!fileUri.path.isNullOrEmpty()){
-                        showToast("Choose the File")
                     ConvertToString(fileUri)
                     getViewModel()?.OnCLickok(mDataBinding, bidRequestId, costingType)
                     }

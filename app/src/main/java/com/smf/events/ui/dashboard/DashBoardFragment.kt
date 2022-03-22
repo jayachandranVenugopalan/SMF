@@ -177,13 +177,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
         }
         if (serviceList[position].serviceName != "All Service") {
-            //getBranches()
-            Toast.makeText(
-                requireContext(),
-                serviceList[position].serviceName,
-                Toast.LENGTH_LONG
-            )
-                .show()
+
             serviceCategoryId = (serviceList[position].serviceCategoryId.toInt())
             Log.d("TAG", "itemClick: $branchListSpinner")
             getBranches(serviceCategoryId)
@@ -200,11 +194,16 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             "TAG",
             "branchItemClick serviceVendorOnboardingId11: ${branchListSpinner[serviceVendorOnboardingId].branchId}"
         )
-
+if(name=="Branches"){
         actionAndStatusFragment(
-            serviceCategoryId,
-            branchListSpinner[serviceVendorOnboardingId].branchId
-        )
+           0,
+            0
+        )}else{
+    actionAndStatusFragment(
+        serviceCategoryId,
+        branchListSpinner[serviceVendorOnboardingId].branchId
+    )
+        }
     }
 
     private fun getServiceCountList(data: Datas): ArrayList<MyEvents> {
