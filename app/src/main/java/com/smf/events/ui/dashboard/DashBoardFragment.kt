@@ -200,7 +200,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             "TAG",
             "branchItemClick serviceVendorOnboardingId11: ${branchListSpinner[serviceVendorOnboardingId].branchId}"
         )
-        Log.d("TAG", "branchItemClick serviceVendorOnboardingId11: $serviceVendorOnboardingId")
 
         actionAndStatusFragment(
             serviceCategoryId,

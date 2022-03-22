@@ -41,6 +41,7 @@ class ActionsAndStatusFragment :
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
 
+
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
@@ -185,6 +186,8 @@ class ActionsAndStatusFragment :
     private fun goToActionDetailsFragmentWithDetails(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>) {
         val args = Bundle()
         args.putParcelableArrayList("list", serviceProviderBidRequestDtos as ArrayList)
+        serviceCategoryId?.let { args.putInt("serviceCategoryId", it) }
+        serviceVendorOnboardingId?.let { args.putInt("serviceVendorOnboardingId", it) }
 
         val actionDetailsFragment = ActionDetailsFragment()
         actionDetailsFragment.arguments = args
@@ -263,6 +266,7 @@ class ActionsAndStatusFragment :
     }
 
     private fun serviceCategoryIdAndServiceOnboardingIdSetup() {
+
         val args = arguments
         if (args?.getInt("serviceCategoryId") == 0) {
             if (args.getInt("serviceVendorOnboardingId") == 0) {

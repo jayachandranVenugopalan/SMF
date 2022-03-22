@@ -38,6 +38,9 @@ class ActionDetailsFragment :
     private var closeBtn: ImageView? = null
     private var myList = ArrayList<ServiceProviderBidRequestDto>()
 
+    var serviceCategoryId: Int? = null
+    var serviceVendorOnboardingId: Int? = null
+
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
@@ -56,9 +59,8 @@ class ActionDetailsFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val args = arguments
-        myList = args?.getParcelableArrayList<ServiceProviderBidRequestDto>("list") as ArrayList
-        Log.d("TAG", "newRequestApiCall actionDetailFragment : $myList")
+        categoryIdAndOnboardingIdAndMyListSetup()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,8 +76,6 @@ class ActionDetailsFragment :
 
         //Actions Recycler view
         myActionsStatusRecycler()
-
-
 
         val listActions = getActionsDetailsList()
         actionDetailsAdapter.refreshItems(listActions)
@@ -139,14 +139,20 @@ class ActionDetailsFragment :
     private fun clickListeners() {
 
         closeBtn?.setOnClickListener {
+            var args = Bundle()
+            serviceCategoryId?.let { it1 -> args.putInt("serviceCategoryId", it1) }
+            serviceVendorOnboardingId?.let { it1 -> args.putInt("serviceVendorOnboardingId", it1) }
+            var actionAndStatusFragment = ActionsAndStatusFragment()
+            actionAndStatusFragment.arguments = args
+
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.action_and_status_layout, ActionsAndStatusFragment())
+                .replace(R.id.action_and_status_layout, actionAndStatusFragment)
                 .setReorderingAllowed(true)
                 .commit()
         }
     }
 
-    override  fun callBack(
+    override fun callBack(
         status: String,
         bidRequestId: Int,
         costingType: String,
@@ -155,10 +161,11 @@ class ActionDetailsFragment :
         latestBidValue: String?,
         branchName: String
     ) {
-               postQuoteDetails(bidRequestId, costingType,bidStatus,cost,latestBidValue,branchName)
+        postQuoteDetails(bidRequestId, costingType, bidStatus, cost, latestBidValue, branchName)
 
 
     }
+
     fun postQuoteDetails(
         bidRequestId: Int,
         costingType: String,
@@ -175,8 +182,21 @@ class ActionDetailsFragment :
         var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
         Log.d(QuoteDetailsDialog.TAG, "PostQuoteDetails: $idToken")
         var
-        biddingQuote= BiddingQuote(bidRequestId,bidStatus,branchName,"",cost,costingType,"USD($)",null,null,null,null,0)
-        getViewModel().postQuoteDetails(idToken,bidRequestId,biddingQuote)
+                biddingQuote = BiddingQuote(
+            bidRequestId,
+            bidStatus,
+            branchName,
+            "",
+            cost,
+            costingType,
+            "USD($)",
+            null,
+            null,
+            null,
+            null,
+            0
+        )
+        getViewModel().postQuoteDetails(idToken, bidRequestId, biddingQuote)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
 
                 when (apiResponse) {
@@ -193,6 +213,22 @@ class ActionDetailsFragment :
                     }
                 }
             })
+    }
+
+    private fun categoryIdAndOnboardingIdAndMyListSetup() {
+        val args = arguments
+        serviceCategoryId = args?.getInt("serviceCategoryId")
+        serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
+        myList = args?.getParcelableArrayList<ServiceProviderBidRequestDto>("list") as ArrayList
+        Log.d("TAG", "newRequestApiCall actionDetailFragment : $myList")
+        Log.d(
+            "TAG",
+            "newRequestApiCall actionDetailFragment serviceCategoryId : $serviceCategoryId"
+        )
+        Log.d(
+            "TAG",
+            "newRequestApiCall actionDetailFragment serviceVendorOnboardingId: $serviceVendorOnboardingId"
+        )
     }
 
 }
