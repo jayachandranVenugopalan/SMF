@@ -2,9 +2,7 @@ package com.smf.events.ui.quotebrief
 
 import com.smf.events.helper.ApisResponse
 import com.smf.events.network.ApiStories
-import com.smf.events.ui.actionandstatusdashboard.model.NewRequestList
 import com.smf.events.ui.quotebrief.model.QuoteBrief
-import com.smf.events.ui.quotedetailsdialog.model.BiddingQuote
 import retrofit2.HttpException
 import javax.inject.Inject
 

@@ -26,7 +26,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentQuoteDetailsDialogBinding
 import com.smf.events.helper.ApisResponse
-import com.smf.events.ui.quotedetailsdialog.model.BiddingQuote
+import com.smf.events.helper.AppConstants
+import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -42,7 +43,7 @@ class QuoteDetailsDialog(
     var branchName: String,
 ) : BaseDialogFragment<FragmentQuoteDetailsDialogBinding, QuoteDetailsDialogViewModel>(),
     QuoteDetailsDialogViewModel.CallBackInterface {
-    lateinit var biddingQuote: BiddingQuote
+    lateinit var biddingQuote: BiddingQuotDto
     lateinit var file: File
   var fileName: String?=null
      var fileSize: String?=null
@@ -205,8 +206,8 @@ class QuoteDetailsDialog(
 
         var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
         Log.d(TAG, "PostQuoteDetails: $idToken")
-        biddingQuote = BiddingQuote(bidRequestId,
-            bidStatus,
+        biddingQuote = BiddingQuotDto(bidRequestId,
+            AppConstants.BID_SUBMITTED,
             branchName,
             mDataBinding?.etComments?.text.toString(),
             null,
@@ -223,7 +224,7 @@ class QuoteDetailsDialog(
                 when (apiResponse) {
                     is ApisResponse.Success -> {
 
-                        Log.d("TAG", "Success: ${(apiResponse.response)}")
+                        Log.d("TAG", " quote for dialog Success: ${(apiResponse.response)}")
                         findNavController().navigate(DashBoardFragmentDirections.actionDashBoardFragmentToQuoteBriefFragment())
                         dismiss()
                     }

@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.liveData
 import com.smf.events.base.BaseDialogViewModel
 import com.smf.events.databinding.FragmentQuoteDetailsDialogBinding
-import com.smf.events.ui.quotedetailsdialog.model.BiddingQuote
+import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class QuoteDetailsDialogViewModel @Inject constructor(private val quoteDetailsRe
     interface CallBackInterface {
          fun callBack(status: String)
     }
-    fun postQuoteDetails(idToken: String, bidRequestId: Int,biddingQuote: BiddingQuote) = liveData(Dispatchers.IO) {
+    fun postQuoteDetails(idToken: String, bidRequestId: Int,biddingQuote: BiddingQuotDto) = liveData(Dispatchers.IO) {
         emit(quoteDetailsRepository.postQuoteDetails(idToken, bidRequestId,biddingQuote))
     }
 }

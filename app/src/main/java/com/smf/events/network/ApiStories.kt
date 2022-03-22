@@ -9,7 +9,7 @@ import com.smf.events.ui.dashboard.model.Branches
 import com.smf.events.ui.dashboard.model.ServiceCount
 import com.smf.events.ui.emailotp.model.GetLoginInfo
 import com.smf.events.ui.quotebrief.model.QuoteBrief
-import com.smf.events.ui.quotedetailsdialog.model.BiddingQuote
+import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import com.smf.events.ui.signup.model.GetUserDetails
 import com.smf.events.ui.signup.model.UserDetails
 import com.smf.events.ui.signup.model.UserDetailsResponse
@@ -74,7 +74,7 @@ interface ApiStories {
     suspend fun postQuoteDetails(
         @Header("Authorization") idToken: String,
         @Path("bid-request-id") bidRequestId: Int,
-       @Body biddingQuote: BiddingQuote
+       @Body biddingQuoteDto: BiddingQuotDto
     ): NewRequestList
 
 

@@ -15,8 +15,7 @@ import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionDetailsBinding
 import com.smf.events.helper.ApisResponse
-import com.smf.events.rxbus.RxBus
-import com.smf.events.rxbus.RxEvent
+import com.smf.events.helper.AppConstants
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
@@ -25,7 +24,7 @@ import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.dashboard.DashBoardFragmentDirections
 import com.smf.events.ui.dashboard.model.MyEvents
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
-import com.smf.events.ui.quotedetailsdialog.model.BiddingQuote
+import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -182,9 +181,9 @@ class ActionDetailsFragment :
         var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
         Log.d(QuoteDetailsDialog.TAG, "PostQuoteDetails: $idToken")
         var
-                biddingQuote = BiddingQuote(
+                biddingQuote = BiddingQuotDto(
             bidRequestId,
-            bidStatus,
+            AppConstants.BID_SUBMITTED,
             branchName,
             "",
             cost,
