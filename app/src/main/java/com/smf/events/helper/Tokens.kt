@@ -16,6 +16,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
@@ -25,24 +28,26 @@ class Tokens @Inject constructor() {
     // Method for verify token validity
     fun checkTokenExpiry(application: SMFApp, caller: String, idToken: String) {
 
-//        var newDateTime = Date().time / 1000
-//        var newTime = Math.round(newDateTime.toDouble())
-//        Log.d("TAG", "checkTokenExpiry refereshTokensystemtime: $newTime")
-//        val splitToken = idToken.split('.');
-//        val decodedBytes = Base64.getDecoder().decode(splitToken[1])
-//        val decodeToken = String(decodedBytes)
-//        Log.d("TAG", "checkTokenExpiry refereshToken: ${decodeToken}")
-//        val tokenObj = JSONObject(decodeToken)
-//        var time = tokenObj.getString("exp")
-//        Log.d("TAG", "checkTokenExpiry refereshTokentime: ${time}")
-//        val newTimeMin = newTime + 5 * 60;
-//        if (newTimeMin > time.toDouble()) {
-//            Log.d("TAG", "checkTokenExpiry: inside if loop")
+        Log.d("TAG", "checkTokenExpiry refereshTokentime idToken: $idToken")
+//        Log.d("TAG", "checkTokenExpiry refereshTokentime idToken: $")
+
+
+        val splitToken = idToken.split('.');
+        val decodedBytes = Base64.getDecoder().decode(splitToken[1])
+        val decodeToken = String(decodedBytes)
+
+        val tokenObj = JSONObject(decodeToken)
+        var time = tokenObj.getString("exp")
+        Log.d("TAG", "checkTokenExpiry refereshTokentime from aws: $time")
+
+       var timeFormat = SimpleDateFormat("yyyy.MM.dd HH:mm")
+        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"))
+        Log.d("TAG", "checkTokenExpiry refereshTokentime token Current time: ${timeFormat.format(Calendar.getInstance().time)}")
+        Log.d("TAG", "checkTokenExpiry refereshTokentime token AWS exp time: ${timeFormat.format(time.toLong())}")
+
+
         Tokens().fetchSession(application, myLambFunc, caller)
-//        }else{
-                Log.d("TAG", "checkTokenExpiry: outside if loop")
-//        tokenNotExpired(idToken, myLambFunc, caller)
-//    }
+
 
     }
 

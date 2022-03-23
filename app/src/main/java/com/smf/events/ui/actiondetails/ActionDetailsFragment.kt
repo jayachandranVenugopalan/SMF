@@ -36,9 +36,9 @@ class ActionDetailsFragment :
     lateinit var actionDetailsAdapter: ActionDetailsAdapter
     private var closeBtn: ImageView? = null
     private var myList = ArrayList<ServiceProviderBidRequestDto>()
-
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
+    var newRequestCount: Int? = 0
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -66,6 +66,7 @@ class ActionDetailsFragment :
         super.onViewCreated(view, savedInstanceState)
 
         closeBtn = mDataBinding?.closeBtn
+        mDataBinding?.textNewRequest!!.text = "${newRequestCount.toString()} New request"
 
         //Initializing actions recyclerview
         myActionDetailsRecyclerView = mDataBinding?.actionDetailsRecyclerview!!
@@ -217,6 +218,7 @@ class ActionDetailsFragment :
     private fun categoryIdAndOnboardingIdAndMyListSetup() {
         val args = arguments
         serviceCategoryId = args?.getInt("serviceCategoryId")
+        newRequestCount = args?.getInt("newRequestCount")
         serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
         myList = args?.getParcelableArrayList<ServiceProviderBidRequestDto>("list") as ArrayList
         Log.d("TAG", "newRequestApiCall actionDetailFragment : $myList")

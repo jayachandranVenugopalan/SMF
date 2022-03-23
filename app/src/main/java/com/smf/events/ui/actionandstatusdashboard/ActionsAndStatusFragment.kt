@@ -44,6 +44,7 @@ class ActionsAndStatusFragment :
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
+    var newRequestCount: Int =0
 
 
     @Inject
@@ -121,6 +122,7 @@ class ActionsAndStatusFragment :
     private fun getActionsList(actionAndStatusData: ActionAndStatusCount?): ArrayList<MyEvents> {
         var list = ArrayList<MyEvents>()
         list.add(MyEvents(actionAndStatusData?.bidRequestedActionsCount.toString(), "New request"))
+        newRequestCount = actionAndStatusData!!.bidRequestedActionsCount
         list.add(
             MyEvents(
                 actionAndStatusData?.pendingForQuoteActionCount.toString(),
@@ -215,6 +217,7 @@ class ActionsAndStatusFragment :
     private fun goToActionDetailsFragmentWithDetails(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>) {
         val args = Bundle()
         args.putParcelableArrayList("list", serviceProviderBidRequestDtos as ArrayList)
+        args.putInt("newRequestCount",newRequestCount)
         serviceCategoryId?.let { args.putInt("serviceCategoryId", it) }
         serviceVendorOnboardingId?.let { args.putInt("serviceVendorOnboardingId", it) }
 

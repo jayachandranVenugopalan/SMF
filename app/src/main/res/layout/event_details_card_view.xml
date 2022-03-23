@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@+id/event_title_text"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/size_150dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/size_12dp"
             android:layout_marginTop="@dimen/size_12dp"
@@ -44,8 +44,7 @@
             app:layout_constraintEnd_toStartOf="@+id/amount_text"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/event_title_text"
-            app:layout_constraintTop_toTopOf="@+id/event_title_text"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="@+id/event_title_text" />
 
         <TextView
             android:id="@+id/amount_text"
@@ -90,8 +89,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="@dimen/size_120dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/corner_radius_background"
-            android:padding="@dimen/size_10dp"
+            android:padding="@dimen/size_8dp"
             app:layout_constraintBottom_toBottomOf="@+id/event_type_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
@@ -125,13 +125,13 @@
 
             <ProgressBar
                 android:id="@+id/progress_bar"
+                style="@style/CircularDeterminateProgressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/CircularDeterminateProgressBar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/text_bid_cut_off"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/progress_date_number"
