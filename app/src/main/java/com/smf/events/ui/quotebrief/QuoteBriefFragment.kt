@@ -10,25 +10,31 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.smf.events.R
+import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.Tokens
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.withContext
 import java.time.Month
 import javax.inject.Inject
 
 
 class QuoteBriefFragment :
     BaseFragment<com.smf.events.databinding.FragmentQuoteBriefBinding, QuoteBriefViewModel>(),
-    QuoteBriefViewModel.CallBackInterface {
+    QuoteBriefViewModel.CallBackInterface,Tokens.IdTokenCallBackInterface {
     var expand = false
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-    lateinit var actionDisposable: Disposable
+    @Inject
+    lateinit var tokens: Tokens
     var bidRequestId: Int? = 0
+    lateinit var idToken:String
     override fun getViewModel(): QuoteBriefViewModel? =
         ViewModelProvider(this, factory).get(QuoteBriefViewModel::class.java)
 
@@ -41,7 +47,15 @@ class QuoteBriefFragment :
         super.onAttach(context)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setIdTokenAndSpRegId()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // token CallBackInterface
+        tokens.setCallBackInterface(this)
+
         getViewModel()?.backButtonPressed(mDataBinding!!)
 
         getViewModel()?.setCallBackInterface(this)
@@ -49,45 +63,8 @@ class QuoteBriefFragment :
 
         getViewModel()?.expandableView(mDataBinding, expand)
 
-        var getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
 
-        var bidRequestId: Int? = getSharedPreferences?.getInt("bidRequestId", 0)
-        Log.d(QuoteDetailsDialog.TAG, "PostQuoteDetails2: $bidRequestId")
-
-        var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
-        Log.d(QuoteDetailsDialog.TAG, "PostQuoteDetails1: $idToken")
-
-        getViewModel()?.getQuoteBrief(idToken, bidRequestId!!)
-            ?.observe(viewLifecycleOwner, Observer { apiResponse ->
-
-                when (apiResponse) {
-                    is ApisResponse.Success -> {
-
-                        Log.d("TAG", "Quotedetails Succcess: ${(apiResponse.response)}")
-                        apiResponse.response.data.eventDate
-
-
-                        setQuoteBrief(apiResponse.response)
-                        when (apiResponse.response.data.bidStatus) {
-
-                            "BID REQUESTED" -> {}
-                            "WON" -> {
-                                //        //state progress two completed
-                                getViewModel()?.progress2Completed(mDataBinding)
-                                mDataBinding?.txWonReject?.text = "Won"
-                            }
-                        }
-                    }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
-                    }
-                    else -> {
-                    }
-                }
-            })
+        apiTokenValidationQuoteBrief()
 
 //        //state progress three completed
 //        getViewModel()?.progress3Completed(mDataBinding)
@@ -107,10 +84,6 @@ class QuoteBriefFragment :
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (!actionDisposable.isDisposed) actionDisposable.dispose()
-    }
 
     fun setQuoteBrief(response: QuoteBrief) {
         mDataBinding?.txJobTitle?.text = response.data.eventName
@@ -145,5 +118,63 @@ class QuoteBriefFragment :
         }
         val month = Month.of(monthCount.toInt()).toString().substring(0, 3)
         return "$date $month $year"
+    }
+
+    private fun setIdTokenAndSpRegId() {
+        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
+            "MyUser",
+            Context.MODE_PRIVATE
+        )
+        bidRequestId= getSharedPreferences?.getInt("bidRequestId", 0)
+
+         idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+    }
+
+    private fun quoteBriefApiCall(){
+        getViewModel()?.getQuoteBrief(idToken, bidRequestId!!)
+            ?.observe(viewLifecycleOwner, Observer { apiResponse ->
+
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+
+                        Log.d("TAG", "Quotedetails Succcess: ${(apiResponse.response)}")
+                        apiResponse.response.data.eventDate
+
+
+                        setQuoteBrief(apiResponse.response)
+                        when (apiResponse.response.data.bidStatus) {
+
+                            "BID REQUESTED" -> {}
+                            "WON" -> {
+                                //        //state progress two completed
+                                getViewModel()?.progress2Completed(mDataBinding)
+                                mDataBinding?.txWonReject?.text = "Won"
+                            }
+                        }
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
+                }
+            })
+    }
+
+    override suspend fun tokenCallBack(idToken: String, caller: String) {
+        withContext(Main){
+            quoteBriefApiCall()
+        }
+    }
+
+
+    private fun apiTokenValidationQuoteBrief(){
+        if (idToken.isNotEmpty()) {
+            Log.d("TAG", "onResume: called")
+            tokens.checkTokenExpiry(
+                requireActivity().applicationContext as SMFApp,
+                "quote_brief"
+                ,idToken!!)
+        }
     }
 }

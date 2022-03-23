@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
 import com.smf.events.R
+import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionsAndStatusBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
@@ -24,11 +26,13 @@ import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ActionsAndStatusFragment :
     BaseFragment<FragmentActionsAndStatusBinding, ActionsAndStatusViewModel>(),
-    ActionsAdapter.OnActionCardClickListener {
+    ActionsAdapter.OnActionCardClickListener ,Tokens.IdTokenCallBackInterface{
 
     private lateinit var myActionRecyclerView: RecyclerView
     lateinit var actionAdapter: ActionsAdapter
@@ -44,6 +48,9 @@ class ActionsAndStatusFragment :
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+@Inject
+    lateinit var tokens: Tokens
+
 
     override fun getViewModel(): ActionsAndStatusViewModel =
         ViewModelProvider(this, factory).get(ActionsAndStatusViewModel::class.java)
@@ -69,7 +76,9 @@ class ActionsAndStatusFragment :
         super.onStart()
         Log.d("TAG", "onCreate: ActionsAndStatusFragment called onstart $serviceCategoryId")
         Log.d("TAG", "onCreate: ActionsAndStatusFragment called onstart $serviceVendorOnboardingId")
-        actionAndStatusApiCall()
+        tokens.setCallBackInterface(this)
+        apiTokenValidationActionaAndStatus()
+    // actionAndStatusApiCall()
 
     }
 
@@ -147,7 +156,8 @@ class ActionsAndStatusFragment :
     override fun actionCardClick(myEvents: MyEvents) {
         when (myEvents.titleText) {
             "New request" -> {
-                newRequestApiCall(AppConstants.BID_REQUESTED)
+               // newRequestApiCall(AppConstants.BID_REQUESTED)
+                apiTokenValidationNewRequest()
             }
             else -> {
                 Log.d("TAG", "newRequestApiCallsample :else block")
@@ -155,7 +165,24 @@ class ActionsAndStatusFragment :
         }
 
     }
-
+private fun apiTokenValidationNewRequest(){
+    if (idToken.isNotEmpty()) {
+        Log.d("TAG", "onResume: called")
+        tokens.checkTokenExpiry(
+            requireActivity().applicationContext as SMFApp,
+            "newRequest"
+            ,idToken)
+    }
+}
+    private fun apiTokenValidationActionaAndStatus(){
+        if (idToken.isNotEmpty()) {
+            Log.d("TAG", "onResume: called")
+            tokens.checkTokenExpiry(
+                requireActivity().applicationContext as SMFApp,
+                "actionAndStatus"
+                ,idToken)
+        }
+    }
     private fun newRequestApiCall(bidRequested: String) {
         getViewModel().getNewRequest(
             idToken,
@@ -277,6 +304,15 @@ class ActionsAndStatusFragment :
             serviceCategoryId = args?.getInt("serviceCategoryId")
             serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
 
+        }
+    }
+
+    override suspend fun tokenCallBack(idToken: String, caller: String) {
+        withContext(Dispatchers.Main){
+            when(caller){
+                "newRequest"->newRequestApiCall(AppConstants.BID_REQUESTED)
+                "actionAndStatus"->actionAndStatusApiCall()
+            }
         }
     }
 

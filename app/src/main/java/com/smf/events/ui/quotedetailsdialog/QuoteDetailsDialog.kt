@@ -1,6 +1,7 @@
 package com.smf.events.ui.quotedetailsdialog
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -23,12 +24,16 @@ import androidx.annotation.RequiresApi
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentQuoteDetailsDialogBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.Tokens
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 import java.lang.Exception
@@ -41,14 +46,15 @@ class QuoteDetailsDialog(
     var cost: String?,
     var latestBidValue: String?,
     var branchName: String,
+
 ) : BaseDialogFragment<FragmentQuoteDetailsDialogBinding, QuoteDetailsDialogViewModel>(),
-    QuoteDetailsDialogViewModel.CallBackInterface {
+    QuoteDetailsDialogViewModel.CallBackInterface,Tokens.IdTokenCallBackInterface {
     lateinit var biddingQuote: BiddingQuotDto
     lateinit var file: File
   var fileName: String?=null
      var fileSize: String?=null
      var fileContent: String?=null
-
+    lateinit var idToken: String
     companion object {
 
         const val TAG = "CustomDialogFragment"
@@ -78,7 +84,8 @@ class QuoteDetailsDialog(
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-
+    @Inject
+    lateinit var tokens: Tokens
     override fun getViewModel(): QuoteDetailsDialogViewModel? =
         ViewModelProvider(this, factory).get(QuoteDetailsDialogViewModel::class.java)
 
@@ -92,11 +99,16 @@ class QuoteDetailsDialog(
     }
     //tasks that need to be done after the creation of Dialog
 
+
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //getting IdToken
+        setIdTokenAndSpRegId()
+
+        // token CallBackInterface
+        tokens.setCallBackInterface(this)
         // Quote ViewModel CallBackInterface
-        Log.d(TAG, "onViewCreated: new day")
         getViewModel()?.setCallBackInterface(this)
 
         fileUploader()
@@ -190,8 +202,7 @@ class QuoteDetailsDialog(
     override fun callBack(status: String) {
         if (status == "Checked") {
 
-            PostQuoteDetails()
-
+            apiTokenValidationQuoteDetailsDialog()
 
         }
     }
@@ -235,6 +246,29 @@ class QuoteDetailsDialog(
                     }
                 }
             })
+    }
+
+    override suspend fun tokenCallBack(idToken: String, caller: String) {
+        withContext(Main){
+            PostQuoteDetails()
+        }
+    }
+    private fun apiTokenValidationQuoteDetailsDialog(){
+        if (idToken.isNotEmpty()) {
+            Log.d("TAG", "onResume: called")
+            tokens.checkTokenExpiry(
+                requireActivity().applicationContext as SMFApp,
+                "quote_dialog"
+                ,idToken!!)
+        }
+    }
+    private fun setIdTokenAndSpRegId() {
+        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
+            "MyUser",
+            Context.MODE_PRIVATE
+        )
+        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+
     }
 
 }

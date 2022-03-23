@@ -40,7 +40,7 @@ class Tokens @Inject constructor() {
 //            Log.d("TAG", "checkTokenExpiry: inside if loop")
         Tokens().fetchSession(application, myLambFunc, caller)
 //        }else{
-        //        Log.d("TAG", "checkTokenExpiry: outside if loop")
+                Log.d("TAG", "checkTokenExpiry: outside if loop")
 //        tokenNotExpired(idToken, myLambFunc, caller)
 //    }
 

@@ -82,12 +82,6 @@ class DashBoardViewModel @Inject constructor(
              name=it
 
         }
-        if (name=="Branches"){
-
-        }
-        else{
-
-        }
         var spin = mDataBinding!!.spnBranches
 
         spin.onItemSelectedListener = this

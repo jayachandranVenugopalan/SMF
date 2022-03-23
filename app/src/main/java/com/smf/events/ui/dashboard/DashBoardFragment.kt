@@ -118,10 +118,16 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         Log.d("TAG", "check clickBtn dashboard after ")
         withContext(Main) {
+when(caller){
+    "event_type"->   getAllServiceAndCounts()
+    "branches"->getBranches(serviceCategoryId)
+}
 
-            getAllServiceAndCounts()
 
         }
+
+
+
     }
 
     // Method for restrict user back button
@@ -177,10 +183,22 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
         }
         if (serviceList[position].serviceName != "All Service") {
+//            var branchSpinner: ArrayList<BranchDatas> = ArrayList()
+//            branchSpinner.add(BranchDatas("Branches", 0))
+//            branchListSpinner=branchSpinner
 
             serviceCategoryId = (serviceList[position].serviceCategoryId.toInt())
             Log.d("TAG", "itemClick: $branchListSpinner")
-            getBranches(serviceCategoryId)
+
+            if (idToken.isNotEmpty()) {
+                Log.d("TAG", "onResume: called")
+                tokens.checkTokenExpiry(
+                    requireActivity().applicationContext as SMFApp,
+                    "branches"
+                ,idToken)
+            }
+
+            //getBranches(serviceCategoryId)
             branchListSpinner.clear()
         }
     }
