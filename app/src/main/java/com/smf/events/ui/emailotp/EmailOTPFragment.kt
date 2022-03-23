@@ -96,7 +96,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                 if (idToken.isNotEmpty()) {
                     tokens.checkTokenExpiry(
                         requireActivity().applicationContext as SMFApp,
-                        "event_type"
+                        "event_type", idToken
                     )
                 }
             }

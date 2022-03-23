@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -86,7 +85,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         if (idToken.isNotEmpty()) {
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                "event_type"
+                "event_type", idToken
             )
         }
 
@@ -152,6 +151,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                             Log.d("TAG", "token 184 result: ${apiResponse.exception}")
                             showToast("Not ok")
                         }
+                        else -> {}
                     }
                 })
         }
@@ -194,15 +194,16 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             "TAG",
             "branchItemClick serviceVendorOnboardingId11: ${branchListSpinner[serviceVendorOnboardingId].branchId}"
         )
-if(name=="Branches"){
-        actionAndStatusFragment(
-           0,
-            0
-        )}else{
-    actionAndStatusFragment(
-        serviceCategoryId,
-        branchListSpinner[serviceVendorOnboardingId].branchId
-    )
+        if (name == "Branches") {
+            actionAndStatusFragment(
+                0,
+                0
+            )
+        } else {
+            actionAndStatusFragment(
+                serviceCategoryId,
+                branchListSpinner[serviceVendorOnboardingId].branchId
+            )
         }
     }
 

@@ -135,7 +135,7 @@ class DashBoardViewModel @Inject constructor(
     interface CallBackInterface {
         fun callBack(token: String)
         fun itemClick(msg: Int)
-        fun branchItemClick(branchPos: Int, name: String?)
+        fun branchItemClick(serviceVendorOnboardingId: Int, name: String?)
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position1: Int, p3: Long) {

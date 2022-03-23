@@ -20,15 +20,19 @@ import java.time.Month
 import javax.inject.Inject
 
 
-class QuoteBriefFragment : BaseFragment<com.smf.events.databinding.FragmentQuoteBriefBinding,QuoteBriefViewModel>() ,QuoteBriefViewModel.CallBackInterface{
-    var expand=false
+class QuoteBriefFragment :
+    BaseFragment<com.smf.events.databinding.FragmentQuoteBriefBinding, QuoteBriefViewModel>(),
+    QuoteBriefViewModel.CallBackInterface {
+    var expand = false
+
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-lateinit var actionDisposable:Disposable
- var bidRequestId:Int?=0
-    override fun getViewModel(): QuoteBriefViewModel? =ViewModelProvider(this,factory).get(QuoteBriefViewModel::class.java)
+    lateinit var actionDisposable: Disposable
+    var bidRequestId: Int? = 0
+    override fun getViewModel(): QuoteBriefViewModel? =
+        ViewModelProvider(this, factory).get(QuoteBriefViewModel::class.java)
 
-    override fun getBindingVariable(): Int =BR.quoteBriefViewModel
+    override fun getBindingVariable(): Int = BR.quoteBriefViewModel
 
     override fun getContentView(): Int = R.layout.fragment_quote_brief
 
@@ -43,7 +47,7 @@ lateinit var actionDisposable:Disposable
         getViewModel()?.setCallBackInterface(this)
 
 
-        getViewModel()?.expandableView(mDataBinding,expand)
+        getViewModel()?.expandableView(mDataBinding, expand)
 
         var getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
             "MyUser",
@@ -56,82 +60,86 @@ lateinit var actionDisposable:Disposable
         var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
         Log.d(QuoteDetailsDialog.TAG, "PostQuoteDetails1: $idToken")
 
-getViewModel()?.getQuoteBrief(idToken,bidRequestId!!)?.observe(viewLifecycleOwner, Observer { apiResponse ->
+        getViewModel()?.getQuoteBrief(idToken, bidRequestId!!)
+            ?.observe(viewLifecycleOwner, Observer { apiResponse ->
 
-    when (apiResponse) {
-        is ApisResponse.Success -> {
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
 
-            Log.d("TAG", "Quotedetails Succcess: ${(apiResponse.response)}")
-            apiResponse.response.data.eventDate
+                        Log.d("TAG", "Quotedetails Succcess: ${(apiResponse.response)}")
+                        apiResponse.response.data.eventDate
 
 
-            setQuoteBrief(apiResponse.response)
-when (apiResponse.response.data.bidStatus){
+                        setQuoteBrief(apiResponse.response)
+                        when (apiResponse.response.data.bidStatus) {
 
-   "BID REQUESTED"->{}
-    "WON"->{
-        //        //state progress two completed
-     getViewModel()?.progress2Completed(mDataBinding)
-        mDataBinding?.txWonReject?.text="Won"
-    }
-}
-        }
-        is ApisResponse.Error -> {
-            Log.d("TAG", "check token result: ${apiResponse.exception}")
-        }
-        else -> {
-        }
-    }
-})
+                            "BID REQUESTED" -> {}
+                            "WON" -> {
+                                //        //state progress two completed
+                                getViewModel()?.progress2Completed(mDataBinding)
+                                mDataBinding?.txWonReject?.text = "Won"
+                            }
+                        }
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
+                }
+            })
 
 //        //state progress three completed
 //        getViewModel()?.progress3Completed(mDataBinding)
 //        //state progress four completed
 //        getViewModel()?.progress4Completed(mDataBinding)
-        }
+    }
 
-        override fun callBack(messages: String) {
+    override fun callBack(messages: String) {
 
-        when(messages){
+        when (messages) {
 
             "onBackClicked" -> {
                 findNavController().navigate(
-                    QuoteBriefFragmentDirections.actionQuoteBriefFragmentToDashBoardFragment())
+                    QuoteBriefFragmentDirections.actionQuoteBriefFragmentToDashBoardFragment()
+                )
             }
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         if (!actionDisposable.isDisposed) actionDisposable.dispose()
     }
 
     fun setQuoteBrief(response: QuoteBrief) {
-        mDataBinding?.txJobTitle?.text=response.data.eventName
-        mDataBinding?.txCatering?.text="${response.data.serviceName}-${response.data.branchName}"
-        mDataBinding?.txJobTitle?.text=response.data.eventName
-        if (response.data.costingType=="Bidding") {
-            mDataBinding?.txJobAmount?.text = "$"
-        }else{
+        mDataBinding?.txJobTitle?.text = response.data.eventName
+        mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
+        mDataBinding?.txJobTitle?.text = response.data.eventName
+        if (response.data.costingType == "Bidding") {
+            mDataBinding?.txJobAmount?.text = "$${response.data.latestBidValue}"
+        } else {
             mDataBinding?.txJobAmount?.text = "$${response.data.cost}"
         }
-        mDataBinding?.txJobIdnum?.text= response.data.eventServiceDescriptionId.toString()
-        mDataBinding?.txEventdateValue?.text=dateFormat(response.data.eventDate)
-        mDataBinding?.txBidProposalDateValue?.text=dateFormat(response.data.bidRequestedDate)
-        mDataBinding?.txCutOffDateValue?.text=dateFormat(response.data.biddingCutOffDate)
-        mDataBinding?.serviceDateValue?.text=dateFormat(response.data.serviceDate)
-        mDataBinding?.paymentStatusValue?.text="NA"
-        mDataBinding?.servicedBy?.text="NA"
-        mDataBinding?.address?.text="${response.data.serviceAddressDto.addressLine1}  " +
+        mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
+        mDataBinding?.txEventdateValue?.text = dateFormat(response.data.eventDate)
+        mDataBinding?.txBidProposalDateValue?.text = dateFormat(response.data.bidRequestedDate)
+        mDataBinding?.txCutOffDateValue?.text = dateFormat(response.data.biddingCutOffDate)
+        mDataBinding?.serviceDateValue?.text = dateFormat(response.data.serviceDate)
+        mDataBinding?.paymentStatusValue?.text = "NA"
+        mDataBinding?.servicedBy?.text = "NA"
+        mDataBinding?.address?.text = "${response.data.serviceAddressDto.addressLine1}  " +
                 "${response.data.serviceAddressDto.addressLine2}   " +
                 "${response.data.serviceAddressDto.city}"
-        mDataBinding?.customerRating?.text="NA"
+        mDataBinding?.customerRating?.text = "NA"
 
 
     }
+
     private fun dateFormat(input: String): String {
         var monthCount = input.substring(0, 2)
         val date = input.substring(3, 5)
-        val year=input.substring(6,10)
+        val year = input.substring(6, 10)
         if (monthCount[0].digitToInt() == 0) {
             monthCount = monthCount[1].toString()
         }
