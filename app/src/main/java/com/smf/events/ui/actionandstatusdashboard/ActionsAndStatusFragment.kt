@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 class ActionsAndStatusFragment :
     BaseFragment<FragmentActionsAndStatusBinding, ActionsAndStatusViewModel>(),
-    ActionsAdapter.OnActionCardClickListener ,Tokens.IdTokenCallBackInterface{
+    ActionsAdapter.OnActionCardClickListener, Tokens.IdTokenCallBackInterface {
 
     private lateinit var myActionRecyclerView: RecyclerView
     lateinit var actionAdapter: ActionsAdapter
@@ -48,7 +48,8 @@ class ActionsAndStatusFragment :
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-@Inject
+
+    @Inject
     lateinit var tokens: Tokens
 
 
@@ -77,8 +78,8 @@ class ActionsAndStatusFragment :
         Log.d("TAG", "onCreate: ActionsAndStatusFragment called onstart $serviceCategoryId")
         Log.d("TAG", "onCreate: ActionsAndStatusFragment called onstart $serviceVendorOnboardingId")
         tokens.setCallBackInterface(this)
-        apiTokenValidationActionaAndStatus()
-    // actionAndStatusApiCall()
+        //  apiTokenValidationActionaAndStatus()
+        actionAndStatusApiCall()
 
     }
 
@@ -156,7 +157,7 @@ class ActionsAndStatusFragment :
     override fun actionCardClick(myEvents: MyEvents) {
         when (myEvents.titleText) {
             "New request" -> {
-               // newRequestApiCall(AppConstants.BID_REQUESTED)
+                // newRequestApiCall(AppConstants.BID_REQUESTED)
                 apiTokenValidationNewRequest()
             }
             else -> {
@@ -165,24 +166,25 @@ class ActionsAndStatusFragment :
         }
 
     }
-private fun apiTokenValidationNewRequest(){
-    if (idToken.isNotEmpty()) {
-        Log.d("TAG", "onResume: called")
-        tokens.checkTokenExpiry(
-            requireActivity().applicationContext as SMFApp,
-            "newRequest"
-            ,idToken)
-    }
-}
-    private fun apiTokenValidationActionaAndStatus(){
+
+    private fun apiTokenValidationNewRequest() {
         if (idToken.isNotEmpty()) {
             Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                "actionAndStatus"
-                ,idToken)
+                "newRequest", idToken)
         }
     }
+
+    private fun apiTokenValidationActionaAndStatus() {
+        if (idToken.isNotEmpty()) {
+            Log.d("TAG", "onResume: called")
+            tokens.checkTokenExpiry(
+                requireActivity().applicationContext as SMFApp,
+                "actionAndStatus", idToken)
+        }
+    }
+
     private fun newRequestApiCall(bidRequested: String) {
         getViewModel().getNewRequest(
             idToken,
@@ -300,6 +302,9 @@ private fun apiTokenValidationNewRequest(){
                 serviceCategoryId = null
                 serviceVendorOnboardingId = null
             }
+        } else if (args?.getInt("serviceCategoryId") != 0 && args?.getInt("serviceVendorOnboardingId") == 0) {
+            serviceCategoryId = args?.getInt("serviceCategoryId")
+            serviceVendorOnboardingId = null
         } else {
             serviceCategoryId = args?.getInt("serviceCategoryId")
             serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
@@ -308,10 +313,10 @@ private fun apiTokenValidationNewRequest(){
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main){
-            when(caller){
-                "newRequest"->newRequestApiCall(AppConstants.BID_REQUESTED)
-                "actionAndStatus"->actionAndStatusApiCall()
+        withContext(Dispatchers.Main) {
+            when (caller) {
+                "newRequest" -> newRequestApiCall(AppConstants.BID_REQUESTED)
+                "actionAndStatus" -> actionAndStatusApiCall()
             }
         }
     }

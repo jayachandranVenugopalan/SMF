@@ -23,7 +23,9 @@ class DashBoardViewModel @Inject constructor(
     private val dashBoardRepository: DashBoardRepository,
     application: Application,
 ) : BaseViewModel(application), AdapterView.OnItemSelectedListener {
-    var name:String?=null
+    var name: String? = null
+    var allServiceposition: Int? = 0
+
     // EventType Api
     fun get184Types(idToken: String) = liveData(Dispatchers.IO) {
         emit(dashBoardRepository.get184Types(idToken))
@@ -46,6 +48,7 @@ class DashBoardViewModel @Inject constructor(
                 position: Int,
                 id: Long,
             ) {
+                allServiceposition = position
                 callBackInterface?.itemClick(position)
 
             }
@@ -72,14 +75,14 @@ class DashBoardViewModel @Inject constructor(
         mDataBinding: FragmentDashBoardBinding?,
         resources: ArrayList<String>,
         idToken: String,
-        spRegId: Int,serviceCategoryId: Int,serviceVendorOnboardingId: Int
+        spRegId: Int, serviceCategoryId: Int, serviceVendorOnboardingId: Int,
     ) {
 
         //  resources1=resources as ArrayList
         Log.d("TAG", "branches:$resources ")
 
         resources.forEach {
-             name=it
+            name = it
 
         }
         var spin = mDataBinding!!.spnBranches
@@ -129,14 +132,14 @@ class DashBoardViewModel @Inject constructor(
     interface CallBackInterface {
         fun callBack(token: String)
         fun itemClick(msg: Int)
-        fun branchItemClick(serviceVendorOnboardingId: Int, name: String?)
+        fun branchItemClick(serviceVendorOnboardingId: Int, name: String?, allServiceposition: Int?)
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position1: Int, p3: Long) {
 
         //  var branchId=resources1[position].bramchId
 
-        callBackInterface?.branchItemClick(position1,name)
+        callBackInterface?.branchItemClick(position1, name, allServiceposition)
 
     }
 

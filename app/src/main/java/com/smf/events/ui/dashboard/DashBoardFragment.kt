@@ -118,14 +118,13 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         Log.d("TAG", "check clickBtn dashboard after ")
         withContext(Main) {
-when(caller){
-    "event_type"->   getAllServiceAndCounts()
-    "branches"->getBranches(serviceCategoryId)
-}
+            when (caller) {
+                "event_type" -> getAllServiceAndCounts()
+                "branches" -> getBranches(serviceCategoryId)
+            }
 
 
         }
-
 
 
     }
@@ -157,7 +156,8 @@ when(caller){
                             Log.d("TAG", "token 184 result: ${apiResponse.exception}")
                             showToast("Not ok")
                         }
-                        else -> {}
+                        else -> {
+                        }
                     }
                 })
         }
@@ -170,7 +170,7 @@ when(caller){
         if (serviceList[position].serviceName == "All Service") {
             var branchSpinner: ArrayList<String> = ArrayList()
             branchSpinner.add(0, "Branches")
-
+            serviceCategoryId = 0
             val branchdataspinner = branchSpinner
             getViewModel().branches(
                 mDataBinding,
@@ -194,8 +194,7 @@ when(caller){
                 Log.d("TAG", "onResume: called")
                 tokens.checkTokenExpiry(
                     requireActivity().applicationContext as SMFApp,
-                    "branches"
-                ,idToken)
+                    "branches", idToken)
             }
 
             //getBranches(serviceCategoryId)
@@ -204,7 +203,11 @@ when(caller){
     }
 
     //Branch spinner view clicked
-    override fun branchItemClick(serviceVendorOnboardingId: Int, name: String?) {
+    override fun branchItemClick(
+        serviceVendorOnboardingId: Int,
+        name: String?,
+        allServiceposition: Int?,
+    ) {
 
         Log.d("TAG", "branchItemClick serviceCategoryId11 $serviceCategoryId")
         this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
@@ -212,9 +215,31 @@ when(caller){
             "TAG",
             "branchItemClick serviceVendorOnboardingId11: ${branchListSpinner[serviceVendorOnboardingId].branchId}"
         )
-        if (name == "Branches") {
+        Log.d(
+            "TAG",
+            "branchItemClick serviceVendorOnboardingId11: ${name}"
+        )
+        var branchesName = name
+
+        if (branchListSpinner[serviceVendorOnboardingId].branchId == 0) {
+            branchesName = "Branches"
+        }
+
+
+        var serviceName = (serviceList[allServiceposition!!].serviceName)
+        Log.d(
+            "TAG",
+            "branchItemClick serviceName: ${serviceName}"
+        )
+        if (serviceName == "All Service" && branchesName == "Branches") {
             actionAndStatusFragment(
-                0,
+                serviceCategoryId,
+                0
+            )
+        } else if (serviceName != "All Service" && branchesName == "Branches") {
+            Log.d("TAG", "branchItemClick inside fif else:$serviceCategoryId ")
+            actionAndStatusFragment(
+                serviceCategoryId,
                 0
             )
         } else {
@@ -223,6 +248,19 @@ when(caller){
                 branchListSpinner[serviceVendorOnboardingId].branchId
             )
         }
+
+
+//        if (name == "Branches") {
+//            actionAndStatusFragment(
+//                serviceCategoryId,
+//                0
+//            )
+//        } else {
+//            actionAndStatusFragment(
+//                serviceCategoryId,
+//                branchListSpinner[serviceVendorOnboardingId].branchId
+//            )
+//        }
     }
 
     private fun getServiceCountList(data: Datas): ArrayList<MyEvents> {
@@ -314,6 +352,7 @@ when(caller){
 
                         // branchListSpinner.add(BranchDatas("Branches", 0))
                         var branchTypeItems: List<DatasNew> = apiResponse.response.datas
+                        branchListSpinner.add(BranchDatas("Branches", 0))
                         for (i in branchTypeItems.indices) {
                             val branchName: String =
                                 branchTypeItems[i].branchName // I want to show this when Selected
