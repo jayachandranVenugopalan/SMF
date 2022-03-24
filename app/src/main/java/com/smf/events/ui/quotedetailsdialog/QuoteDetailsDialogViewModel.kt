@@ -59,7 +59,6 @@ class QuoteDetailsDialogViewModel @Inject constructor(
             } else {
                 callBackInterface?.callBack("quoteLater")
             }
-
         }
     }
 

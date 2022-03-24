@@ -15,6 +15,7 @@ import com.smf.events.R
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actiondetails.model.ActionDetails
+import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
 import java.time.Month
 
 class ActionDetailsAdapter(val context: Context) :
@@ -132,6 +133,10 @@ class ActionDetailsAdapter(val context: Context) :
                             com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog.TAG
                         )
                 }
+            }
+            holder.unlikeButton.setOnClickListener {
+                BidRejectionDialogFragment.newInstance().show( (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                    BidRejectionDialogFragment.TAG)
             }
 
         }

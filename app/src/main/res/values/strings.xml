@@ -83,6 +83,7 @@
     <string name="service_date_">Service date</string>
     <string name="i_have_quotes_details">I have Quotes Details</string>
     <string name="will_provide_quotes_later">Will provide Quotes later</string>
+    <string name="if_you_want">If you want to accept the bid you can proceed later within bid cut off time</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>

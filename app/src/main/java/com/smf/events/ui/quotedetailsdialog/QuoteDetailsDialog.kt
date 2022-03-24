@@ -215,15 +215,6 @@ class QuoteDetailsDialog(
 
 
     private fun putQuoteDetails(bidStatus: String) {
-
-//        var getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
-//            "MyUser",
-//            Context.MODE_PRIVATE
-//        )
-//
-//        var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
-//        Log.d(TAG, "PostQuoteDetails: $idToken")
-
         var bidValueQuote = mDataBinding?.costEstimationAmount?.text.toString()
         latestBidValueQuote = if (bidValueQuote == "") {
             0
