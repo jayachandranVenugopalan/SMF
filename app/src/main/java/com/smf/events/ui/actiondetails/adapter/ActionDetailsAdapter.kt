@@ -78,6 +78,8 @@ class ActionDetailsAdapter(val context: Context) :
                 }else{
                     amount.text = "$${actionDetails.latestBidValue}"
                 }
+            }else{
+                amount.text = "$${actionDetails.cost}"
             }
             eventName.text = actionDetails.eventName
             eventType.text = "${actionDetails.branchName} - ${actionDetails.serviceName}"
