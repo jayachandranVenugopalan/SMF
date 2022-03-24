@@ -1,7 +1,6 @@
 package com.smf.events.ui.quotedetailsdialog
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -21,6 +20,7 @@ import java.io.*
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -46,17 +46,16 @@ class QuoteDetailsDialog(
     var cost: String?,
     var latestBidValue: String?,
     var branchName: String,
-
 ) : BaseDialogFragment<FragmentQuoteDetailsDialogBinding, QuoteDetailsDialogViewModel>(),
-    QuoteDetailsDialogViewModel.CallBackInterface,Tokens.IdTokenCallBackInterface {
+    QuoteDetailsDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
     lateinit var biddingQuote: BiddingQuotDto
     lateinit var file: File
-  var fileName: String?=null
-     var fileSize: String?=null
-     var fileContent: String?=null
+    var fileName: String? = null
+    var fileSize: String? = null
+    var fileContent: String? = null
     lateinit var idToken: String
-    companion object {
 
+    companion object {
         const val TAG = "CustomDialogFragment"
 
         //take the title and subtitle form the Activity
@@ -68,8 +67,6 @@ class QuoteDetailsDialog(
             latestBidValue: String?,
             branchName: String,
         ): QuoteDetailsDialog {
-
-
             val fragment = QuoteDetailsDialog(bidRequestId,
                 costingType,
                 bidStatus,
@@ -84,8 +81,10 @@ class QuoteDetailsDialog(
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
     @Inject
     lateinit var tokens: Tokens
+    var latestBidValueQuote: Int = 0
     override fun getViewModel(): QuoteDetailsDialogViewModel? =
         ViewModelProvider(this, factory).get(QuoteDetailsDialogViewModel::class.java)
 
@@ -110,27 +109,35 @@ class QuoteDetailsDialog(
         tokens.setCallBackInterface(this)
         // Quote ViewModel CallBackInterface
         getViewModel()?.setCallBackInterface(this)
-
+//file uploader
         fileUploader()
+        //quote later flow
+        getViewModel()?.quoteLaterIsClicked(view, mDataBinding)
+        //i have quote flow
+        getViewModel()?.iHaveQuoteClicked(view, mDataBinding)
 
     }
 
-    private fun fileUploader() {
 
+    private fun fileUploader() {
         var logoUploadActivity =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     // There are no request codes
                     val data: Intent? = result.data
                     var fileUri: Uri = data?.getData()!!
-
                     var filePath = fileUri.path
                     file = File(filePath)
-                    fileName = filePath?.substring(filePath.lastIndexOf("/")+1);
+                    if (!filePath.isNullOrEmpty()) {
+                        mDataBinding?.btnFileUpload?.text = "File Uploaded"
+                        mDataBinding?.btnFileUpload?.setTextColor(Color.WHITE)
+                        mDataBinding?.btnFileUpload?.setBackgroundColor(ContextCompat.getColor(
+                            context?.applicationContext!!, R.color.green))
+                    }
+                    fileName = filePath?.substring(filePath.lastIndexOf("/") + 1);
                     Log.d(TAG, "logoUploader: $fileUri")
-                    if (!fileUri.path.isNullOrEmpty()){
-                    ConvertToString(fileUri)
-                    getViewModel()?.OnCLickok(mDataBinding, bidRequestId, costingType)
+                    if (!fileUri.path.isNullOrEmpty()) {
+                        convertToString(fileUri)
                     }
                 }
             }
@@ -139,8 +146,8 @@ class QuoteDetailsDialog(
             try {
 
                 var gallaryIntent = Intent(Intent.ACTION_GET_CONTENT);
-                 gallaryIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                gallaryIntent.type ="*/*"
+                gallaryIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                gallaryIntent.type = "*/*"
                 logoUploadActivity.launch(Intent.createChooser(gallaryIntent, "Choose a file"))
             } catch (ex: android.content.ActivityNotFoundException) {
                 Toast.makeText(activity, "Please install a File Manager.",
@@ -152,7 +159,7 @@ class QuoteDetailsDialog(
     }
 
 
-    fun ConvertToString(uri: Uri) {
+    private fun convertToString(uri: Uri) {
         var uriString = uri.toString()
         Log.d("data", "onActivityResult: uri$uriString")
         try {
@@ -164,7 +171,7 @@ class QuoteDetailsDialog(
                     "onActivityResult: Base64string=" + Base64.encodeToString(bytes,
                         Base64.DEFAULT))
                 fileContent = Base64.encodeToString(bytes, Base64.DEFAULT)
-                fileSize= bytes?.size.toString()
+                fileSize = bytes?.size.toString()
             } else {
                 Toast.makeText(activity, "upload file below 100kb", Toast.LENGTH_SHORT).show()
             }
@@ -200,15 +207,14 @@ class QuoteDetailsDialog(
     }
 
     override fun callBack(status: String) {
-        if (status == "Checked") {
-
-            apiTokenValidationQuoteDetailsDialog()
-
+        when (status) {
+            "iHaveQuote" -> apiTokenValidationQuoteDetailsDialog("iHaveQuote")
+            "quoteLater" -> apiTokenValidationQuoteDetailsDialog("quoteLater")
         }
     }
 
 
-    fun PostQuoteDetails() {
+    private fun putQuoteDetails(bidStatus: String) {
 
         var getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
             "MyUser",
@@ -217,8 +223,15 @@ class QuoteDetailsDialog(
 
         var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
         Log.d(TAG, "PostQuoteDetails: $idToken")
+
+        var bidValueQuote = mDataBinding?.costEstimationAmount?.text.toString()
+        latestBidValueQuote = if (bidValueQuote == "") {
+            0
+        } else {
+            bidValueQuote.toInt()
+        }
         biddingQuote = BiddingQuotDto(bidRequestId,
-            AppConstants.BID_SUBMITTED,
+            bidStatus,
             branchName,
             mDataBinding?.etComments?.text.toString(),
             null,
@@ -228,13 +241,11 @@ class QuoteDetailsDialog(
             fileName,
             fileSize,
             "QUOTE_DETAILS",
-            mDataBinding?.costEstimationAmount?.text.toString().toInt())
+            latestBidValueQuote)
         getViewModel()?.postQuoteDetails(idToken, bidRequestId, biddingQuote)
             ?.observe(viewLifecycleOwner, Observer { apiResponse ->
-
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-
                         Log.d("TAG", " quote for dialog Success: ${(apiResponse.response)}")
                         findNavController().navigate(DashBoardFragmentDirections.actionDashBoardFragmentToQuoteBriefFragment())
                         dismiss()
@@ -249,19 +260,25 @@ class QuoteDetailsDialog(
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Main){
-            PostQuoteDetails()
+        withContext(Main) {
+            when (caller) {
+                "iHaveQuote" -> putQuoteDetails(AppConstants.BID_SUBMITTED)
+                "quoteLater" -> putQuoteDetails(AppConstants.PENDING_FOR_QUOTE)
+            }
+
+
         }
     }
-    private fun apiTokenValidationQuoteDetailsDialog(){
+
+    private fun apiTokenValidationQuoteDetailsDialog(status: String) {
         if (idToken.isNotEmpty()) {
             Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                "quote_dialog"
-                ,idToken!!)
+                status, idToken!!)
         }
     }
+
     private fun setIdTokenAndSpRegId() {
         var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
             "MyUser",
@@ -270,5 +287,5 @@ class QuoteDetailsDialog(
         idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
 
     }
-
 }
+

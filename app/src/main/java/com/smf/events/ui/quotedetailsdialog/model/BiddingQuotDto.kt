@@ -14,5 +14,5 @@ data class BiddingQuotDto(
     val fileName: String?=null,
     val fileSize:String?=null,
     val fileType:String?=null,
-    val latestBidValue: Int?=0
+    val latestBidValue: Int
 )

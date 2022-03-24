@@ -81,7 +81,6 @@ class ActionsAndStatusFragment :
         tokens.setCallBackInterface(this)
         //  apiTokenValidationActionaAndStatus()
         actionAndStatusApiCall()
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -126,8 +125,7 @@ class ActionsAndStatusFragment :
         list.add(
             MyEvents(
                 actionAndStatusData?.pendingForQuoteActionCount.toString(),
-                "Send Quotes"
-            )
+                "Pending Quote"         )
         )
         list.add(MyEvents(actionAndStatusData?.wonBidStatusCount.toString(), "Won Bid"))
         list.add(MyEvents(actionAndStatusData?.bidRejectedActionCount.toString(), "Rejected"))
