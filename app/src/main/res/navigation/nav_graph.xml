@@ -92,6 +92,7 @@
         <action
             android:id="@+id/action_dashBoardFragment_to_quoteBriefFragment"
             app:destination="@id/quoteBriefFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/quoteBriefFragment"

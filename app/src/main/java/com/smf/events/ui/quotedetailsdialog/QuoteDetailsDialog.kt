@@ -216,13 +216,13 @@ class QuoteDetailsDialog(
 
     private fun putQuoteDetails(bidStatus: String) {
 
-        var getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-
-        var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
-        Log.d(TAG, "PostQuoteDetails: $idToken")
+//        var getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
+//            "MyUser",
+//            Context.MODE_PRIVATE
+//        )
+//
+//        var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+//        Log.d(TAG, "PostQuoteDetails: $idToken")
 
         var bidValueQuote = mDataBinding?.costEstimationAmount?.text.toString()
         latestBidValueQuote = if (bidValueQuote == "") {
@@ -230,6 +230,21 @@ class QuoteDetailsDialog(
         } else {
             bidValueQuote.toInt()
         }
+
+        if(bidStatus==AppConstants.PENDING_FOR_QUOTE){
+            biddingQuote = BiddingQuotDto(bidRequestId,
+                bidStatus,
+                branchName,
+                null,
+                null,
+                costingType,
+                null,
+                null,
+                null,
+                null,
+                "QUOTE_DETAILS",
+                latestBidValueQuote)
+        }else{
         biddingQuote = BiddingQuotDto(bidRequestId,
             bidStatus,
             branchName,
@@ -242,6 +257,7 @@ class QuoteDetailsDialog(
             fileSize,
             "QUOTE_DETAILS",
             latestBidValueQuote)
+        }
         getViewModel()?.postQuoteDetails(idToken, bidRequestId, biddingQuote)
             ?.observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
