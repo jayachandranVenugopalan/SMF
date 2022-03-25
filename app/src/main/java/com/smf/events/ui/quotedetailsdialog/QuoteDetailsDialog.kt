@@ -12,9 +12,7 @@ import android.view.*
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.navigation.fragment.findNavController
 import com.smf.events.R
-import com.smf.events.ui.dashboard.DashBoardFragmentDirections
 import java.io.*
 
 import android.content.Context
@@ -30,6 +28,7 @@ import com.smf.events.databinding.FragmentQuoteDetailsDialogBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
 import com.smf.events.helper.Tokens
+import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers.Main
@@ -57,8 +56,6 @@ class QuoteDetailsDialog(
 
     companion object {
         const val TAG = "CustomDialogFragment"
-
-        //take the title and subtitle form the Activity
         fun newInstance(
             bidRequestId: Int,
             costingType: String,
@@ -67,14 +64,13 @@ class QuoteDetailsDialog(
             latestBidValue: String?,
             branchName: String,
         ): QuoteDetailsDialog {
-            val fragment = QuoteDetailsDialog(bidRequestId,
+
+            return QuoteDetailsDialog(bidRequestId,
                 costingType,
                 bidStatus,
                 cost,
                 latestBidValue,
                 branchName)
-
-            return fragment
         }
 
     }
@@ -85,7 +81,7 @@ class QuoteDetailsDialog(
     @Inject
     lateinit var tokens: Tokens
     var latestBidValueQuote: Int = 0
-    override fun getViewModel(): QuoteDetailsDialogViewModel? =
+    override fun getViewModel(): QuoteDetailsDialogViewModel =
         ViewModelProvider(this, factory).get(QuoteDetailsDialogViewModel::class.java)
 
     override fun getBindingVariable(): Int = BR.quoteDetailsDialogViewModel
@@ -104,17 +100,16 @@ class QuoteDetailsDialog(
         super.onViewCreated(view, savedInstanceState)
         //getting IdToken
         setIdTokenAndSpRegId()
-
         // token CallBackInterface
         tokens.setCallBackInterface(this)
         // Quote ViewModel CallBackInterface
-        getViewModel()?.setCallBackInterface(this)
-//file uploader
+        getViewModel().setCallBackInterface(this)
+        //file uploader
         fileUploader()
         //quote later flow
-        getViewModel()?.quoteLaterIsClicked(view, mDataBinding)
+        getViewModel().quoteLaterIsClicked(view, mDataBinding)
         //i have quote flow
-        getViewModel()?.iHaveQuoteClicked(view, mDataBinding)
+        getViewModel().iHaveQuoteClicked(view, mDataBinding)
 
     }
 
@@ -125,7 +120,7 @@ class QuoteDetailsDialog(
                 if (result.resultCode == Activity.RESULT_OK) {
                     // There are no request codes
                     val data: Intent? = result.data
-                    var fileUri: Uri = data?.getData()!!
+                    var fileUri: Uri = data?.data!!
                     var filePath = fileUri.path
                     file = File(filePath)
                     if (!filePath.isNullOrEmpty()) {
@@ -177,7 +172,6 @@ class QuoteDetailsDialog(
             }
 
         } catch (e: Exception) {
-            // TODO: handle exception
             e.printStackTrace()
             Log.d("error", "onActivityResult: $e")
         }
@@ -208,7 +202,12 @@ class QuoteDetailsDialog(
 
     override fun callBack(status: String) {
         when (status) {
-            "iHaveQuote" -> apiTokenValidationQuoteDetailsDialog("iHaveQuote")
+            "iHaveQuote" ->
+                if (mDataBinding?.costEstimationAmount?.text.isNullOrEmpty()) {
+                    mDataBinding?.alertCost?.visibility = View.VISIBLE
+                } else {
+                    apiTokenValidationQuoteDetailsDialog("iHaveQuote")
+                }
             "quoteLater" -> apiTokenValidationQuoteDetailsDialog("quoteLater")
         }
     }
@@ -222,7 +221,7 @@ class QuoteDetailsDialog(
             bidValueQuote.toInt()
         }
 
-        if(bidStatus==AppConstants.PENDING_FOR_QUOTE){
+        if (bidStatus == AppConstants.PENDING_FOR_QUOTE) {
             biddingQuote = BiddingQuotDto(bidRequestId,
                 bidStatus,
                 branchName,
@@ -235,30 +234,33 @@ class QuoteDetailsDialog(
                 null,
                 "QUOTE_DETAILS",
                 latestBidValueQuote)
-        }else{
-        biddingQuote = BiddingQuotDto(bidRequestId,
-            bidStatus,
-            branchName,
-            mDataBinding?.etComments?.text.toString(),
-            null,
-            costingType,
-            "USD($)",
-            fileContent,
-            fileName,
-            fileSize,
-            "QUOTE_DETAILS",
-            latestBidValueQuote)
+        } else {
+            biddingQuote = BiddingQuotDto(bidRequestId,
+                bidStatus,
+                branchName,
+                mDataBinding?.etComments?.text.toString(),
+                null,
+                costingType,
+                "USD($)",
+                fileContent,
+                fileName,
+                fileSize,
+                "QUOTE_DETAILS",
+                latestBidValueQuote)
         }
         putQuoteApiCall()
     }
 
-    fun putQuoteApiCall(){
-        getViewModel()?.postQuoteDetails(idToken, bidRequestId, biddingQuote)
-            ?.observe(viewLifecycleOwner, Observer { apiResponse ->
+    fun putQuoteApiCall() {
+        getViewModel().postQuoteDetails(idToken, bidRequestId, biddingQuote)
+            .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         Log.d("TAG", " quote for dialog Success: ${(apiResponse.response)}")
-                        findNavController().navigate(DashBoardFragmentDirections.actionDashBoardFragmentToQuoteBriefFragment())
+
+                        QuoteBriefDialog.newInstance()
+                            .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                QuoteBriefDialog.TAG)
                         dismiss()
                     }
                     is ApisResponse.Error -> {

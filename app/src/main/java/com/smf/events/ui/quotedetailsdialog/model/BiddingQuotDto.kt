@@ -1,7 +1,5 @@
 package com.smf.events.ui.quotedetailsdialog.model
 
-import android.text.Editable
-
 data class BiddingQuotDto(
     val bidRequestId: Int,
     val bidStatus: String?=null,

@@ -1,31 +1,41 @@
-package com.smf.events.ui.quotebrief
-
+package com.smf.events.ui.quotebriefdialog
 
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.databinding.library.baseAdapters.BR
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.smf.events.R
 import com.smf.events.SMFApp
-import com.smf.events.base.BaseFragment
+import com.smf.events.base.BaseDialogFragment
+import com.smf.events.databinding.QuoteBriefDialogBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.Month
 import javax.inject.Inject
 
 
-class QuoteBriefFragment :
-    BaseFragment<com.smf.events.databinding.FragmentQuoteBriefBinding, QuoteBriefViewModel>(),
-    QuoteBriefViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
-    var expand = false
+class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
+    QuoteBriefDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
+    companion object {
+        const val TAG = "CustomDialogFragment"
+
+        fun newInstance(
+
+        ): QuoteBriefDialog {
+
+            return QuoteBriefDialog()
+        }
+    }
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -34,14 +44,14 @@ class QuoteBriefFragment :
     lateinit var tokens: Tokens
     var bidRequestId: Int? = 0
     lateinit var idToken: String
-
+    var expand = false
     lateinit var bidStatus: String
-    override fun getViewModel(): QuoteBriefViewModel? =
-        ViewModelProvider(this, factory).get(QuoteBriefViewModel::class.java)
+    override fun getViewModel(): QuoteBriefDialogViewModel? =
+        ViewModelProvider(this, factory).get(QuoteBriefDialogViewModel::class.java)
 
-    override fun getBindingVariable(): Int = BR.quoteBriefViewModel
+    override fun getBindingVariable(): Int = BR.quoteBriefDialogViewModel
 
-    override fun getContentView(): Int = R.layout.fragment_quote_brief
+    override fun getContentView(): Int = R.layout.quote_brief_dialog
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -50,22 +60,25 @@ class QuoteBriefFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogTheme)
         setIdTokenAndSpRegId()
     }
+
+    override fun onStart() {
+        super.onStart()
+        apiTokenValidationQuoteBrief()
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // token CallBackInterface
         tokens.setCallBackInterface(this)
-
+        //Back Button Pressed
         getViewModel()?.backButtonPressed(mDataBinding!!)
-
+        //Intitializing call back interface
         getViewModel()?.setCallBackInterface(this)
-
-
+        //Expandable view
         getViewModel()?.expandableView(mDataBinding, expand)
-
-
-        apiTokenValidationQuoteBrief()
 
 //        //state progress three completed
 //        getViewModel()?.progress3Completed(mDataBinding)
@@ -73,20 +86,7 @@ class QuoteBriefFragment :
 //        getViewModel()?.progress4Completed(mDataBinding)
     }
 
-    override fun callBack(messages: String) {
-
-        when (messages) {
-
-            "onBackClicked" -> {
-                findNavController().navigate(
-                    QuoteBriefFragmentDirections.actionQuoteBriefFragmentToDashBoardFragment()
-                )
-            }
-        }
-    }
-
-
-    fun setBidSubmitQuoteBrief(response: QuoteBrief) {
+    private fun setBidSubmitQuoteBrief(response: QuoteBrief) {
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         mDataBinding?.txJobTitle?.text = response.data.eventName
@@ -95,6 +95,30 @@ class QuoteBriefFragment :
         } else {
             mDataBinding?.txJobAmount?.text = "$${response.data.cost}"
         }
+        mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
+        mDataBinding?.txEventdateValue?.text = dateFormat(response.data.eventDate)
+        mDataBinding?.txBidProposalDateValue?.text = dateFormat(response.data.bidRequestedDate)
+        mDataBinding?.txCutOffDateValue?.text = dateFormat(response.data.biddingCutOffDate)
+        mDataBinding?.serviceDateValue?.text = dateFormat(response.data.serviceDate)
+        mDataBinding?.paymentStatusValue?.text = "NA"
+        mDataBinding?.servicedBy?.text = "NA"
+        mDataBinding?.address?.text = "${response.data.serviceAddressDto.addressLine1}  " +
+                "${response.data.serviceAddressDto.addressLine2}   " +
+                "${response.data.serviceAddressDto.city}"
+        mDataBinding?.customerRating?.text = "NA"
+
+
+    }
+
+    private fun setPendingQuoteBrief(response: QuoteBrief) {
+        mDataBinding?.txJobTitle?.text = response.data.eventName
+        mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
+        mDataBinding?.txJobTitle?.text = response.data.eventName
+        mDataBinding?.txJobAmount?.visibility = View.INVISIBLE
+        mDataBinding?.viewQuote?.visibility = View.INVISIBLE
+        mDataBinding?.spnBidAccepted?.text = "Pending For Quote"
+        mDataBinding?.check1?.visibility = View.INVISIBLE
+        mDataBinding?.check1inprogress?.visibility = View.VISIBLE
         mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
         mDataBinding?.txEventdateValue?.text = dateFormat(response.data.eventDate)
         mDataBinding?.txBidProposalDateValue?.text = dateFormat(response.data.bidRequestedDate)
@@ -158,12 +182,20 @@ class QuoteBriefFragment :
             })
     }
 
-    override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Main) {
-            quoteBriefApiCall()
+    override fun callBack(messages: String) {
+
+        when (messages) {
+            "onBackClicked" -> {
+                GlobalScope.launch { dismiss() }
+            }
         }
     }
 
+    override suspend fun tokenCallBack(idToken: String, caller: String) {
+        withContext(Dispatchers.Main) {
+            quoteBriefApiCall()
+        }
+    }
 
     private fun apiTokenValidationQuoteBrief() {
         if (idToken.isNotEmpty()) {
@@ -174,27 +206,5 @@ class QuoteBriefFragment :
         }
     }
 
-    fun setPendingQuoteBrief(response: QuoteBrief) {
-        mDataBinding?.txJobTitle?.text = response.data.eventName
-        mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
-        mDataBinding?.txJobTitle?.text = response.data.eventName
-        mDataBinding?.txJobAmount?.visibility = View.INVISIBLE
-        mDataBinding?.viewQuote?.visibility = View.INVISIBLE
-        mDataBinding?.spnBidAccepted?.text = "Pending For Quote"
-        mDataBinding?.check1?.visibility = View.INVISIBLE
-        mDataBinding?.check1inprogress?.visibility = View.VISIBLE
-        mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
-        mDataBinding?.txEventdateValue?.text = dateFormat(response.data.eventDate)
-        mDataBinding?.txBidProposalDateValue?.text = dateFormat(response.data.bidRequestedDate)
-        mDataBinding?.txCutOffDateValue?.text = dateFormat(response.data.biddingCutOffDate)
-        mDataBinding?.serviceDateValue?.text = dateFormat(response.data.serviceDate)
-        mDataBinding?.paymentStatusValue?.text = "NA"
-        mDataBinding?.servicedBy?.text = "NA"
-        mDataBinding?.address?.text = "${response.data.serviceAddressDto.addressLine1}  " +
-                "${response.data.serviceAddressDto.addressLine2}   " +
-                "${response.data.serviceAddressDto.city}"
-        mDataBinding?.customerRating?.text = "NA"
 
-
-    }
 }

@@ -1,4 +1,4 @@
-package com.smf.events.ui.quotedetailsdialog
+package com.smf.events.ui.quotebriefdialog
 
 import androidx.lifecycle.ViewModelProvider
 import com.smf.events.helper.ViewModelProviderFactory
@@ -6,9 +6,9 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class QuoteDetailsModule {
+class QuoteBriefDialogModule {
     @Provides
-    fun provideViewModelProvider(viewModel: QuoteDetailsDialogViewModel): ViewModelProvider.Factory {
+    fun provideViewModelProvider(viewModel: QuoteBriefDialogViewModel): ViewModelProvider.Factory {
         return ViewModelProviderFactory(viewModel)
     }
 }

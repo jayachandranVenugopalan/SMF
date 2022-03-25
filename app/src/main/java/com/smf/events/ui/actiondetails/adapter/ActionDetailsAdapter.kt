@@ -3,7 +3,6 @@ package com.smf.events.ui.actiondetails.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +11,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
-import com.smf.events.rxbus.RxBus
-import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
+import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import java.time.Month
 
 class ActionDetailsAdapter(val context: Context) :
@@ -73,12 +71,12 @@ class ActionDetailsAdapter(val context: Context) :
         @SuppressLint("SetTextI18n")
         fun onBind(actionDetails: ActionDetails) {
             if (actionDetails.costingType == "Bidding") {
-                if (actionDetails.latestBidValue.isNullOrEmpty()){
+                if (actionDetails.latestBidValue.isNullOrEmpty()) {
                     amount.text = "$"
-                }else{
+                } else {
                     amount.text = "$${actionDetails.latestBidValue}"
                 }
-            }else{
+            } else {
                 amount.text = "$${actionDetails.cost}"
             }
             eventName.text = actionDetails.eventName
@@ -122,7 +120,7 @@ class ActionDetailsAdapter(val context: Context) :
                         branchName
                     )
                 } else {
-                    com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog.newInstance(
+                    QuoteDetailsDialog.newInstance(
                         bidRequestId,
                         costingType,
                         bidStatus,
@@ -132,14 +130,18 @@ class ActionDetailsAdapter(val context: Context) :
                     )
                         .show(
                             (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                            com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog.TAG
+                            QuoteDetailsDialog.TAG
                         )
                 }
             }
             holder.unlikeButton.setOnClickListener {
-                BidRejectionDialogFragment.newInstance().show( (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                    BidRejectionDialogFragment.TAG)
+                var bidRequestId: Int = position.bidRequestId
+                BidRejectionDialogFragment.newInstance(bidRequestId)
+                    .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        BidRejectionDialogFragment.TAG)
+
             }
+
 
         }
     }
@@ -171,7 +173,7 @@ class ActionDetailsAdapter(val context: Context) :
             bidStatus: String,
             cost: String?,
             latestBidValue: String?,
-            branchName: String
+            branchName: String,
         )
     }
 

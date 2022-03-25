@@ -7,24 +7,26 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.lifecycle.liveData
 import com.smf.events.base.BaseDialogViewModel
 import com.smf.events.databinding.FragmentBidRejectionDialogBinding
-import com.smf.events.databinding.FragmentDashBoardBinding
+import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class BidRejectionDialogViewModel@Inject constructor(application: Application):BaseDialogViewModel(application) {
-
-
-
-
+class BidRejectionDialogViewModel @Inject constructor(
+    private val bidRejectionRepository: BidRejectionRepository,
+    application: Application,
+) : BaseDialogViewModel(application) {
 
     @SuppressLint("ResourceType")
     fun reasonForReject(mDataBinding: FragmentBidRejectionDialogBinding?) {
-var  resources: ArrayList<String> = ArrayList()
-        resources.add(0,"Reason For Rejection")
-        resources.add(1,"Active")
-        resources.add(2,"Not Interested")
-        resources.add(2,"Other")
+        var resources: ArrayList<String> = ArrayList()
+        resources.add(0, "Reason For Rejection")
+        resources.add(1, "Already booked for this day")
+        resources.add(2, "Budget too low")
+        resources.add(3, "Venue too far to provide service")
+        resources.add(4, "Other")
         val spin = mDataBinding!!.spnReason
 
         spin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -35,9 +37,8 @@ var  resources: ArrayList<String> = ArrayList()
                 id: Long,
             ) {
                 Log.d("TAG", "onItemSelected: ${resources[position]}")
-if (resources[position]=="Other"){
-callBackInterface?.callBack("Other")
-}
+                resources.remove("Reason For Rejection")
+                callBackInterface?.callBack(resources[position])
 
 
             }
@@ -56,6 +57,7 @@ callBackInterface?.callBack("Other")
         // Spinner which binds data to spinner
         spin.adapter = ad
     }
+
     private var callBackInterface: CallBackInterface? = null
 
     // Initializing CallBack Interface Method
@@ -66,5 +68,13 @@ callBackInterface?.callBack("Other")
     // CallBack Interface
     interface CallBackInterface {
         fun callBack(status: String)
+    }
+
+    fun putBidRejection(
+        idToken: String,
+        serviceProviderBidRequestDto: ServiceProviderBidRequestDto,
+    ) = liveData(
+        Dispatchers.IO) {
+        emit(bidRejectionRepository.putBidRejection(idToken, serviceProviderBidRequestDto))
     }
 }

@@ -1,22 +1,21 @@
-package com.smf.events.ui.quotedetailsdialog
+package com.smf.events.ui.bidrejectiondialog
 
 import com.smf.events.helper.ApisResponse
 import com.smf.events.network.ApiStories
 import com.smf.events.ui.actionandstatusdashboard.model.NewRequestList
-import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
+import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class QuoteDetailsRepository @Inject constructor(var apiStories: ApiStories) {
+class BidRejectionRepository @Inject constructor(var apiStories: ApiStories) {
 
-    suspend fun postQuoteDetails(
+    suspend fun putBidRejection(
         idToken: String,
-        bidRequestId: Int,
-        biddingQuote: BiddingQuotDto,
+        serviceProviderBidRequestDto: ServiceProviderBidRequestDto,
     ): ApisResponse<NewRequestList> {
 
         return try {
-            val getResponse = apiStories.postQuoteDetails(idToken, bidRequestId, biddingQuote)
+            val getResponse = apiStories.putBidRejection(idToken, serviceProviderBidRequestDto)
             ApisResponse.Success(getResponse)
         } catch (e: HttpException) {
             ApisResponse.Error(e)

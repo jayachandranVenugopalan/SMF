@@ -17,6 +17,8 @@ import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogModule
 import com.smf.events.ui.dashboard.DashBoardActivity
 import com.smf.events.ui.quotebrief.QuoteBriefFragment
 import com.smf.events.ui.quotebrief.QuoteBriefModule
+import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
+import com.smf.events.ui.quotebriefdialog.QuoteBriefDialogModule
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsModule
 import com.smf.events.ui.signin.SignInFragment
@@ -69,4 +71,7 @@ abstract class ActivityBuilder {
 
     @ContributesAndroidInjector(modules = [BidRejectionDialogModule::class])
     abstract fun provideBidRejectionDialog(): BidRejectionDialogFragment
+
+    @ContributesAndroidInjector(modules = [QuoteBriefDialogModule::class])
+    abstract fun provideQuoteBriefDialog(): QuoteBriefDialog
 }

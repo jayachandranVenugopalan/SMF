@@ -3,6 +3,7 @@ package com.smf.events.network
 
 import com.smf.events.helper.EvenTypes
 import com.smf.events.ui.actionandstatusdashboard.model.NewRequestList
+import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.dashboard.model.ActionAndStatus
 import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
@@ -78,6 +79,12 @@ interface ApiStories {
         @Header("Authorization") idToken: String,
         @Path("bid-request-Id") bidRequestId: Int
     ): QuoteBrief
+
+    @PUT("epm-service/api/app-services/bid-request-info")
+    suspend fun putBidRejection(
+        @Header("Authorization") idToken: String,
+        @Body serviceProviderBidRequestDto: ServiceProviderBidRequestDto
+    ): NewRequestList
 
 
 

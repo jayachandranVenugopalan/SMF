@@ -8,8 +8,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
@@ -23,8 +21,7 @@ import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidReques
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter.CallBackInterface
 import com.smf.events.ui.actiondetails.model.ActionDetails
-import com.smf.events.ui.dashboard.DashBoardFragmentDirections
-import com.smf.events.ui.dashboard.model.MyEvents
+import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
@@ -149,7 +146,7 @@ class ActionDetailsFragment :
         bidStatus: String,
         cost: String?,
         latestBidValue: String?,
-        branchName: String
+        branchName: String,
     ) {
         postQuoteDetails(bidRequestId, costingType, bidStatus, cost, latestBidValue, branchName)
         serviceCategoryAndOnboardingIdInitialize()
@@ -162,7 +159,7 @@ class ActionDetailsFragment :
         bidStatus: String,
         cost: String?,
         latestBidValue: String?,
-        branchName: String
+        branchName: String,
     ) {
         var getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
             "MyUser",
@@ -191,11 +188,10 @@ class ActionDetailsFragment :
 
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-
                         Log.d("TAG", "check token result: ${(apiResponse.response)}")
-
-                        findNavController().navigate(DashBoardFragmentDirections.actionDashBoardFragmentToQuoteBriefFragment())
-//                        activity.dismiss()
+                        QuoteBriefDialog.newInstance()
+                            .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                QuoteBriefDialog.TAG)
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
@@ -223,7 +219,7 @@ class ActionDetailsFragment :
         )
     }
 
-    private fun serviceCategoryAndOnboardingIdInitialize(){
+    private fun serviceCategoryAndOnboardingIdInitialize() {
 
         // Initialize serviceCategoryId And serviceVendorOnboardingId
         val sharedPreferences =
@@ -250,8 +246,13 @@ class ActionDetailsFragment :
             "MyUser",
             Context.MODE_PRIVATE
         )
-        Log.d("TAG", "initializeId shr: ${getSharedPreferences?.getString("serviceCategoryId","")}")
-        Log.d("TAG", "initializeId shr serviceVendorOnboardingId: ${getSharedPreferences?.getString("serviceVendorOnboardingId", "")}")
+        Log.d("TAG",
+            "initializeId shr: ${getSharedPreferences?.getString("serviceCategoryId", "")}")
+        Log.d("TAG",
+            "initializeId shr serviceVendorOnboardingId: ${
+                getSharedPreferences?.getString("serviceVendorOnboardingId",
+                    "")
+            }")
 
     }
 

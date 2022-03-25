@@ -25,9 +25,9 @@ class QuoteDetailsDialogViewModel @Inject constructor(
             var quoteRadioButton: RadioButton = view.findViewById(selectId!!)
             if (selectId == -1) {
                 // Toast.makeText(activity,"Nothing selected", Toast.LENGTH_SHORT).show();
-
             } else {
-                mDataBinding?.constraint2?.visibility = View.VISIBLE
+                mDataBinding.alertCost.visibility = View.INVISIBLE
+                mDataBinding.constraint2.visibility = View.VISIBLE
                 onCLickOk(mDataBinding, quoteRadioButton.text as String)
             }
 
@@ -42,6 +42,7 @@ class QuoteDetailsDialogViewModel @Inject constructor(
             if (selectId == -1) {
                 // Toast.makeText(activity,"Nothing selected", Toast.LENGTH_SHORT).show();
             } else {
+                mDataBinding.alertCost.visibility = View.INVISIBLE
                 mDataBinding?.constraint2?.visibility = View.GONE
                 onCLickOk(mDataBinding, quoteRadioButton.text as String)
             }
