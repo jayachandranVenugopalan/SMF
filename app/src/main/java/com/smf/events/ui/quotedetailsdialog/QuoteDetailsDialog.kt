@@ -249,6 +249,10 @@ class QuoteDetailsDialog(
             "QUOTE_DETAILS",
             latestBidValueQuote)
         }
+        putQuoteApiCall()
+    }
+
+    fun putQuoteApiCall(){
         getViewModel()?.postQuoteDetails(idToken, bidRequestId, biddingQuote)
             ?.observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
@@ -265,6 +269,7 @@ class QuoteDetailsDialog(
                 }
             })
     }
+
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Main) {

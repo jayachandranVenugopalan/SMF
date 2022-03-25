@@ -15,9 +15,7 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.quotebrief.model.QuoteBrief
-import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 import java.time.Month
@@ -35,6 +33,8 @@ class QuoteBriefFragment :
     lateinit var tokens: Tokens
     var bidRequestId: Int? = 0
     lateinit var idToken:String
+
+    lateinit var bidStatus:String
     override fun getViewModel(): QuoteBriefViewModel? =
         ViewModelProvider(this, factory).get(QuoteBriefViewModel::class.java)
 
@@ -85,7 +85,7 @@ class QuoteBriefFragment :
     }
 
 
-    fun setQuoteBrief(response: QuoteBrief) {
+    fun setBidSubmitQuoteBrief(response: QuoteBrief) {
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         mDataBinding?.txJobTitle?.text = response.data.eventName
@@ -140,17 +140,13 @@ class QuoteBriefFragment :
                         Log.d("TAG", "Quotedetails Succcess: ${(apiResponse.response)}")
                         apiResponse.response.data.eventDate
 
+                        bidStatus=apiResponse.response.data.bidStatus
 
-                        setQuoteBrief(apiResponse.response)
-                        when (apiResponse.response.data.bidStatus) {
-
-                            "BID REQUESTED" -> {}
-                            "WON" -> {
-                                //        //state progress two completed
-                                getViewModel()?.progress2Completed(mDataBinding)
-                                mDataBinding?.txWonReject?.text = "Won"
-                            }
+                        when(bidStatus){
+                            "BID SUBMITTED"->setBidSubmitQuoteBrief(apiResponse.response)
+                            "PENDING FOR QUOTE"->setPendingQuoteBrief(apiResponse.response)
                         }
+
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
@@ -176,5 +172,29 @@ class QuoteBriefFragment :
                 "quote_brief"
                 ,idToken!!)
         }
+    }
+
+    fun setPendingQuoteBrief(response: QuoteBrief) {
+        mDataBinding?.txJobTitle?.text = response.data.eventName
+        mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
+        mDataBinding?.txJobTitle?.text = response.data.eventName
+        mDataBinding?.txJobAmount?.visibility=View.INVISIBLE
+        mDataBinding?.viewQuote?.visibility=View.INVISIBLE
+        mDataBinding?.spnBidAccepted?.text="Pending For Quote"
+        mDataBinding?.check1?.visibility=View.INVISIBLE
+        mDataBinding?.check1inprogress?.visibility=View.VISIBLE
+        mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
+        mDataBinding?.txEventdateValue?.text = dateFormat(response.data.eventDate)
+        mDataBinding?.txBidProposalDateValue?.text = dateFormat(response.data.bidRequestedDate)
+        mDataBinding?.txCutOffDateValue?.text = dateFormat(response.data.biddingCutOffDate)
+        mDataBinding?.serviceDateValue?.text = dateFormat(response.data.serviceDate)
+        mDataBinding?.paymentStatusValue?.text = "NA"
+        mDataBinding?.servicedBy?.text = "NA"
+        mDataBinding?.address?.text = "${response.data.serviceAddressDto.addressLine1}  " +
+                "${response.data.serviceAddressDto.addressLine2}   " +
+                "${response.data.serviceAddressDto.city}"
+        mDataBinding?.customerRating?.text = "NA"
+
+
     }
 }
