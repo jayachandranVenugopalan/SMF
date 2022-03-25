@@ -47,11 +47,6 @@ interface ApiStories {
         @Path("sp-reg-id") spRegId: Int,
         @Query("serviceCategoryId") serviceCategoryId: Int
     ): Branches
-    @GET("epm-service/api/app-services/service-branches/{sp-reg-id}")
-    suspend fun getServicesBranchesforAllservice(
-        @Header("Authorization") idToken: String,
-        @Path("sp-reg-id") spRegId: Int,
-    ): Branches
 
     @GET("epm-service/api/app-services/service-provider-bidding-counts/{sp-reg-id}")
     suspend fun getActionAndStatus(

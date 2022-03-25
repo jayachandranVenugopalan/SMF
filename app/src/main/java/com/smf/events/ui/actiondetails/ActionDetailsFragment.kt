@@ -1,6 +1,7 @@
 package com.smf.events.ui.actiondetails
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -124,18 +125,6 @@ class ActionDetailsFragment :
 
     }
 
-    private fun getActionsList(): ArrayList<MyEvents> {
-        var list = ArrayList<MyEvents>()
-        list.add(MyEvents("4", "New request"))
-        list.add(MyEvents("2", "Send Quotes"))
-        list.add(MyEvents("1", "Won Bid"))
-        list.add(MyEvents("2", "Rejected"))
-        list.add(MyEvents("1", "Draft"))
-
-        return list
-
-    }
-
     //Close Button ClickListener
     private fun clickListeners() {
 
@@ -163,7 +152,7 @@ class ActionDetailsFragment :
         branchName: String
     ) {
         postQuoteDetails(bidRequestId, costingType, bidStatus, cost, latestBidValue, branchName)
-
+        serviceCategoryAndOnboardingIdInitialize()
 
     }
 
@@ -232,6 +221,38 @@ class ActionDetailsFragment :
             "TAG",
             "newRequestApiCall actionDetailFragment serviceVendorOnboardingId: $serviceVendorOnboardingId"
         )
+    }
+
+    private fun serviceCategoryAndOnboardingIdInitialize(){
+
+        // Initialize serviceCategoryId And serviceVendorOnboardingId
+        val sharedPreferences =
+            requireContext().getSharedPreferences(
+                "MyUser",
+                Context.MODE_PRIVATE
+            )
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString(
+            "serviceCategoryId",
+            serviceCategoryId.toString()
+        )
+        editor.putString(
+            "serviceVendorOnboardingId",
+            serviceVendorOnboardingId.toString()
+        )
+        editor.putString(
+            "caller",
+            "caller"
+        )
+        editor.apply()
+
+        val getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
+            "MyUser",
+            Context.MODE_PRIVATE
+        )
+        Log.d("TAG", "initializeId shr: ${getSharedPreferences?.getString("serviceCategoryId","")}")
+        Log.d("TAG", "initializeId shr serviceVendorOnboardingId: ${getSharedPreferences?.getString("serviceVendorOnboardingId", "")}")
+
     }
 
 }

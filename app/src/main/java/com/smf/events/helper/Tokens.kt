@@ -2,23 +2,15 @@ package com.smf.events.helper
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import com.amazonaws.mobile.client.AWSMobileClient
-import com.amazonaws.mobile.client.Callback
+import com.amazonaws.services.cognitoidentity.AmazonCognitoIdentity
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.amplifyframework.auth.result.AuthSessionResult
 import com.amplifyframework.core.Amplify
 import com.smf.events.SMFApp
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
@@ -29,25 +21,24 @@ class Tokens @Inject constructor() {
     fun checkTokenExpiry(application: SMFApp, caller: String, idToken: String) {
 
         Log.d("TAG", "checkTokenExpiry refereshTokentime idToken: $idToken")
-//        Log.d("TAG", "checkTokenExpiry refereshTokentime idToken: $")
 
-
-        val splitToken = idToken.split('.');
+        val newTime = Date().time / 1000
+        Log.d("TAG", "checkTokenExpiry refereshTokentime current time: $newTime")
+        val splitToken = idToken.split('.')
         val decodedBytes = Base64.getDecoder().decode(splitToken[1])
         val decodeToken = String(decodedBytes)
-
         val tokenObj = JSONObject(decodeToken)
-        var time = tokenObj.getString("exp")
-        Log.d("TAG", "checkTokenExpiry refereshTokentime from aws: $time")
-
-       var timeFormat = SimpleDateFormat("yyyy.MM.dd HH:mm")
-        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"))
-        Log.d("TAG", "checkTokenExpiry refereshTokentime token Current time: ${timeFormat.format(Calendar.getInstance().time)}")
-        Log.d("TAG", "checkTokenExpiry refereshTokentime token AWS exp time: ${timeFormat.format(time.toLong())}")
-
-
-        Tokens().fetchSession(application, myLambFunc, caller)
-
+        val tokenObjExp = tokenObj.getString("exp").toLong()
+        Log.d("TAG", "checkTokenExpiry refereshTokentime from aws: $tokenObjExp")
+        val newTimeMin = newTime + 5 * 60
+        Log.d("TAG", "checkTokenExpiry refereshTokentime newTimeMin: $newTimeMin")
+//        if (newTimeMin > tokenObjExp) {
+//            Log.d("TAG", "checkTokenExpiry refereshTokentime inside if loop")
+            fetchSession(application, myLambFunc, caller)
+//        } else {
+//            Log.d("TAG", "checkTokenExpiry refereshTokentime else block")
+//            tokenNotExpired(idToken, myLambFunc, caller)
+//        }
 
     }
 
