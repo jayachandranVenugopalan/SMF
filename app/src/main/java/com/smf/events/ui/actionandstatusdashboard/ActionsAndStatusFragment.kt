@@ -155,7 +155,10 @@ class ActionsAndStatusFragment :
     override fun actionCardClick(myEvents: MyEvents) {
         when (myEvents.titleText) {
             "New request" -> {
-                apiTokenValidationNewRequest()
+                apiTokenValidationNewRequest("newRequest")
+            }
+            "Pending Quote" -> {
+                apiTokenValidationNewRequest("pendingQuote")
             }
             else -> {
                 Log.d("TAG", "newRequestApiCallsample :else block")
@@ -165,12 +168,12 @@ class ActionsAndStatusFragment :
     }
 
     // Token Validation For NewRequest Api Call
-    private fun apiTokenValidationNewRequest() {
+    private fun apiTokenValidationNewRequest(status: String) {
         if (idToken.isNotEmpty()) {
             Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                "newRequest", idToken
+                status, idToken
             )
         }
     }
@@ -273,15 +276,16 @@ class ActionsAndStatusFragment :
         withContext(Dispatchers.Main) {
             when (caller) {
                 "newRequest" -> goToActionDetailsFragment(AppConstants.BID_REQUESTED)
+                "pendingQuote" -> goToActionDetailsFragment(AppConstants.PENDING_FOR_QUOTE)
                 "actionAndStatus" -> actionAndStatusApiCall()
             }
         }
     }
 
     // Method For Calling ActionDetailsFragment With Action Details
-    private fun goToActionDetailsFragment(bidRequested: String) {
+    private fun goToActionDetailsFragment(bidStatus: String) {
         val args = Bundle()
-        args.putString("bidRequested", bidRequested)
+        args.putString("bidStatus", bidStatus)
         serviceCategoryId?.let { args.putInt("serviceCategoryId", it) }
         serviceVendorOnboardingId?.let { args.putInt("serviceVendorOnboardingId", it) }
 

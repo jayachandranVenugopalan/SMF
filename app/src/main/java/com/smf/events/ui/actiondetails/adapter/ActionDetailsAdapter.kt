@@ -136,7 +136,8 @@ class ActionDetailsAdapter(val context: Context) :
             }
             holder.unlikeButton.setOnClickListener {
                 var bidRequestId: Int = position.bidRequestId
-                BidRejectionDialogFragment.newInstance(bidRequestId)
+                position.branchName
+                BidRejectionDialogFragment.newInstance(bidRequestId,position.serviceName,position.eventServiceDescriptionId.toString())
                     .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                         BidRejectionDialogFragment.TAG)
 

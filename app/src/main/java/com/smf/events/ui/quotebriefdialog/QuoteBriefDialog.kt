@@ -15,19 +15,15 @@ import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.QuoteBriefDialogBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
-import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.Month
 import javax.inject.Inject
 
 
-class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
-    QuoteBriefDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
+class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(), Tokens.IdTokenCallBackInterface {
     companion object {
         const val TAG = "CustomDialogFragment"
 
@@ -63,12 +59,13 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogTheme)
-        setIdTokenAndSpRegId()
+        setIdTokenAndBidReqId()
     }
 
     override fun onStart() {
         super.onStart()
         apiTokenValidationQuoteBrief()
+
     }
 
 
@@ -79,8 +76,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.btnBack?.setOnClickListener {
             backButtonClickListener()
         }
-        //Intitializing call back interface
-        getViewModel()?.setCallBackInterface(this)
+
         //Expandable view
         getViewModel()?.expandableView(mDataBinding, expand)
 
@@ -90,7 +86,8 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 //        getViewModel()?.progress4Completed(mDataBinding)
     }
 
-    private fun backButtonClickListener(){
+    //Back Button Pressed
+    private fun backButtonClickListener() {
         parentFragmentManager.setFragmentResult(
             "1", // Same request key FragmentA used to register its listener
             bundleOf("key" to "value") // The data to be passed to FragmentA
@@ -98,6 +95,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         dismiss()
     }
 
+    //Setting Bid Submitted Quote
     private fun setBidSubmitQuoteBrief(response: QuoteBrief) {
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
@@ -122,6 +120,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     }
 
+    //Setting Bid Pending Quote
     private fun setPendingQuoteBrief(response: QuoteBrief) {
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
@@ -146,6 +145,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     }
 
+    //Date Formated for setting details
     private fun dateFormat(input: String): String {
         var monthCount = input.substring(0, 2)
         val date = input.substring(3, 5)
@@ -157,7 +157,8 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         return "$date $month $year"
     }
 
-    private fun setIdTokenAndSpRegId() {
+    //Setting IDToken
+    private fun setIdTokenAndBidReqId() {
         var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
             "MyUser",
             Context.MODE_PRIVATE
@@ -167,6 +168,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
     }
 
+    //Get Api Call for getting the Quote Brief
     private fun quoteBriefApiCall() {
         getViewModel()?.getQuoteBrief(idToken, bidRequestId!!)
             ?.observe(viewLifecycleOwner, Observer { apiResponse ->
@@ -194,16 +196,14 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
             })
     }
 
-    override fun callBack(messages: String) {
 
-    }
-
+    //Call Back From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
             quoteBriefApiCall()
         }
     }
-
+     // Api Token Validation For Quote Brief Api Call
     private fun apiTokenValidationQuoteBrief() {
         if (idToken.isNotEmpty()) {
             Log.d("TAG", "onResume: called")

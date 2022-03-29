@@ -25,7 +25,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
-class BidRejectionDialogFragment(var bidRequestId: Int?) :
+class BidRejectionDialogFragment(
+    var bidRequestId: Int?,
+    var serviceName: String,
+    var code: String,
+) :
     BaseDialogFragment<FragmentBidRejectionDialogBinding, BidRejectionDialogViewModel>(),
     BidRejectionDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
@@ -42,9 +46,13 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
         const val TAG = "CustomDialogFragment"
 
         //take the title and subtitle form the Activity
-        fun newInstance(bidRequestId: Int?): BidRejectionDialogFragment {
+        fun newInstance(
+            bidRequestId: Int?,
+            serviceName: String,
+            code: String,
+        ): BidRejectionDialogFragment {
 
-            return BidRejectionDialogFragment(bidRequestId)
+            return BidRejectionDialogFragment(bidRequestId, serviceName, code)
         }
 
     }
@@ -61,30 +69,30 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
         super.onAttach(context)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        //shared preference token
+        setIdToken()
+    }
+
     override fun onStart() {
         super.onStart()
-
-        var window: Window? = dialog?.window
-        var params: WindowManager.LayoutParams = window!!.attributes
-        params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
-
-        window.attributes = params
-        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        //Setting Size for the dialog
+        dialogFragmentSize()
+        //intitalizing callbackinterface in viewmodel
+        getViewModel().setCallBackInterface(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //intitalizing callbackinterface in viewmodel
-        getViewModel().setCallBackInterface(this)
-        //shared preference token
-        setIdTokenAndSpRegId()
         //Reason for rejection
         getViewModel().reasonForReject(mDataBinding)
         //On OK Button CLick
         okBtnClick()
         //On cancel button click
         cancelBtnClick()
-
+        //Setting Service ID and Service Name
+        mDataBinding!!.quoteTitle.text = "You Rejected a $serviceName #$code"
     }
 
     // method For OkButton
@@ -94,11 +102,12 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
                 if (mDataBinding?.etComments?.text.isNullOrEmpty()) {
                     mDataBinding?.alertMsg?.visibility = View.VISIBLE
                 } else {
-                    bidRejectionApiCall()
+                    //apiTokenValidationQuoteDetailsDialog("BidReject")
+                   bidRejectionApiCall()
                 }
             } else {
+               // apiTokenValidationQuoteDetailsDialog("BidReject")
                 bidRejectionApiCall()
-
             }
         }
     }
@@ -135,7 +144,7 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
     }
 
     // Method For Send Data To actionDetails Fragment
-    private fun actionDetailsFragmentListUpdate(){
+    private fun actionDetailsFragmentListUpdate() {
         // Result to Send ActionDetails Fragment
         parentFragmentManager.setFragmentResult(
             "1", // Same request key FragmentA used to register its listener
@@ -153,7 +162,7 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
     }
 
     // Method For Set setIdToken From Shared Preferences
-    private fun setIdTokenAndSpRegId() {
+    private fun setIdToken() {
         var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
             "MyUser",
             Context.MODE_PRIVATE
@@ -167,15 +176,25 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
             Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                status, idToken!!
+                status, idToken
             )
         }
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Main) {
-//          bidRejectionApiCall()
+       //  bidRejectionApiCall()
         }
     }
 
+    //Setting Dialog Size
+    private fun dialogFragmentSize() {
+        var window: Window? = dialog?.window
+        var params: WindowManager.LayoutParams = window!!.attributes
+        params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
+
+        window.attributes = params
+        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+
+    }
 }

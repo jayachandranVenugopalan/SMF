@@ -64,50 +64,6 @@
 
 
         </RadioGroup>
-<!--            <CheckBox-->
-<!--                android:layout_marginTop="@dimen/size_20dp"-->
-<!--                android:id="@+id/quote_check_box_1"-->
-<!--                style="@style/CustomCheckbox"-->
-<!--                android:layout_width="@dimen/size_24dp"-->
-<!--                android:layout_height="@dimen/size_24dp"-->
-<!--                android:layout_marginLeft="@dimen/size_5dp"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/radiogroup" />-->
-
-<!--            <TextView-->
-<!--                android:layout_marginTop="@dimen/size_22dp"-->
-<!--                android:id="@+id/quote_details_1"-->
-<!--                android:layout_marginStart="@dimen/size_5dp"-->
-<!--                app:layout_constraintStart_toEndOf="@+id/quote_check_box_1"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/quote_title"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:fontFamily="@font/poppins_regular"-->
-<!--                android:textSize="@dimen/size_15sp"-->
-<!--                android:text="@string/i_have_quotes_details" />-->
-
-<!--            <CheckBox-->
-<!--                android:layout_marginTop="@dimen/size_10dp"-->
-<!--                android:id="@+id/quote_check_box_2"-->
-<!--                style="@style/CustomCheckbox"-->
-<!--                android:layout_width="@dimen/size_24dp"-->
-<!--                android:layout_height="@dimen/size_24dp"-->
-<!--                android:layout_marginLeft="@dimen/size_5dp"-->
-<!--                android:fontFamily="@font/poppins_medium"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/quote_check_box_1" />-->
-
-<!--            <TextView-->
-<!--                android:layout_marginTop="@dimen/size_10dp"-->
-<!--                android:id="@+id/quote_details_2"-->
-<!--                android:layout_marginStart="@dimen/size_5dp"-->
-<!--                app:layout_constraintStart_toEndOf="@+id/quote_check_box_2"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/quote_details_1"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textSize="@dimen/size_15sp"-->
-<!--                android:fontFamily="@font/poppins_regular"-->
-<!--                android:text="@string/will_provide_quotes_later" />-->
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint2"

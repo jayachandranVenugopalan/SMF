@@ -3,14 +3,12 @@ package com.smf.events.ui.actionandstatusdashboard
 import android.app.Application
 import androidx.lifecycle.liveData
 import com.smf.events.base.BaseViewModel
-import com.smf.events.databinding.FragmentActionsAndStatusBinding
-import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class ActionsAndStatusViewModel @Inject constructor(
     private val actionsAndStatusRepository: ActionsAndStatusRepository,
-    application: Application
+    application: Application,
 ) :
     BaseViewModel(application) {
 
@@ -30,24 +28,4 @@ class ActionsAndStatusViewModel @Inject constructor(
             )
         )
     }
-
-    // Method For Get New Request
-    fun getNewRequest(
-        idToken: String,
-        spRegId: Int,
-        serviceCategoryId: Int?,
-        serviceVendorOnboardingId: Int?,
-        bidStatus: String
-    ) =
-        liveData(Dispatchers.IO) {
-            emit(
-                actionsAndStatusRepository.getNewRequest(
-                    idToken,
-                    spRegId,
-                    serviceCategoryId,
-                    serviceVendorOnboardingId,
-                    bidStatus
-                )
-            )
-        }
 }

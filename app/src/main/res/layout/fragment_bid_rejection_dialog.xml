@@ -35,29 +35,13 @@
             >
             <TextView
                 android:id="@+id/quote_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="You Rejected a"
+                android:text="@string/you_rejected_a_catering_1000045"
                 android:textSize="@dimen/size_20sp"
                 android:fontFamily="@font/poppins_semibold" />
-            <TextView
-                android:layout_marginLeft="@dimen/size_5dp"
-                android:id="@+id/service_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Catering"
-                android:textSize="@dimen/size_20sp"
-                android:fontFamily="@font/poppins_semibold" />
-            <TextView
-                android:layout_marginLeft="@dimen/size_5dp"
-                android:id="@+id/service_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="#100014"
-                android:textSize="@dimen/size_20sp"
-                android:fontFamily="@font/poppins_semibold"/>
         </LinearLayout>
         <LinearLayout
             android:layout_marginTop="@dimen/size_10dp"

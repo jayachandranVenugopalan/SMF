@@ -43,7 +43,7 @@ class ActionDetailsFragment :
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
     var newRequestCount: Int? = 0
-    var bidRequested: String = ""
+    var bidStatus: String = ""
     lateinit var idToken: String
     var spRegId: Int = 0
 
@@ -78,6 +78,8 @@ class ActionDetailsFragment :
         tokens.setCallBackInterface(this)
         //Method For Token Validation
         apiTokenValidationNewRequest()
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,7 +104,7 @@ class ActionDetailsFragment :
         // ResultListener For Observe Data From Dialogs
         parentFragmentManager.setFragmentResultListener("1", viewLifecycleOwner,
             FragmentResultListener { requestKey: String, result: Bundle ->
-                newRequestApiCall()
+                bidActionsApiCall()
             })
     }
 
@@ -232,7 +234,7 @@ class ActionDetailsFragment :
     // Method For Set ActionDetails Frag Values From ActionAndStatusFrag And SharedPreferences
     private fun actionDeatilsVariableSetUp() {
         val args = arguments
-        bidRequested = args?.getString("bidRequested").toString()
+        bidStatus = args?.getString("bidStatus").toString()
 
         val getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
             "MyUser",
@@ -260,18 +262,18 @@ class ActionDetailsFragment :
     private fun apiTokenValidationNewRequest() {
         tokens.checkTokenExpiry(
             requireActivity().applicationContext as SMFApp,
-            "newRequestApiCall", idToken
+            "bidStatus", idToken
         )
     }
 
     // Method For New Request Api Call
-    private fun newRequestApiCall() {
+    private fun bidActionsApiCall() {
         getViewModel().getNewRequest(
             idToken,
             spRegId,
             serviceCategoryId,
             serviceVendorOnboardingId,
-            bidRequested
+            bidStatus
         ).observe(viewLifecycleOwner, Observer { apiResponse ->
             when (apiResponse) {
                 is ApisResponse.Success -> {
@@ -302,10 +304,8 @@ class ActionDetailsFragment :
     // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
-            when (caller) {
-                "newRequestApiCall" -> newRequestApiCall()
-                else -> {}
-            }
+            bidActionsApiCall()
+
         }
     }
 

@@ -86,6 +86,7 @@
     <string name="if_you_want">If you want to accept the bid you can proceed later within bid cut off time</string>
     <string name="comments_is_mandatory_for_thr_option">Comments is mandatory for the option "Others"</string>
     <string name="cost_is_mandatory">Cost is mandatory !</string>
+    <string name="you_rejected_a_catering_1000045">You Rejected a Catering #1000045</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>

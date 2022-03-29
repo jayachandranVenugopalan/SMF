@@ -16,7 +16,7 @@ class QuoteDetailsDialogViewModel @Inject constructor(
     application: Application,
 ) : BaseDialogViewModel(application) {
 
-
+    //When i have Quote is clicked
     fun iHaveQuoteClicked(view: View, mDataBinding: FragmentQuoteDetailsDialogBinding?) {
         var radioGroup: RadioGroup? = mDataBinding?.radiogroup
         onCLickOk(mDataBinding, "I have Quotes Details")
@@ -34,6 +34,7 @@ class QuoteDetailsDialogViewModel @Inject constructor(
         }
     }
 
+    //When Quote Later is clicked
     fun quoteLaterIsClicked(view: View, mDataBinding: FragmentQuoteDetailsDialogBinding?) {
         var radioGroup: RadioGroup? = mDataBinding?.radiogroup
         mDataBinding?.quotelater?.setOnClickListener {
