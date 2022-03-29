@@ -37,8 +37,9 @@ class BidRejectionDialogViewModel @Inject constructor(
                 id: Long,
             ) {
                 Log.d("TAG", "onItemSelected: ${resources[position]}")
-                resources.remove("Reason For Rejection")
                 callBackInterface?.callBack(resources[position])
+                resources.remove("Reason For Rejection")
+
 
 
             }

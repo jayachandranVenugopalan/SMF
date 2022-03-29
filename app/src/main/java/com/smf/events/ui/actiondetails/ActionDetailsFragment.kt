@@ -77,7 +77,7 @@ class ActionDetailsFragment :
         //Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
         //Method For Token Validation
-        apiTokenValidationNewRequest()
+        apiTokenValidationBidActions()
 
 
     }
@@ -104,7 +104,7 @@ class ActionDetailsFragment :
         // ResultListener For Observe Data From Dialogs
         parentFragmentManager.setFragmentResultListener("1", viewLifecycleOwner,
             FragmentResultListener { requestKey: String, result: Bundle ->
-                bidActionsApiCall()
+                apiTokenValidationBidActions()
             })
     }
 
@@ -259,7 +259,7 @@ class ActionDetailsFragment :
     }
 
     // Method For AWS Token Validation
-    private fun apiTokenValidationNewRequest() {
+    private fun apiTokenValidationBidActions() {
         tokens.checkTokenExpiry(
             requireActivity().applicationContext as SMFApp,
             "bidStatus", idToken

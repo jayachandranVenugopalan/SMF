@@ -29,8 +29,7 @@ class BidRejectionDialogFragment(
     var bidRequestId: Int?,
     var serviceName: String,
     var code: String,
-) :
-    BaseDialogFragment<FragmentBidRejectionDialogBinding, BidRejectionDialogViewModel>(),
+) : BaseDialogFragment<FragmentBidRejectionDialogBinding, BidRejectionDialogViewModel>(),
     BidRejectionDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
     @Inject
@@ -79,6 +78,8 @@ class BidRejectionDialogFragment(
         super.onStart()
         //Setting Size for the dialog
         dialogFragmentSize()
+        //Token Class CallBack Initialization
+        tokens.setCallBackInterface(this)
         //intitalizing callbackinterface in viewmodel
         getViewModel().setCallBackInterface(this)
     }
@@ -102,12 +103,12 @@ class BidRejectionDialogFragment(
                 if (mDataBinding?.etComments?.text.isNullOrEmpty()) {
                     mDataBinding?.alertMsg?.visibility = View.VISIBLE
                 } else {
-                    //apiTokenValidationQuoteDetailsDialog("BidReject")
-                   bidRejectionApiCall()
+                    apiTokenValidationQuoteDetailsDialog("BidReject")
                 }
+            } else if (reason == "Reason For Rejection") {
+                showToast("Please Select the reason for rejection")
             } else {
-               // apiTokenValidationQuoteDetailsDialog("BidReject")
-                bidRejectionApiCall()
+                apiTokenValidationQuoteDetailsDialog("BidReject")
             }
         }
     }
@@ -130,7 +131,6 @@ class BidRejectionDialogFragment(
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         actionDetailsFragmentListUpdate()
-                        Log.d("TAG", "BidRejection Succcess: ${(apiResponse.response)}")
                         dismiss()
                     }
                     is ApisResponse.Error -> {
@@ -172,18 +172,15 @@ class BidRejectionDialogFragment(
     }
 
     private fun apiTokenValidationQuoteDetailsDialog(status: String) {
-        if (idToken.isNotEmpty()) {
-            Log.d("TAG", "onResume: called")
-            tokens.checkTokenExpiry(
-                requireActivity().applicationContext as SMFApp,
-                status, idToken
-            )
-        }
+        tokens.checkTokenExpiry(
+            requireActivity().applicationContext as SMFApp,
+            status, idToken
+        )
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Main) {
-       //  bidRejectionApiCall()
+            bidRejectionApiCall()
         }
     }
 
