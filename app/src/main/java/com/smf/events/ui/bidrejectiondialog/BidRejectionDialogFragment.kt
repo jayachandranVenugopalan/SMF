@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.smf.events.BR
@@ -48,7 +49,7 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
 
     }
 
-    override fun getViewModel(): BidRejectionDialogViewModel? =
+    override fun getViewModel(): BidRejectionDialogViewModel =
         ViewModelProvider(this, factory).get(BidRejectionDialogViewModel::class.java)
 
     override fun getBindingVariable(): Int = BR.bidRejectionDialogViewModel
@@ -74,11 +75,11 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //intitalizing callbackinterface in viewmodel
-        getViewModel()?.setCallBackInterface(this)
+        getViewModel().setCallBackInterface(this)
         //shared preference token
         setIdTokenAndSpRegId()
         //Reason for rejection
-        getViewModel()?.reasonForReject(mDataBinding)
+        getViewModel().reasonForReject(mDataBinding)
         //On OK Button CLick
         okBtnClick()
         //On cancel button click
@@ -86,6 +87,7 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
 
     }
 
+    // method For OkButton
     private fun okBtnClick() {
         mDataBinding?.btnOk?.setOnClickListener {
             if (reason == "Other") {
@@ -101,20 +103,24 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
         }
     }
 
+    // method For CancelButton
     private fun cancelBtnClick() {
         mDataBinding?.btnCancel?.setOnClickListener {
             dismiss()
         }
     }
 
+    // Method For Bid Rejection Api Call
     private fun bidRejectionApiCall() {
-        serviceProviderBidRequestDto = ServiceProviderBidRequestDto(bidRequestId!!,
-            mDataBinding?.etComments?.text.toString(), reason)
-        getViewModel()?.putBidRejection(idToken, serviceProviderBidRequestDto)
-            ?.observe(viewLifecycleOwner, Observer { apiResponse ->
+        serviceProviderBidRequestDto = ServiceProviderBidRequestDto(
+            bidRequestId!!,
+            mDataBinding?.etComments?.text.toString(), reason
+        )
+        getViewModel().putBidRejection(idToken, serviceProviderBidRequestDto)
+            .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-
+                        actionDetailsFragmentListUpdate()
                         Log.d("TAG", "BidRejection Succcess: ${(apiResponse.response)}")
                         dismiss()
                     }
@@ -128,6 +134,15 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
 
     }
 
+    // Method For Send Data To actionDetails Fragment
+    private fun actionDetailsFragmentListUpdate(){
+        // Result to Send ActionDetails Fragment
+        parentFragmentManager.setFragmentResult(
+            "1", // Same request key FragmentA used to register its listener
+            bundleOf("key" to "value") // The data to be passed to FragmentA
+        )
+    }
+
 
     override fun callBack(status: String) {
         reason = status
@@ -137,6 +152,7 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
 
     }
 
+    // Method For Set setIdToken From Shared Preferences
     private fun setIdTokenAndSpRegId() {
         var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
             "MyUser",
@@ -151,7 +167,8 @@ class BidRejectionDialogFragment(var bidRequestId: Int?) :
             Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                status, idToken!!)
+                status, idToken!!
+            )
         }
     }
 

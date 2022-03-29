@@ -42,9 +42,9 @@
     <string name="active">Active</string>
     <string name="_4">4</string>
     <string name="new_request">New request</string>
-    <string name="_12_pending_items">12 pending items</string>
+    <string name="_0_pending_items">0 pending items</string>
     <string name="status">Status</string>
-    <string name="_12_status">12 status</string>
+    <string name="_0_status">0 status</string>
     <string name="actions">Actions</string>
 
     <string name="sole_properitor">Sole Properitor</string>
@@ -64,7 +64,7 @@
     <string name="service_date">Service Date</string>
     <string name="aug_26">Aug 26</string>
     <string name="_12_aug">12 Aug</string>
-    <string name="_3_new_request">3 New request</string>
+    <string name="_0_new_request">0 New request</string>
     <string name="catering_fork_spoon"><![CDATA[Catering-Fork & Spoon]]></string>
     <string name="fork_amp_spoon"><![CDATA[Fork & spoon]]></string>
     <string name="cost_estimation">Cost Estimation</string>

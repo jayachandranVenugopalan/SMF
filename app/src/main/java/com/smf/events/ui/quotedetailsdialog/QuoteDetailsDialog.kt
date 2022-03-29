@@ -289,7 +289,7 @@ class QuoteDetailsDialog(
             Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                status, idToken!!)
+                status, idToken)
         }
     }
 

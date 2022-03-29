@@ -1,21 +1,23 @@
 package com.smf.events.ui.actiondetails
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
 import com.smf.events.R
+import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionDetailsBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
@@ -25,11 +27,14 @@ import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
 class ActionDetailsFragment :
-    BaseFragment<FragmentActionDetailsBinding, ActionDetailsViewModel>(), CallBackInterface {
+    BaseFragment<FragmentActionDetailsBinding, ActionDetailsViewModel>(),
+    Tokens.IdTokenCallBackInterface, CallBackInterface {
 
     private lateinit var myActionDetailsRecyclerView: RecyclerView
     lateinit var actionDetailsAdapter: ActionDetailsAdapter
@@ -38,6 +43,12 @@ class ActionDetailsFragment :
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
     var newRequestCount: Int? = 0
+    var bidRequested: String = ""
+    lateinit var idToken: String
+    var spRegId: Int = 0
+
+    @Inject
+    lateinit var tokens: Tokens
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -57,15 +68,22 @@ class ActionDetailsFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        categoryIdAndOnboardingIdAndMyListSetup()
+        actionDeatilsVariableSetUp()
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        //Token Class CallBack Initialization
+        tokens.setCallBackInterface(this)
+        //Method For Token Validation
+        apiTokenValidationNewRequest()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         closeBtn = mDataBinding?.closeBtn
-        mDataBinding?.textNewRequest!!.text = "${newRequestCount.toString()} New request"
 
         //Initializing actions recyclerview
         myActionDetailsRecyclerView = mDataBinding?.actionDetailsRecyclerview!!
@@ -76,12 +94,19 @@ class ActionDetailsFragment :
         //Actions Recycler view
         myActionsStatusRecycler()
 
-        val listActions = getActionsDetailsList()
-        actionDetailsAdapter.refreshItems(listActions)
-
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        // ResultListener For Observe Data From Dialogs
+        parentFragmentManager.setFragmentResultListener("1", viewLifecycleOwner,
+            FragmentResultListener { requestKey: String, result: Bundle ->
+                newRequestApiCall()
+            })
+    }
+
+    // Method For ActionDetails RecyclerView
     private fun myActionsStatusRecycler() {
         actionDetailsAdapter = ActionDetailsAdapter(requireContext())
         myActionDetailsRecyclerView.layoutManager =
@@ -91,6 +116,7 @@ class ActionDetailsFragment :
 
     }
 
+    // Method For Prepare ActionDetails List
     private fun getActionsDetailsList(): ArrayList<ActionDetails> {
         var list = ArrayList<ActionDetails>()
 
@@ -122,9 +148,8 @@ class ActionDetailsFragment :
 
     }
 
-    //Close Button ClickListener
+    // Close Button ClickListener
     private fun clickListeners() {
-
         closeBtn?.setOnClickListener {
             var args = Bundle()
             serviceCategoryId?.let { it1 -> args.putInt("serviceCategoryId", it1) }
@@ -139,6 +164,7 @@ class ActionDetailsFragment :
         }
     }
 
+    // Callback From ActionDetails Adapter
     override fun callBack(
         status: String,
         bidRequestId: Int,
@@ -149,10 +175,10 @@ class ActionDetailsFragment :
         branchName: String,
     ) {
         postQuoteDetails(bidRequestId, costingType, bidStatus, cost, latestBidValue, branchName)
-        serviceCategoryAndOnboardingIdInitialize()
 
     }
 
+    // Method For postQuoteDetails Api Call
     fun postQuoteDetails(
         bidRequestId: Int,
         costingType: String,
@@ -161,15 +187,15 @@ class ActionDetailsFragment :
         latestBidValue: String?,
         branchName: String,
     ) {
-        var getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
+        val getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
             "MyUser",
             Context.MODE_PRIVATE
         )
 
-        var idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        val idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
         Log.d(QuoteDetailsDialog.TAG, "PostQuoteDetails: $idToken")
-        var
-                biddingQuote = BiddingQuotDto(
+
+        val biddingQuote = BiddingQuotDto(
             bidRequestId,
             AppConstants.BID_SUBMITTED,
             branchName,
@@ -185,13 +211,14 @@ class ActionDetailsFragment :
         )
         getViewModel().postQuoteDetails(idToken, bidRequestId, biddingQuote)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
-
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         Log.d("TAG", "check token result: ${(apiResponse.response)}")
                         QuoteBriefDialog.newInstance()
-                            .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                QuoteBriefDialog.TAG)
+                            .show(
+                                (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                QuoteBriefDialog.TAG
+                            )
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
@@ -202,58 +229,84 @@ class ActionDetailsFragment :
             })
     }
 
-    private fun categoryIdAndOnboardingIdAndMyListSetup() {
+    // Method For Set ActionDetails Frag Values From ActionAndStatusFrag And SharedPreferences
+    private fun actionDeatilsVariableSetUp() {
         val args = arguments
-        serviceCategoryId = args?.getInt("serviceCategoryId")
-        newRequestCount = args?.getInt("newRequestCount")
-        serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
-        myList = args?.getParcelableArrayList<ServiceProviderBidRequestDto>("list") as ArrayList
-        Log.d("TAG", "newRequestApiCall actionDetailFragment : $myList")
-        Log.d(
-            "TAG",
-            "newRequestApiCall actionDetailFragment serviceCategoryId : $serviceCategoryId"
-        )
-        Log.d(
-            "TAG",
-            "newRequestApiCall actionDetailFragment serviceVendorOnboardingId: $serviceVendorOnboardingId"
-        )
-    }
+        bidRequested = args?.getString("bidRequested").toString()
 
-    private fun serviceCategoryAndOnboardingIdInitialize() {
-
-        // Initialize serviceCategoryId And serviceVendorOnboardingId
-        val sharedPreferences =
-            requireContext().getSharedPreferences(
-                "MyUser",
-                Context.MODE_PRIVATE
-            )
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        editor.putString(
-            "serviceCategoryId",
-            serviceCategoryId.toString()
-        )
-        editor.putString(
-            "serviceVendorOnboardingId",
-            serviceVendorOnboardingId.toString()
-        )
-        editor.putString(
-            "caller",
-            "caller"
-        )
-        editor.apply()
-
-        val getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
+        val getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
             "MyUser",
             Context.MODE_PRIVATE
         )
-        Log.d("TAG",
-            "initializeId shr: ${getSharedPreferences?.getString("serviceCategoryId", "")}")
-        Log.d("TAG",
-            "initializeId shr serviceVendorOnboardingId: ${
-                getSharedPreferences?.getString("serviceVendorOnboardingId",
-                    "")
-            }")
+        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        spRegId = getSharedPreferences.getInt("spRegId", 0)
 
+        if (args?.getInt("serviceCategoryId") == 0) {
+            if (args.getInt("serviceVendorOnboardingId") == 0) {
+                serviceCategoryId = null
+                serviceVendorOnboardingId = null
+            }
+        } else if (args?.getInt("serviceCategoryId") != 0 && args?.getInt("serviceVendorOnboardingId") == 0) {
+            serviceCategoryId = args.getInt("serviceCategoryId")
+            serviceVendorOnboardingId = null
+        } else {
+            serviceCategoryId = args?.getInt("serviceCategoryId")
+            serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
+
+        }
+    }
+
+    // Method For AWS Token Validation
+    private fun apiTokenValidationNewRequest() {
+        tokens.checkTokenExpiry(
+            requireActivity().applicationContext as SMFApp,
+            "newRequestApiCall", idToken
+        )
+    }
+
+    // Method For New Request Api Call
+    private fun newRequestApiCall() {
+        getViewModel().getNewRequest(
+            idToken,
+            spRegId,
+            serviceCategoryId,
+            serviceVendorOnboardingId,
+            bidRequested
+        ).observe(viewLifecycleOwner, Observer { apiResponse ->
+            when (apiResponse) {
+                is ApisResponse.Success -> {
+                    Log.d(
+                        "TAG",
+                        "sample ActionsAndStatusFragment size: ${apiResponse.response.data.serviceProviderBidRequestDtos.size}"
+                    )
+                    recyclerViewListUpdate(apiResponse.response.data.serviceProviderBidRequestDtos)
+                }
+                is ApisResponse.Error -> {
+                    Log.d("TAG", "check token result: ${apiResponse.exception}")
+                }
+                else -> {
+                }
+            }
+        })
+    }
+
+    // Method For Action Details RecyclerView List Update
+    private fun recyclerViewListUpdate(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>) {
+        myList = serviceProviderBidRequestDtos as ArrayList
+        newRequestCount = myList.size
+        mDataBinding?.textNewRequest?.text = "$newRequestCount new request"
+        val listActions = getActionsDetailsList()
+        actionDetailsAdapter.refreshItems(listActions)
+    }
+
+    // Callback From Token Class
+    override suspend fun tokenCallBack(idToken: String, caller: String) {
+        withContext(Dispatchers.Main) {
+            when (caller) {
+                "newRequestApiCall" -> newRequestApiCall()
+                else -> {}
+            }
+        }
     }
 
 }

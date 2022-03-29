@@ -17,14 +17,6 @@ class QuoteBriefDialogViewModel @Inject constructor(
 ) : BaseDialogViewModel(application) {
 
 
-    fun backButtonPressed(mDataBinding: QuoteBriefDialogBinding) {
-        mDataBinding.btnBack.setOnClickListener {
-            callBackInterface!!.callBack("onBackClicked")
-
-        }
-    }
-
-
     private var callBackInterface: CallBackInterface? = null
 
     // Initializing CallBack Interface Method

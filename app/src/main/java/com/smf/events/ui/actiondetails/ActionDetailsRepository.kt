@@ -18,4 +18,28 @@ class ActionDetailsRepository @Inject constructor(var apiStories: ApiStories)  {
             ApisResponse.Error(e)
         }
     }
+
+    // Method For Get New Request
+    suspend fun getNewRequest(
+        idToken: String,
+        spRegId: Int,
+        serviceCategoryId: Int?,
+        serviceVendorOnboardingId: Int?,
+        bidStatus: String
+    ): ApisResponse<NewRequestList> {
+
+        return try {
+            val getResponse = apiStories.getNewRequest(
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                serviceVendorOnboardingId,
+                bidStatus
+            )
+            ApisResponse.Success(getResponse)
+
+        } catch (e: HttpException) {
+            ApisResponse.Error(e)
+        }
+    }
 }

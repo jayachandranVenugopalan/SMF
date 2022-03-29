@@ -12,4 +12,24 @@ class ActionDetailsViewModel @Inject constructor(val actionDetailsRepository: Ac
         Dispatchers.IO) {
         emit(actionDetailsRepository.postQuoteDetails(idToken, bidRequestId,biddingQuote))
     }
+
+    // Method For Get New Request
+    fun getNewRequest(
+        idToken: String,
+        spRegId: Int,
+        serviceCategoryId: Int?,
+        serviceVendorOnboardingId: Int?,
+        bidStatus: String
+    ) =
+        liveData(Dispatchers.IO) {
+            emit(
+                actionDetailsRepository.getNewRequest(
+                    idToken,
+                    spRegId,
+                    serviceCategoryId,
+                    serviceVendorOnboardingId,
+                    bidStatus
+                )
+            )
+        }
 }

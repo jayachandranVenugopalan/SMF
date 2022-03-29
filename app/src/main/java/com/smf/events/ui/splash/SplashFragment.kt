@@ -20,7 +20,7 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    override fun getViewModel(): SplashScreenViewModel? =
+    override fun getViewModel(): SplashScreenViewModel =
         ViewModelProvider(this, factory).get(SplashScreenViewModel::class.java)
 
     override fun getBindingVariable(): Int = BR.splashViewModel

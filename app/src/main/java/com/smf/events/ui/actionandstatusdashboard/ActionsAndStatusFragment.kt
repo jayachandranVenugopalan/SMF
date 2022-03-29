@@ -16,16 +16,12 @@ import com.smf.events.databinding.FragmentActionsAndStatusBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
 import com.smf.events.helper.Tokens
-import com.smf.events.rxbus.RxBus
-import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
-import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
 import com.smf.events.ui.dashboard.adapter.StatusAdaptor
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -44,15 +40,13 @@ class ActionsAndStatusFragment :
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
-    var newRequestCount: Int =0
-
+    var newRequestCount: Int = 0
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
     @Inject
     lateinit var tokens: Tokens
-
 
     override fun getViewModel(): ActionsAndStatusViewModel =
         ViewModelProvider(this, factory).get(ActionsAndStatusViewModel::class.java)
@@ -68,7 +62,6 @@ class ActionsAndStatusFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "onCreate: ActionsAndStatusFragment called")
         setIdTokenAndSpRegId()
         serviceCategoryIdAndServiceOnboardingIdSetup()
 
@@ -76,11 +69,11 @@ class ActionsAndStatusFragment :
 
     override fun onStart() {
         super.onStart()
-        Log.d("TAG", "onCreate: ActionsAndStatusFragment called onstart $serviceCategoryId")
-        Log.d("TAG", "onCreate: ActionsAndStatusFragment called onstart $serviceVendorOnboardingId")
+        // Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        //  apiTokenValidationActionaAndStatus()
-        actionAndStatusApiCall()
+        // Action And Status Api Call
+        apiTokenValidationActionAndStatus()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,6 +94,7 @@ class ActionsAndStatusFragment :
 
     }
 
+    // Method For ActionsStatusRecyclerView SetUp
     private fun myActionsStatusRecycler() {
         actionAdapter = ActionsAdapter(requireContext())
         myActionRecyclerView.layoutManager =
@@ -110,6 +104,7 @@ class ActionsAndStatusFragment :
 
     }
 
+    // Method For StatusRecyclerView SetUp
     private fun myStatusRecycler() {
         statusAdapter = StatusAdaptor()
         myStatusRecyclerView.layoutManager =
@@ -118,36 +113,39 @@ class ActionsAndStatusFragment :
 
     }
 
+    // Prepare Action List Values
     private fun getActionsList(actionAndStatusData: ActionAndStatusCount?): ArrayList<MyEvents> {
         var list = ArrayList<MyEvents>()
         list.add(MyEvents(actionAndStatusData?.bidRequestedActionsCount.toString(), "New request"))
         newRequestCount = actionAndStatusData!!.bidRequestedActionsCount
         list.add(
             MyEvents(
-                actionAndStatusData?.pendingForQuoteActionCount.toString(),
-                "Pending Quote"         )
+                actionAndStatusData.pendingForQuoteActionCount.toString(),
+                "Pending Quote"
+            )
         )
-        list.add(MyEvents(actionAndStatusData?.wonBidStatusCount.toString(), "Won Bid"))
-        list.add(MyEvents(actionAndStatusData?.bidRejectedActionCount.toString(), "Rejected"))
-        list.add(MyEvents(actionAndStatusData?.bidSubmittedActionCount.toString(), "Bid Submitted"))
+        list.add(MyEvents(actionAndStatusData.wonBidStatusCount.toString(), "Won Bid"))
+        list.add(MyEvents(actionAndStatusData.bidRejectedActionCount.toString(), "Rejected"))
+        list.add(MyEvents(actionAndStatusData.bidSubmittedActionCount.toString(), "Bid Submitted"))
 
         return list
 
     }
 
+    // Prepare Status List Values
     private fun getStatusList(actionAndStatusData: ActionAndStatusCount): ArrayList<MyEvents> {
         var list = ArrayList<MyEvents>()
         list.add(
             MyEvents(
-                actionAndStatusData?.bidSubmittedStatusCount.toString(),
+                actionAndStatusData.bidSubmittedStatusCount.toString(),
                 "Bids Submitted"
             )
         )
-        list.add(MyEvents(actionAndStatusData?.serviceDoneStatusCount.toString(), "Service done"))
-        list.add(MyEvents(actionAndStatusData?.bidTimedOutStatusCount.toString(), "Bid TimeOut"))
-        list.add(MyEvents(actionAndStatusData?.wonBidStatusCount.toString(), "Won Bid"))
-        list.add(MyEvents(actionAndStatusData?.bidRejectedStatusCount.toString(), "Rejected"))
-        list.add(MyEvents(actionAndStatusData?.lostBidStatusCount.toString(), "Lost Bid"))
+        list.add(MyEvents(actionAndStatusData.serviceDoneStatusCount.toString(), "Service done"))
+        list.add(MyEvents(actionAndStatusData.bidTimedOutStatusCount.toString(), "Bid TimeOut"))
+        list.add(MyEvents(actionAndStatusData.wonBidStatusCount.toString(), "Won Bid"))
+        list.add(MyEvents(actionAndStatusData.bidRejectedStatusCount.toString(), "Rejected"))
+        list.add(MyEvents(actionAndStatusData.lostBidStatusCount.toString(), "Lost Bid"))
 
         return list
 
@@ -157,7 +155,6 @@ class ActionsAndStatusFragment :
     override fun actionCardClick(myEvents: MyEvents) {
         when (myEvents.titleText) {
             "New request" -> {
-                // newRequestApiCall(AppConstants.BID_REQUESTED)
                 apiTokenValidationNewRequest()
             }
             else -> {
@@ -167,67 +164,29 @@ class ActionsAndStatusFragment :
 
     }
 
+    // Token Validation For NewRequest Api Call
     private fun apiTokenValidationNewRequest() {
         if (idToken.isNotEmpty()) {
             Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                "newRequest", idToken)
+                "newRequest", idToken
+            )
         }
     }
 
-    private fun apiTokenValidationActionaAndStatus() {
+    // Method For AWS Token Validation Action And Status
+    private fun apiTokenValidationActionAndStatus() {
         if (idToken.isNotEmpty()) {
             Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                "actionAndStatus", idToken)
+                "actionAndStatus", idToken
+            )
         }
     }
 
-    private fun newRequestApiCall(bidRequested: String) {
-        getViewModel().getNewRequest(
-            idToken,
-            spRegId,
-            serviceCategoryId,
-            serviceVendorOnboardingId,
-            bidRequested
-        )
-            .observe(viewLifecycleOwner, Observer { apiResponse ->
-                when (apiResponse) {
-                    is ApisResponse.Success -> {
-                        Log.d(
-                            "TAG",
-                            "newRequestApiCall : ${apiResponse.response.data.serviceProviderBidRequestDtos}"
-                        )
-                        goToActionDetailsFragmentWithDetails(apiResponse.response.data.serviceProviderBidRequestDtos)
-                    }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
-                    }
-                    else -> {
-                    }
-                }
-            })
-    }
-
-    // Method For Calling ActionDetailsFragment With Action Details
-    private fun goToActionDetailsFragmentWithDetails(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>) {
-        val args = Bundle()
-        args.putParcelableArrayList("list", serviceProviderBidRequestDtos as ArrayList)
-        args.putInt("newRequestCount",newRequestCount)
-        serviceCategoryId?.let { args.putInt("serviceCategoryId", it) }
-        serviceVendorOnboardingId?.let { args.putInt("serviceVendorOnboardingId", it) }
-
-        val actionDetailsFragment = ActionDetailsFragment()
-        actionDetailsFragment.arguments = args
-
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.action_and_status_layout, actionDetailsFragment)
-            .addToBackStack(ActionsAndStatusFragment::class.java.name)
-            .commit()
-    }
-
+    // Method For Set IdToken And SpRegId From SharedPreferences
     private fun setIdTokenAndSpRegId() {
         var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
             "MyUser",
@@ -238,6 +197,7 @@ class ActionsAndStatusFragment :
         roleId = getSharedPreferences.getInt("roleId", 0)
     }
 
+    // Method For ApiCall For Action And Status Counts
     private fun actionAndStatusApiCall() {
         getViewModel().getActionAndStatus(
             idToken,
@@ -246,15 +206,8 @@ class ActionsAndStatusFragment :
             serviceVendorOnboardingId
         )
             .observe(viewLifecycleOwner, Observer { apiResponse ->
-
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        Log.d(
-                            "TAG",
-                            "sample ActionsAndStatusFragment: ${apiResponse.response.success}"
-                        )
-                        Log.d("TAG", "sample ActionsAndStatusFragment: ${apiResponse.response}")
-
                         actionAndStatusData = ActionAndStatusCount(
                             apiResponse.response.actionandStatus.bidRequestedActionsCount,
                             apiResponse.response.actionandStatus.bidSubmittedStatusCount,
@@ -270,7 +223,7 @@ class ActionsAndStatusFragment :
                             apiResponse.response.actionandStatus.actionCount
                         )
 
-                        recyclerViewListUpdation()
+                        recyclerViewListUpdate()
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
@@ -281,7 +234,8 @@ class ActionsAndStatusFragment :
             })
     }
 
-    private fun recyclerViewListUpdation() {
+    // Method For Update Action And Status Count To RecyclerView List
+    private fun recyclerViewListUpdate() {
 
         val listActions1 = getActionsList(actionAndStatusData)
         actionAdapter.refreshItems(listActions1)
@@ -290,11 +244,12 @@ class ActionsAndStatusFragment :
         statusAdapter.refreshItems(listStatus)
 
         mDataBinding?.txPendtingitems?.text =
-            "${actionAndStatusData?.actionCount.toString()} PendingItems"
+            "${actionAndStatusData?.actionCount} PendingItems"
         mDataBinding?.txPendingstatus?.text =
-            "${actionAndStatusData?.statusCount.toString()} Status"
+            "${actionAndStatusData?.statusCount} Status"
     }
 
+    // Method For ServiceCategoryId And ServiceOnboardId Initialization
     private fun serviceCategoryIdAndServiceOnboardingIdSetup() {
 
         val args = arguments
@@ -304,7 +259,7 @@ class ActionsAndStatusFragment :
                 serviceVendorOnboardingId = null
             }
         } else if (args?.getInt("serviceCategoryId") != 0 && args?.getInt("serviceVendorOnboardingId") == 0) {
-            serviceCategoryId = args?.getInt("serviceCategoryId")
+            serviceCategoryId = args.getInt("serviceCategoryId")
             serviceVendorOnboardingId = null
         } else {
             serviceCategoryId = args?.getInt("serviceCategoryId")
@@ -313,13 +268,29 @@ class ActionsAndStatusFragment :
         }
     }
 
+    // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
             when (caller) {
-                "newRequest" -> newRequestApiCall(AppConstants.BID_REQUESTED)
+                "newRequest" -> goToActionDetailsFragment(AppConstants.BID_REQUESTED)
                 "actionAndStatus" -> actionAndStatusApiCall()
             }
         }
     }
 
+    // Method For Calling ActionDetailsFragment With Action Details
+    private fun goToActionDetailsFragment(bidRequested: String) {
+        val args = Bundle()
+        args.putString("bidRequested", bidRequested)
+        serviceCategoryId?.let { args.putInt("serviceCategoryId", it) }
+        serviceVendorOnboardingId?.let { args.putInt("serviceVendorOnboardingId", it) }
+
+        val actionDetailsFragment = ActionDetailsFragment()
+        actionDetailsFragment.arguments = args
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.action_and_status_layout, actionDetailsFragment)
+            .addToBackStack(ActionsAndStatusFragment::class.java.name)
+            .commit()
+    }
 }

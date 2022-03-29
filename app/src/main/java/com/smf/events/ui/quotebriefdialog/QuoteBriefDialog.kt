@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -14,6 +15,7 @@ import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.QuoteBriefDialogBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
+import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
@@ -74,7 +76,9 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         // token CallBackInterface
         tokens.setCallBackInterface(this)
         //Back Button Pressed
-        getViewModel()?.backButtonPressed(mDataBinding!!)
+        mDataBinding?.btnBack?.setOnClickListener {
+            backButtonClickListener()
+        }
         //Intitializing call back interface
         getViewModel()?.setCallBackInterface(this)
         //Expandable view
@@ -84,6 +88,14 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 //        getViewModel()?.progress3Completed(mDataBinding)
 //        //state progress four completed
 //        getViewModel()?.progress4Completed(mDataBinding)
+    }
+
+    private fun backButtonClickListener(){
+        parentFragmentManager.setFragmentResult(
+            "1", // Same request key FragmentA used to register its listener
+            bundleOf("key" to "value") // The data to be passed to FragmentA
+        )
+        dismiss()
     }
 
     private fun setBidSubmitQuoteBrief(response: QuoteBrief) {
@@ -184,11 +196,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     override fun callBack(messages: String) {
 
-        when (messages) {
-            "onBackClicked" -> {
-                GlobalScope.launch { dismiss() }
-            }
-        }
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
@@ -205,6 +212,4 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                 "quote_brief", idToken)
         }
     }
-
-
 }
