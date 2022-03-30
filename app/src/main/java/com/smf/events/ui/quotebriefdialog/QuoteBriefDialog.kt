@@ -70,13 +70,13 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        mDataBinding?.quoteBriefDialogLayout?.visibility=View.INVISIBLE
         // token CallBackInterface
         tokens.setCallBackInterface(this)
         //Back Button Pressed
         mDataBinding?.btnBack?.setOnClickListener {
             backButtonClickListener()
         }
-
         //Expandable view
         getViewModel()?.expandableView(mDataBinding, expand)
 
@@ -97,6 +97,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     //Setting Bid Submitted Quote
     private fun setBidSubmitQuoteBrief(response: QuoteBrief) {
+        mDataBinding?.quoteBriefDialogLayout?.visibility=View.VISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         mDataBinding?.txJobTitle?.text = response.data.eventName
@@ -122,6 +123,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     //Setting Bid Pending Quote
     private fun setPendingQuoteBrief(response: QuoteBrief) {
+        mDataBinding?.quoteBriefDialogLayout?.visibility=View.VISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         mDataBinding?.txJobTitle?.text = response.data.eventName
@@ -182,6 +184,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                         bidStatus = apiResponse.response.data.bidStatus
 
                         when (bidStatus) {
+
                             "BID SUBMITTED" -> setBidSubmitQuoteBrief(apiResponse.response)
                             "PENDING FOR QUOTE" -> setPendingQuoteBrief(apiResponse.response)
                         }

@@ -119,7 +119,13 @@ class QuoteDetailsDialog(
         fileUploader()
         //fetching details based on Biding status
         fetchBasedOnStatus(view)
+        mDataBinding?.btnCancel?.setOnClickListener {
+            btnCancel()
+        }
+    }
 
+    private fun btnCancel() {
+        dismiss()
     }
 
     //fetching details based on Biding status

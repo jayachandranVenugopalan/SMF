@@ -160,6 +160,12 @@ class ActionsAndStatusFragment :
             "Pending Quote" -> {
                 apiTokenValidationNewRequest("pendingQuote")
             }
+            "Rejected" -> {
+                apiTokenValidationNewRequest("rejected")
+            }
+            "Bid Submitted" -> {
+                apiTokenValidationNewRequest("bidSubmitted")
+            }
             else -> {
                 Log.d("TAG", "newRequestApiCallsample :else block")
             }
@@ -277,6 +283,8 @@ class ActionsAndStatusFragment :
             when (caller) {
                 "newRequest" -> goToActionDetailsFragment(AppConstants.BID_REQUESTED)
                 "pendingQuote" -> goToActionDetailsFragment(AppConstants.PENDING_FOR_QUOTE)
+                "rejected" -> goToActionDetailsFragment(AppConstants.BID_REJECTED)
+                "bidSubmitted" -> goToActionDetailsFragment(AppConstants.BID_SUBMITTED)
                 "actionAndStatus" -> actionAndStatusApiCall()
             }
         }

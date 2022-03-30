@@ -55,13 +55,14 @@ class QuoteDetailsDialogViewModel @Inject constructor(
         quote: String,
     ) {
         mDataBinding?.btnOk?.setOnClickListener {
-            if (mDataBinding?.ihavequote.isChecked) {
+            if (mDataBinding.ihavequote.isChecked) {
                 callBackInterface?.callBack("iHaveQuote")
 
             } else {
                 callBackInterface?.callBack("quoteLater")
             }
         }
+
     }
 
     private var callBackInterface: CallBackInterface? = null

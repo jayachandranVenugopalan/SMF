@@ -15,6 +15,7 @@
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/quote_brief_dialog_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ui.quotebriefdialog.QuoteBriefDialog">

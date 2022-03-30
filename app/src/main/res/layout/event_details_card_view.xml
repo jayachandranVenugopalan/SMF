@@ -203,6 +203,17 @@
                 android:fontFamily="@font/poppins_medium"
                 android:text="@string/_12_aug"
                 android:textSize="@dimen/size_18sp" />
+            <TextView
+                android:visibility="invisible"
+                android:paddingStart="@dimen/size_5dp"
+                android:id="@+id/change_of_mind"
+                android:layout_width="@dimen/size_150dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:layout_marginStart="@dimen/size_10dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/change_of_mind"
+                android:textSize="@dimen/size_14sp" />
 
         </LinearLayout>
 
@@ -244,7 +255,7 @@
                 app:layout_constraintTop_toTopOf="@+id/right_arrow" />
 
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/unlike_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -257,7 +268,20 @@
                 app:layout_constraintHorizontal_bias="0.9"
                 app:layout_constraintStart_toEndOf="@+id/ner_request_text"
                 app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
-
+            <androidx.appcompat.widget.AppCompatImageView
+                android:visibility="invisible"
+                android:id="@+id/unlike_imageView_fade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button_round_corner"
+                android:padding="@dimen/size_5dp"
+                android:src="@drawable/unlike_icon"
+                android:backgroundTint="#EBE1E1E1"
+                app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
+                app:layout_constraintEnd_toStartOf="@+id/like_imageView"
+                app:layout_constraintHorizontal_bias="0.9"
+                app:layout_constraintStart_toEndOf="@+id/ner_request_text"
+                app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
 
             <ImageView
                 android:id="@+id/like_imageView"
@@ -272,6 +296,21 @@
                 app:layout_constraintHorizontal_bias="0.93"
                 app:layout_constraintStart_toEndOf="@+id/ner_request_text"
                 app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
+
+            <ImageView
+                android:visibility="invisible"
+                android:id="@+id/like_imageView_fade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button_round_corner"
+                android:padding="@dimen/size_5dp"
+                android:src="@drawable/like_icon"
+                android:backgroundTint="#EBE1E1E1"
+                app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
+                app:layout_constraintEnd_toStartOf="@+id/right_arrow_imageView"
+                app:layout_constraintHorizontal_bias="0.93"
+                app:layout_constraintStart_toEndOf="@+id/ner_request_text"
+                app:layout_constraintTop_toTopOf="@+id/ner_request_text"/>
 
 
             <ImageView

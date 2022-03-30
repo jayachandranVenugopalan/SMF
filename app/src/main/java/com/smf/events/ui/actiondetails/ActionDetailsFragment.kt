@@ -95,7 +95,9 @@ class ActionDetailsFragment :
 
         //Actions Recycler view
         myActionsStatusRecycler()
+        if (bidStatus == AppConstants.BID_REJECTED) {
 
+        }
 
     }
 
@@ -110,7 +112,7 @@ class ActionDetailsFragment :
 
     // Method For ActionDetails RecyclerView
     private fun myActionsStatusRecycler() {
-        actionDetailsAdapter = ActionDetailsAdapter(requireContext())
+        actionDetailsAdapter = ActionDetailsAdapter(requireContext(), bidStatus)
         myActionDetailsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         myActionDetailsRecyclerView.adapter = actionDetailsAdapter
@@ -268,6 +270,8 @@ class ActionDetailsFragment :
 
     // Method For New Request Api Call
     private fun bidActionsApiCall() {
+        Log.d("TAG",
+            "bidActionsApiCall: $spRegId $serviceCategoryId $serviceVendorOnboardingId $bidStatus ")
         getViewModel().getNewRequest(
             idToken,
             spRegId,
@@ -296,7 +300,17 @@ class ActionDetailsFragment :
     private fun recyclerViewListUpdate(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>) {
         myList = serviceProviderBidRequestDtos as ArrayList
         newRequestCount = myList.size
-        mDataBinding?.textNewRequest?.text = "$newRequestCount new request"
+        when (bidStatus) {
+            AppConstants.BID_REQUESTED -> mDataBinding?.textNewRequest?.text =
+                "$newRequestCount New request"
+            AppConstants.PENDING_FOR_QUOTE -> mDataBinding?.textNewRequest?.text =
+                "$newRequestCount pending quote"
+            AppConstants.BID_REJECTED -> mDataBinding?.textNewRequest?.text =
+                "$newRequestCount Rejections"
+            AppConstants.BID_SUBMITTED -> mDataBinding?.textNewRequest?.text =
+                "$newRequestCount Bid Submitted"
+        }
+
         val listActions = getActionsDetailsList()
         actionDetailsAdapter.refreshItems(listActions)
     }

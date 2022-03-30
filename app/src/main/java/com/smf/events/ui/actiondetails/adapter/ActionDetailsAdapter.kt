@@ -11,12 +11,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
+import com.smf.events.helper.AppConstants
 import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import java.time.Month
 
-class ActionDetailsAdapter(val context: Context) :
+class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
     RecyclerView.Adapter<ActionDetailsAdapter.ActionDetailsViewHolder>() {
 
     private var myEventsList = ArrayList<ActionDetails>()
@@ -28,6 +29,7 @@ class ActionDetailsAdapter(val context: Context) :
         val itemView =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.event_details_card_view, parent, false)
+
         return ActionDetailsViewHolder(itemView)
     }
 
@@ -66,7 +68,9 @@ class ActionDetailsAdapter(val context: Context) :
         var cutoffMonthText: TextView = view.findViewById(R.id.cutoff_month_text)
         var progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
         var progressDateNumber: TextView = view.findViewById(R.id.progress_date_number)
-
+        var unlikeButtonFade: ImageView = view.findViewById(R.id.unlike_imageView_fade)
+        var likeButtonFade: ImageView = view.findViewById(R.id.like_imageView_fade)
+        var changeOfMind: TextView = view.findViewById(R.id.change_of_mind)
 
         @SuppressLint("SetTextI18n")
         fun onBind(actionDetails: ActionDetails) {
@@ -89,61 +93,89 @@ class ActionDetailsAdapter(val context: Context) :
             progressDateNumber.text = dateFormat(actionDetails.biddingCutOffDate).substring(0, 2)
         }
 
+        // Like and Dislike button
         fun details(position: ActionDetails, holder: ActionDetailsViewHolder) {
+            if (bidStatus == AppConstants.BID_REJECTED) {
+                //Button Visibility
+                holder.buttonVisibility(holder)
+                //Change of Mind For Submitting and quotel ater the Rejected  Bid
+                holder.changeOfMind.setOnClickListener { holder.bidSubmitted(position) }
+
+            }
+            if (bidStatus == AppConstants.BID_SUBMITTED) {
+                //Button Visibility
+                holder.buttonVisibility(holder)
+                //Change of Mind For Rejection the submitted Bid
+                holder.changeOfMind.setOnClickListener { holder.bidRejection(position) }
+            }
 
             holder.likeButton.setOnClickListener {
-
-                var bidRequestId: Int = position.bidRequestId
-                var costingType: String = position.costingType
-                var bidStatus: String = position.bidStatus
-                var cost: String? = position.cost
-                var latestBidValue: String? = position.latestBidValue
-                var branchName: String = position.branchName
-
-                val sharedPreferences =
-                    context.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-                val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                editor.putInt("bidRequestId", bidRequestId)
-                editor.apply()
-
-
-
-
-                if (costingType != "Bidding") {
-                    callBackInterface?.callBack(
-                        "Bidding",
-                        bidRequestId,
-                        costingType,
-                        bidStatus,
-                        cost,
-                        latestBidValue,
-                        branchName
-                    )
-                } else {
-                    QuoteDetailsDialog.newInstance(
-                        bidRequestId,
-                        costingType,
-                        bidStatus,
-                        cost,
-                        latestBidValue,
-                        branchName
-                    )
-                        .show(
-                            (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                            QuoteDetailsDialog.TAG
-                        )
-                }
+                holder.bidSubmitted(position)
             }
             holder.unlikeButton.setOnClickListener {
-                var bidRequestId: Int = position.bidRequestId
-                position.branchName
-                BidRejectionDialogFragment.newInstance(bidRequestId,position.serviceName,position.eventServiceDescriptionId.toString())
-                    .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        BidRejectionDialogFragment.TAG)
-
+                holder.bidRejection(position)
             }
 
 
+        }
+
+        fun bidRejection(position: ActionDetails) {
+            var bidRequestId: Int = position.bidRequestId
+            position.branchName
+            BidRejectionDialogFragment.newInstance(bidRequestId,
+                position.serviceName,
+                position.eventServiceDescriptionId.toString())
+                .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                    BidRejectionDialogFragment.TAG)
+
+        }
+
+        fun bidSubmitted(position: ActionDetails) {
+            var bidRequestId: Int = position.bidRequestId
+            var costingType: String = position.costingType
+            var bidStatus: String = position.bidStatus
+            var cost: String? = position.cost
+            var latestBidValue: String? = position.latestBidValue
+            var branchName: String = position.branchName
+
+            val sharedPreferences =
+                context.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            editor.putInt("bidRequestId", bidRequestId)
+            editor.apply()
+
+            if (costingType != "Bidding") {
+                callBackInterface?.callBack(
+                    "Bidding",
+                    bidRequestId,
+                    costingType,
+                    bidStatus,
+                    cost,
+                    latestBidValue,
+                    branchName
+                )
+            } else {
+                QuoteDetailsDialog.newInstance(
+                    bidRequestId,
+                    costingType,
+                    bidStatus,
+                    cost,
+                    latestBidValue,
+                    branchName
+                )
+                    .show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        QuoteDetailsDialog.TAG
+                    )
+            }
+        }
+
+        fun buttonVisibility(holder: ActionDetailsViewHolder) {
+            holder.likeButton.visibility = View.INVISIBLE
+            holder.unlikeButton.visibility = View.INVISIBLE
+            holder.likeButtonFade.visibility = View.VISIBLE
+            holder.unlikeButtonFade.visibility = View.VISIBLE
+            holder.changeOfMind.visibility = View.VISIBLE
         }
     }
 
