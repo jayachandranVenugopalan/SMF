@@ -22,9 +22,7 @@ import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter.CallBackInterface
-import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
-import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +66,7 @@ class ActionDetailsFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //Action Details required Variable setUp
         actionDeatilsVariableSetUp()
 
     }
@@ -84,21 +83,13 @@ class ActionDetailsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         closeBtn = mDataBinding?.closeBtn
-
         //Initializing actions recyclerview
         myActionDetailsRecyclerView = mDataBinding?.actionDetailsRecyclerview!!
-
         //Close Button Click Listener
         clickListeners()
-
         //Actions Recycler view
         myActionsStatusRecycler()
-        if (bidStatus == AppConstants.BID_REJECTED) {
-
-        }
-
     }
 
     override fun onResume() {
@@ -120,37 +111,6 @@ class ActionDetailsFragment :
 
     }
 
-    // Method For Prepare ActionDetails List
-    private fun getActionsDetailsList(): ArrayList<ActionDetails> {
-        var list = ArrayList<ActionDetails>()
-
-        for (i in myList.indices) {
-            list.add(
-                ActionDetails(
-                    myList[i].bidRequestId,
-                    myList[i].serviceCategoryId,
-                    myList[i].eventId,
-                    myList[i].eventDate,
-                    myList[i].eventName,
-                    myList[i].serviceName,
-                    myList[i].serviceDate,
-                    myList[i].bidRequestedDate,
-                    myList[i].biddingCutOffDate,
-                    myList[i].costingType,
-                    myList[i].cost,
-                    myList[i].latestBidValue,
-                    myList[i].bidStatus,
-                    myList[i].isExistingUser,
-                    myList[i].eventServiceDescriptionId,
-                    myList[i].branchName,
-                    myList[i].timeLeft
-                )
-            )
-        }
-
-        return list
-
-    }
 
     // Close Button ClickListener
     private fun clickListeners() {
@@ -197,8 +157,6 @@ class ActionDetailsFragment :
         )
 
         val idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
-        Log.d(QuoteDetailsDialog.TAG, "PostQuoteDetails: $idToken")
-
         val biddingQuote = BiddingQuotDto(
             bidRequestId,
             AppConstants.BID_SUBMITTED,
@@ -217,7 +175,6 @@ class ActionDetailsFragment :
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        Log.d("TAG", "check token result: ${(apiResponse.response)}")
                         QuoteBriefDialog.newInstance()
                             .show(
                                 (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
@@ -270,9 +227,7 @@ class ActionDetailsFragment :
 
     // Method For New Request Api Call
     private fun bidActionsApiCall() {
-        Log.d("TAG",
-            "bidActionsApiCall: $spRegId $serviceCategoryId $serviceVendorOnboardingId $bidStatus ")
-        getViewModel().getNewRequest(
+        getViewModel().getBidActions(
             idToken,
             spRegId,
             serviceCategoryId,
@@ -281,10 +236,6 @@ class ActionDetailsFragment :
         ).observe(viewLifecycleOwner, Observer { apiResponse ->
             when (apiResponse) {
                 is ApisResponse.Success -> {
-                    Log.d(
-                        "TAG",
-                        "sample ActionsAndStatusFragment size: ${apiResponse.response.data.serviceProviderBidRequestDtos.size}"
-                    )
                     recyclerViewListUpdate(apiResponse.response.data.serviceProviderBidRequestDtos)
                 }
                 is ApisResponse.Error -> {
@@ -297,8 +248,8 @@ class ActionDetailsFragment :
     }
 
     // Method For Action Details RecyclerView List Update
-    private fun recyclerViewListUpdate(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>) {
-        myList = serviceProviderBidRequestDtos as ArrayList
+    private fun recyclerViewListUpdate(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>?) {
+        myList = settingBidActionsList(serviceProviderBidRequestDtos)
         newRequestCount = myList.size
         when (bidStatus) {
             AppConstants.BID_REQUESTED -> mDataBinding?.textNewRequest?.text =
@@ -310,16 +261,23 @@ class ActionDetailsFragment :
             AppConstants.BID_SUBMITTED -> mDataBinding?.textNewRequest?.text =
                 "$newRequestCount Bid Submitted"
         }
-
-        val listActions = getActionsDetailsList()
+        val listActions = getViewModel().getActionsDetailsList(myList)
         actionDetailsAdapter.refreshItems(listActions)
+    }
+
+    //Setting Bid action list if the value is null
+    private fun settingBidActionsList(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>?): ArrayList<ServiceProviderBidRequestDto> {
+        return if (serviceProviderBidRequestDtos.isNullOrEmpty()) {
+            ArrayList()
+        } else {
+            serviceProviderBidRequestDtos as ArrayList
+        }
     }
 
     // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
             bidActionsApiCall()
-
         }
     }
 

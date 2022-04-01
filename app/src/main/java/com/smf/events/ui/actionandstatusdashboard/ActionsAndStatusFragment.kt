@@ -78,20 +78,14 @@ class ActionsAndStatusFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         //Initializing actions recyclerview
         myActionRecyclerView = mDataBinding?.actionsRecyclerview!!
-
         //Initializing status recyclerview
         myStatusRecyclerView = mDataBinding?.statusRecyclerview!!
-
         //Actions  Recycler view
         myActionsStatusRecycler()
-
         //Status Recycler view
         myStatusRecycler()
-
-
     }
 
     // Method For ActionsStatusRecyclerView SetUp
@@ -110,44 +104,6 @@ class ActionsAndStatusFragment :
         myStatusRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         myStatusRecyclerView.adapter = statusAdapter
-
-    }
-
-    // Prepare Action List Values
-    private fun getActionsList(actionAndStatusData: ActionAndStatusCount?): ArrayList<MyEvents> {
-        var list = ArrayList<MyEvents>()
-        list.add(MyEvents(actionAndStatusData?.bidRequestedActionsCount.toString(), "New request"))
-        newRequestCount = actionAndStatusData!!.bidRequestedActionsCount
-        list.add(
-            MyEvents(
-                actionAndStatusData.pendingForQuoteActionCount.toString(),
-                "Pending Quote"
-            )
-        )
-        list.add(MyEvents(actionAndStatusData.wonBidStatusCount.toString(), "Won Bid"))
-        list.add(MyEvents(actionAndStatusData.bidRejectedActionCount.toString(), "Rejected"))
-        list.add(MyEvents(actionAndStatusData.bidSubmittedActionCount.toString(), "Bid Submitted"))
-
-        return list
-
-    }
-
-    // Prepare Status List Values
-    private fun getStatusList(actionAndStatusData: ActionAndStatusCount): ArrayList<MyEvents> {
-        var list = ArrayList<MyEvents>()
-        list.add(
-            MyEvents(
-                actionAndStatusData.bidSubmittedStatusCount.toString(),
-                "Bids Submitted"
-            )
-        )
-        list.add(MyEvents(actionAndStatusData.serviceDoneStatusCount.toString(), "Service done"))
-        list.add(MyEvents(actionAndStatusData.bidTimedOutStatusCount.toString(), "Bid TimeOut"))
-        list.add(MyEvents(actionAndStatusData.wonBidStatusCount.toString(), "Won Bid"))
-        list.add(MyEvents(actionAndStatusData.bidRejectedStatusCount.toString(), "Rejected"))
-        list.add(MyEvents(actionAndStatusData.lostBidStatusCount.toString(), "Lost Bid"))
-
-        return list
 
     }
 
@@ -246,10 +202,10 @@ class ActionsAndStatusFragment :
     // Method For Update Action And Status Count To RecyclerView List
     private fun recyclerViewListUpdate() {
 
-        val listActions1 = getActionsList(actionAndStatusData)
+        var listActions1 = getViewModel().getActionsList(actionAndStatusData)
         actionAdapter.refreshItems(listActions1)
 
-        val listStatus = getStatusList(actionAndStatusData)
+        val listStatus = getViewModel().getStatusList(actionAndStatusData)
         statusAdapter.refreshItems(listStatus)
 
         mDataBinding?.txPendtingitems?.text =
@@ -257,6 +213,7 @@ class ActionsAndStatusFragment :
         mDataBinding?.txPendingstatus?.text =
             "${actionAndStatusData?.statusCount} Status"
     }
+
 
     // Method For ServiceCategoryId And ServiceOnboardId Initialization
     private fun serviceCategoryIdAndServiceOnboardingIdSetup() {

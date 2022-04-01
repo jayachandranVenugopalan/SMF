@@ -15,6 +15,8 @@ import com.amplifyframework.core.Amplify
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentDashBoardBinding
+import com.smf.events.ui.dashboard.model.Datas
+import com.smf.events.ui.dashboard.model.MyEvents
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -30,11 +32,6 @@ class DashBoardViewModel @Inject constructor(
     fun get184Types(idToken: String) = liveData(Dispatchers.IO) {
         emit(dashBoardRepository.get184Types(idToken))
     }
-
-//    fun getServicesBranches(idToken: String,spRegId:String,serviceCategoryId:Int) = liveData(Dispatchers.IO) {
-//        Log.d("TAG", "setUserDetails: $idToken,spRegId,serviceCategoryId")
-//        emit(dashBoardRepository.getServicesBranches(idToken,spRegId,serviceCategoryId))
-//    }
 
     @SuppressLint("ResourceType")
     fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: ArrayList<String>) {
@@ -77,10 +74,6 @@ class DashBoardViewModel @Inject constructor(
         idToken: String,
         spRegId: Int, serviceCategoryId: Int, serviceVendorOnboardingId: Int,
     ) {
-
-        //  resources1=resources as ArrayList
-        Log.d("TAG", "branches:$resources ")
-
         resources.forEach {
             name = it
 
@@ -94,7 +87,7 @@ class DashBoardViewModel @Inject constructor(
                 resources as List<Any?>)
         ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         ad.notifyDataSetChanged()
-        mDataBinding?.spnBranches?.adapter = ad
+        mDataBinding.spnBranches.adapter = ad
     }
 
     // Fetch tokens
@@ -136,15 +129,23 @@ class DashBoardViewModel @Inject constructor(
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position1: Int, p3: Long) {
-
-        //  var branchId=resources1[position].bramchId
-
         callBackInterface?.branchItemClick(position1, name, allServiceposition)
 
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
 
+    }
+
+    fun getServiceCountList(data: Datas): ArrayList<MyEvents> {
+        var list = ArrayList<MyEvents>()
+        list.add(MyEvents("${data.activeServiceCount}", "Active"))
+        list.add(MyEvents("${data.approvalPendingServiceCount}", "Pending"))
+        list.add(MyEvents("${data.draftServiceCount}", "Draft"))
+        list.add(MyEvents("${data.inactiveServiceCount}", "Inactive"))
+        list.add(MyEvents("${data.rejectedServiceCount}", "Rejected"))
+
+        return list
     }
 
     // Method For Getting Service Counts

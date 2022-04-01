@@ -9,8 +9,6 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailVerificationCodeBinding
-import com.smf.events.ui.dashboard.DashBoardActivity
-
 
 class EmailVerificationCodeFragment :
     BaseFragment<FragmentEmailVerificationCodeBinding, EmailVerificationCodeViewModel>(),

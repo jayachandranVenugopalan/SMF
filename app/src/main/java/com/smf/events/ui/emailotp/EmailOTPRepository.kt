@@ -1,15 +1,12 @@
 package com.smf.events.ui.emailotp
 
 import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.EvenTypes
 import com.smf.events.network.ApiStories
-import com.smf.events.ui.dashboard.model.AllServices
-import com.smf.events.ui.dashboard.model.ServiceCount
 import com.smf.events.ui.emailotp.model.GetLoginInfo
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class EmailOTPRepository @Inject constructor(var apiStories: ApiStories)  {
+class EmailOTPRepository @Inject constructor(var apiStories: ApiStories) {
 
 
     suspend fun getLoginInfo(idToken: String): ApisResponse<GetLoginInfo> {

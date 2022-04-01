@@ -7,12 +7,16 @@ import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class ActionDetailsRepository @Inject constructor(var apiStories: ApiStories)  {
+class ActionDetailsRepository @Inject constructor(var apiStories: ApiStories) {
 
-    suspend fun postQuoteDetails(idToken: String, bidRequestId: Int,biddingQuote: BiddingQuotDto): ApisResponse<NewRequestList> {
+    suspend fun postQuoteDetails(
+        idToken: String,
+        bidRequestId: Int,
+        biddingQuote: BiddingQuotDto,
+    ): ApisResponse<NewRequestList> {
 
         return try {
-            val getResponse = apiStories.postQuoteDetails(idToken, bidRequestId,biddingQuote)
+            val getResponse = apiStories.postQuoteDetails(idToken, bidRequestId, biddingQuote)
             ApisResponse.Success(getResponse)
         } catch (e: HttpException) {
             ApisResponse.Error(e)
@@ -20,16 +24,16 @@ class ActionDetailsRepository @Inject constructor(var apiStories: ApiStories)  {
     }
 
     // Method For Get New Request
-    suspend fun getNewRequest(
+    suspend fun getBidActions(
         idToken: String,
         spRegId: Int,
         serviceCategoryId: Int?,
         serviceVendorOnboardingId: Int?,
-        bidStatus: String
+        bidStatus: String,
     ): ApisResponse<NewRequestList> {
 
         return try {
-            val getResponse = apiStories.getNewRequest(
+            val getResponse = apiStories.getBidActions(
                 idToken,
                 spRegId,
                 serviceCategoryId,

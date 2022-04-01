@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
@@ -29,7 +28,6 @@ class ActionsAdapter(val context: Context) :
 
     override fun onBindViewHolder(holder: ActionsViewHolder, position: Int) {
         holder.onBind(myEventsList[position])
-
     }
 
     override fun getItemCount(): Int {

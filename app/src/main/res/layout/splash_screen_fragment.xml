@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="splashViewModel"
             type="com.smf.events.ui.splash.SplashScreenViewModel" />
@@ -13,15 +14,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="15dp"
+        android:padding="@dimen/size_15dp"
         tools:context=".ui.splash.SplashFragment">
 
         <Button
             android:id="@+id/splashBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/size_10dp"
             android:text="@string/get_started"
+            android:fontFamily="@font/poppins_regular"
             android:backgroundTint="@color/buttoncolor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

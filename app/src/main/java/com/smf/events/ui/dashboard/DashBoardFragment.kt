@@ -65,45 +65,54 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         Log.d("TAG", "onCreate: called")
         restrictBackButton()
         setIdTokenAndSpRegId()
+        // Initialize IdTokenCallBackInterface
+        tokens.setCallBackInterface(this)
     }
 
     @SuppressLint("ResourceType")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         mDataBinding?.myEventsLayout?.visibility = View.INVISIBLE
         mDataBinding?.spinnerAction?.visibility = View.INVISIBLE
-        // Initialize IdTokenCallBackInterface
-        tokens.setCallBackInterface(this)
-
         // DashBoard ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
-
         // Initialize MyEvent Recycler
         myEventsRecycler()
+        //Id Token Validation
+        idTokenValidation()
 
+
+    }
+
+    private fun idTokenValidation() {
         if (idToken.isNotEmpty()) {
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
                 "event_type", idToken
             )
         }
+    }
 
+    override suspend fun tokenCallBack(idToken: String, caller: String) {
+        Log.d("TAG", "check clickBtn dashboard after ")
+        withContext(Main) {
+            when (caller) {
+                "event_type" -> getAllServiceAndCounts()
+                "branches" -> getBranches(serviceCategoryId)
+            }
+        }
     }
 
     private fun setAllService() {
-        var allServiceList: ArrayList<String> = ArrayList()
+        val allServiceList: ArrayList<String> = ArrayList()
         serviceList.forEach {
             allServiceList.add(it.serviceName)
         }
-        val allServices = allServiceList
-
         mDataBinding?.myEventsLayout?.visibility = View.VISIBLE
         mDataBinding?.spinnerAction?.visibility = View.VISIBLE
         //spinner view for allservices
-        getViewModel().allServices(mDataBinding, allServices)
+        getViewModel().allServices(mDataBinding, allServiceList)
 
-        //actionAndStatusFragment()
     }
 
 
@@ -115,19 +124,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         myEventsRecyclerView.adapter = adapter
     }
 
-    override suspend fun tokenCallBack(idToken: String, caller: String) {
-        Log.d("TAG", "check clickBtn dashboard after ")
-        withContext(Main) {
-            when (caller) {
-                "event_type" -> getAllServiceAndCounts()
-                "branches" -> getBranches(serviceCategoryId)
-            }
-
-
-        }
-
-
-    }
 
     // Method for restrict user back button
     private fun restrictBackButton() {
@@ -166,15 +162,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     //All Service spinner view clicked
     override fun itemClick(position: Int) {
-
         if (serviceList[position].serviceName == "All Service") {
             var branchSpinner: ArrayList<String> = ArrayList()
             branchSpinner.add(0, "Branches")
             serviceCategoryId = 0
-            val branchdataspinner = branchSpinner
+            val branchDataSpinner = branchSpinner
             getViewModel().branches(
                 mDataBinding,
-                branchdataspinner,
+                branchDataSpinner,
                 idToken,
                 spRegId,
                 serviceCategoryId,
@@ -183,10 +178,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
         }
         if (serviceList[position].serviceName != "All Service") {
-//            var branchSpinner: ArrayList<BranchDatas> = ArrayList()
-//            branchSpinner.add(BranchDatas("Branches", 0))
-//            branchListSpinner=branchSpinner
-
             serviceCategoryId = (serviceList[position].serviceCategoryId.toInt())
             Log.d("TAG", "itemClick: $branchListSpinner")
 
@@ -196,8 +187,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     requireActivity().applicationContext as SMFApp,
                     "branches", idToken)
             }
-
-            //getBranches(serviceCategoryId)
             branchListSpinner.clear()
         }
     }
@@ -209,35 +198,18 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         allServiceposition: Int?,
     ) {
 
-        Log.d("TAG", "branchItemClick serviceCategoryId11 $serviceCategoryId")
         this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
-        Log.d(
-            "TAG",
-            "branchItemClick serviceVendorOnboardingId11: ${branchListSpinner[serviceVendorOnboardingId].branchId}"
-        )
-        Log.d(
-            "TAG",
-            "branchItemClick serviceVendorOnboardingId11: ${name}"
-        )
         var branchesName = name
-
         if (branchListSpinner[serviceVendorOnboardingId].branchId == 0) {
             branchesName = "Branches"
         }
-
-
         var serviceName = (serviceList[allServiceposition!!].serviceName)
-        Log.d(
-            "TAG",
-            "branchItemClick serviceName: ${serviceName}"
-        )
         if (serviceName == "All Service" && branchesName == "Branches") {
             actionAndStatusFragment(
                 serviceCategoryId,
                 0
             )
         } else if (serviceName != "All Service" && branchesName == "Branches") {
-            Log.d("TAG", "branchItemClick inside fif else:$serviceCategoryId ")
             actionAndStatusFragment(
                 serviceCategoryId,
                 0
@@ -248,31 +220,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 branchListSpinner[serviceVendorOnboardingId].branchId
             )
         }
-
-
-//        if (name == "Branches") {
-//            actionAndStatusFragment(
-//                serviceCategoryId,
-//                0
-//            )
-//        } else {
-//            actionAndStatusFragment(
-//                serviceCategoryId,
-//                branchListSpinner[serviceVendorOnboardingId].branchId
-//            )
-//        }
     }
 
-    private fun getServiceCountList(data: Datas): ArrayList<MyEvents> {
-        var list = ArrayList<MyEvents>()
-        list.add(MyEvents("${data.activeServiceCount}", "Active"))
-        list.add(MyEvents("${data.approvalPendingServiceCount}", "Pending"))
-        list.add(MyEvents("${data.draftServiceCount}", "Draft"))
-        list.add(MyEvents("${data.inactiveServiceCount}", "Inactive"))
-        list.add(MyEvents("${data.rejectedServiceCount}", "Rejected"))
-
-        return list
-    }
 
     // Action And Status UI setUp
     private fun actionAndStatusFragment(serviceCategoryId: Int, branchId: Int) {
@@ -295,10 +244,10 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         // Getting Service Provider Reg Id and Role Id
         getViewModel().getServiceCount(idToken, spRegId)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
-
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        val serviceList = getServiceCountList(apiResponse.response.data)
+                        val serviceList =
+                            getViewModel()?.getServiceCountList(apiResponse.response.data)
                         adapter.refreshItems(serviceList)
 
                     }
@@ -311,6 +260,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             })
 
         // Getting All Service
+        getAllServices()
+
+    }
+
+    // Getting All Service
+    private fun getAllServices() {
         getViewModel().getAllServices(idToken, spRegId)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
 
@@ -325,9 +280,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         apiResponse.response.data.forEach {
                             serviceList.add(ServicesData(it.serviceName, it.serviceCategoryId))
                         }
-
-                        Log.d("TAG", "sample: mapdata $serviceList")
-
                         setAllService()
                     }
                     is ApisResponse.Error -> {
@@ -337,7 +289,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     }
                 }
             })
-
     }
 
     //Branch ApiCall
@@ -348,19 +299,16 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        Log.d("TAG", "sample: ${apiResponse.response.success}")
-
-                        // branchListSpinner.add(BranchDatas("Branches", 0))
                         var branchTypeItems: List<DatasNew> = apiResponse.response.datas
                         branchListSpinner.add(BranchDatas("Branches", 0))
                         for (i in branchTypeItems.indices) {
                             val branchName: String =
-                                branchTypeItems[i].branchName // I want to show this when Selected
+                                branchTypeItems[i].branchName
+                            // I want to show this when Selected
                             val branchId: Int = branchTypeItems[i].serviceVendorOnboardingId
                             branchListSpinner.add(BranchDatas(branchName, branchId))
 
                         }
-                        Log.d("TAG", "itemClickinsideapi: $branchListSpinner")
                         var branchList: ArrayList<String> = ArrayList()
                         for (i in branchListSpinner.indices) {
                             val branchName: String =
@@ -370,7 +318,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         }
 
                         val branchData = branchList
-                        getViewModel()?.branches(
+                        getViewModel().branches(
                             mDataBinding,
                             branchData,
                             idToken,
@@ -391,6 +339,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     }
 
+    //Setting Id Token and SpRegId
     private fun setIdTokenAndSpRegId() {
         var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
             "MyUser",

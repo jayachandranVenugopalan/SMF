@@ -37,8 +37,6 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
 
         holder.onBind(myEventsList[position])
         holder.details(myEventsList[position], holder)
-
-
     }
 
 
@@ -108,10 +106,11 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
                 //Change of Mind For Rejection the submitted Bid
                 holder.changeOfMind.setOnClickListener { holder.bidRejection(position) }
             }
-
+            //Like For Submitting the Bid
             holder.likeButton.setOnClickListener {
                 holder.bidSubmitted(position)
             }
+            //Unlike For Rejecting the Bid
             holder.unlikeButton.setOnClickListener {
                 holder.bidRejection(position)
             }
@@ -119,7 +118,8 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
 
         }
 
-        fun bidRejection(position: ActionDetails) {
+        //Rejecting the Bids
+        private fun bidRejection(position: ActionDetails) {
             var bidRequestId: Int = position.bidRequestId
             position.branchName
             BidRejectionDialogFragment.newInstance(bidRequestId,
@@ -130,6 +130,7 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
 
         }
 
+        //Submitting Bids
         fun bidSubmitted(position: ActionDetails) {
             var bidRequestId: Int = position.bidRequestId
             var costingType: String = position.costingType
@@ -170,7 +171,8 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
             }
         }
 
-        fun buttonVisibility(holder: ActionDetailsViewHolder) {
+        //Button visibility
+        private fun buttonVisibility(holder: ActionDetailsViewHolder) {
             holder.likeButton.visibility = View.INVISIBLE
             holder.unlikeButton.visibility = View.INVISIBLE
             holder.likeButtonFade.visibility = View.VISIBLE

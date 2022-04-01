@@ -58,7 +58,7 @@ interface ApiStories {
     ): ActionAndStatus
 
     @GET("epm-service/api/app-services/bidding-request-info/{sp-reg-id}")
-    suspend fun getNewRequest(
+    suspend fun getBidActions(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
         @Query("serviceCategoryId") serviceCategoryId: Int?,

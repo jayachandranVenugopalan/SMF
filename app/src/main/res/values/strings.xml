@@ -3,7 +3,7 @@
     <string name="get_started">Get Started</string>
 
     <string name="signuptext">"New User?<font color='#3aa8c1'>Sign Up</font>"</string>
-    <string name="signin">Sign In</string>
+    <string name="signin">Sign in</string>
     <string name="sign_up">Sign Up</string>
     <string name="new_user">New User?</string>
     <string name="mobile">Mobile</string>

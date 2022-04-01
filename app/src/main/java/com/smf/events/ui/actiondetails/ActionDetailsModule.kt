@@ -7,7 +7,6 @@ import dagger.Provides
 
 @Module
 class ActionDetailsModule {
-
     @Provides
     fun provideViewModelProvider(viewModel: ActionDetailsViewModel): ViewModelProvider.Factory {
         return ViewModelProviderFactory(viewModel)

@@ -3,9 +3,9 @@ package com.smf.events.ui.emailotp
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.amazonaws.mobile.client.AWSMobileClient
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.amplifyframework.auth.result.AuthSessionResult
@@ -13,16 +13,17 @@ import com.amplifyframework.core.Amplify
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentEmailOtpBinding
-import com.smf.events.helper.Tokens
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class EmailOTPViewModel @Inject constructor(
     private val eMailOTPRepository: EmailOTPRepository,
-    application: Application
+    application: Application,
 ) : BaseViewModel(application) {
+
+    val userOtpNumber = MutableLiveData<String>()
+    private var idToken: String? = null
 
     // Custom Confirm SignIn Function
     fun confirmSignIn(otp: String, mDataBinding: FragmentEmailOtpBinding) {
@@ -30,28 +31,10 @@ class EmailOTPViewModel @Inject constructor(
         Amplify.Auth.confirmSignIn(otp,
             { result ->
                 Log.i("AuthQuickstart", "Confirmed signIn: ${result.nextStep.additionalInfo}")
-                rememberDevice()
-                fetchSession()
-               Amplify.Auth.fetchUserAttributes(
-                    { result ->
-                        Log.i("AuthDemo", "User attributes = $result")
-                        Log.i("AuthDemo", "User attributes = ${result[0].key}")
-                        if (result[1].value.equals("false")) {
-                            eMailVerification()
-                        } else {
-                            Log.i("AuthDemo", "User attributes = successfully entered dashboard")
-                            viewModelScope.launch {
-                                callBackInterface?.callBack("EMailVerifiedTrueGoToDashBoard")
-                            }
-                        }
-                    },
-                    {
-                        Log.e("AuthDemo", "Failed to fetch user attributes", it)
-                        viewModelScope.launch {
-                            toastMessage = "Invalid OTP"
-                            callBackInterface!!.awsErrorreponse()
-                        }
-                    })
+                // Aws method for Fetching Id Token
+                fetchIdToken()
+                //Aws Method for 6 digit Validation Check
+                emailCodeValidationCheck()
             },
             {
                 Log.e(
@@ -69,34 +52,47 @@ class EmailOTPViewModel @Inject constructor(
             })
     }
 
-    private fun rememberDevice() {
-
-      Amplify.Auth.rememberDevice(
-            {
-                Log.i("AuthQuickStart", "Remember device succeeded")
-            },
-            { Log.e("AuthQuickStart", "Remember device failed with error", it) }
-        )
-    }
-
-
-    // Fetch tokens
-    private fun fetchSession() {
+    // Aws method for Fetching Id Token
+    private fun fetchIdToken() {
         Amplify.Auth.fetchAuthSession(
             {
                 val session = it as AWSCognitoAuthSession
                 Log.i("AuthDemo", "User attributes = $session")
-                var idToken =
-                    AuthSessionResult.success(session.userPoolTokens.value!!.idToken).value
+                idToken =
+                    AuthSessionResult.success(session.userPoolTokens.value?.idToken).value
                 Log.i("AuthDemo", "idToken = $idToken")
-                setToken(idToken!!)
+                setTokenToSharedPref(idToken)
             },
             { Log.e("AuthQuickStart", "Failed to fetch session", it) }
         )
     }
 
+    //Aws Method for 6 digit Validation Check
+    private fun emailCodeValidationCheck() {
+        Amplify.Auth.fetchUserAttributes(
+            { result ->
+                Log.i("AuthDemo", "User attributes = $result")
+                Log.i("AuthDemo", "User attributes = ${result[0].key}")
+                if (result[1].value.equals("false")) {
+                    eMailVerification()
+                } else {
+                    Log.i("AuthDemo", "User attributes = successfully entered dashboard")
+                    viewModelScope.launch {
+                        callBackInterface?.callBack("EMailVerifiedTrueGoToDashBoard")
+                    }
+                }
+            },
+            {
+                Log.e("AuthDemo", "Failed to fetch user attributes", it)
+                viewModelScope.launch {
+                    toastMessage = "Invalid OTP"
+                    callBackInterface!!.awsErrorreponse()
+                }
+            })
+    }
+
     // Method for save IdToken
-    private fun setToken(token: String) {
+    private fun setTokenToSharedPref(token: String?) {
         var sharedPreferences =
             getApplication<SMFApp>().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
         var editor = sharedPreferences?.edit()
@@ -155,5 +151,6 @@ class EmailOTPViewModel @Inject constructor(
         suspend fun callBack(status: String)
         fun awsErrorreponse()
     }
+
 
 }

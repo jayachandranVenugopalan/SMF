@@ -13,7 +13,7 @@ data class Data(
     val cost: Any,
     val costingType: Any,
     val serviceName: Any,
-    val serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>,
+    val serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>?,
     val serviceVendorBranchDto: Any
 )
 
