@@ -277,8 +277,17 @@ class ActionDetailsFragment :
     // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
-            bidActionsApiCall()
+            when (caller) {
+
+                "bidStatus" -> bidActionsApiCall()
+                "sign_out" -> moveToSignInScreen()
+            }
         }
+    }
+
+    private fun moveToSignInScreen() {
+        Log.d("TAG", "checkTokenExpiry refereshTokentime move to signIn screen")
+
     }
 
 }

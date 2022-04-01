@@ -65,8 +65,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         Log.d("TAG", "onCreate: called")
         restrictBackButton()
         setIdTokenAndSpRegId()
-        // Initialize IdTokenCallBackInterface
-        tokens.setCallBackInterface(this)
     }
 
     @SuppressLint("ResourceType")
@@ -74,6 +72,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         super.onViewCreated(view, savedInstanceState)
         mDataBinding?.myEventsLayout?.visibility = View.INVISIBLE
         mDataBinding?.spinnerAction?.visibility = View.INVISIBLE
+        // Initialize IdTokenCallBackInterface
+        tokens.setCallBackInterface(this)
         // DashBoard ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
         // Initialize MyEvent Recycler
@@ -94,11 +94,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        Log.d("TAG", "check clickBtn dashboard after ")
+        Log.d("TAG", "checkTokenExpiry refereshTokentime caller before $caller")
         withContext(Main) {
             when (caller) {
                 "event_type" -> getAllServiceAndCounts()
                 "branches" -> getBranches(serviceCategoryId)
+                else -> {Log.d("TAG", "checkTokenExpiry refereshTokentime caller else block")}
             }
         }
     }
@@ -115,7 +116,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     }
 
-
     private fun myEventsRecycler() {
         myEventsRecyclerView = mDataBinding?.eventsRecyclerView!!
         adapter = MyEventsAdapter()
@@ -123,7 +123,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         myEventsRecyclerView.adapter = adapter
     }
-
 
     // Method for restrict user back button
     private fun restrictBackButton() {
@@ -185,7 +184,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 Log.d("TAG", "onResume: called")
                 tokens.checkTokenExpiry(
                     requireActivity().applicationContext as SMFApp,
-                    "branches", idToken)
+                    "branches", idToken
+                )
             }
             branchListSpinner.clear()
         }
@@ -349,5 +349,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
         roleId = getSharedPreferences.getInt("roleId", 0)
     }
+
 
 }

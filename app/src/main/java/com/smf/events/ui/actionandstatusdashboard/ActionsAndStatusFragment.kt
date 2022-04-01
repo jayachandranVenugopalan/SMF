@@ -18,9 +18,11 @@ import com.smf.events.helper.AppConstants
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
+import com.smf.events.ui.dashboard.DashBoardFragment
 import com.smf.events.ui.dashboard.adapter.StatusAdaptor
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
+import com.smf.events.ui.splash.SplashFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -236,6 +238,7 @@ class ActionsAndStatusFragment :
 
     // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
+        Log.i("AuthQuickstart", "checkTokenExpiry refereshTokentime Signed out $caller")
         withContext(Dispatchers.Main) {
             when (caller) {
                 "newRequest" -> goToActionDetailsFragment(AppConstants.BID_REQUESTED)
@@ -243,8 +246,15 @@ class ActionsAndStatusFragment :
                 "rejected" -> goToActionDetailsFragment(AppConstants.BID_REJECTED)
                 "bidSubmitted" -> goToActionDetailsFragment(AppConstants.BID_SUBMITTED)
                 "actionAndStatus" -> actionAndStatusApiCall()
+                "sign_out" -> moveToSignInScreen()
             }
         }
+    }
+
+    private fun moveToSignInScreen() {
+        Log.d("TAG", "checkTokenExpiry refereshTokentime move to signIn screen 1")
+
+
     }
 
     // Method For Calling ActionDetailsFragment With Action Details

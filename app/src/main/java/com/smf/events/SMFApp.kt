@@ -2,6 +2,8 @@ package com.smf.events
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import com.amplifyframework.AmplifyException
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
@@ -43,8 +45,9 @@ class SMFApp:Application(), HasAndroidInjector {
         return mContext
     }
 
-    override fun androidInjector(): AndroidInjector<Any>? {
+    override fun androidInjector(): AndroidInjector<Any> {
         return dispatchingAndroidInjector
     }
+
 
 }
