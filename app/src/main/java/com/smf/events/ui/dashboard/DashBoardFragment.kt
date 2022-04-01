@@ -247,7 +247,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         val serviceList =
-                            getViewModel()?.getServiceCountList(apiResponse.response.data)
+                            getViewModel().getServiceCountList(apiResponse.response.data)
                         adapter.refreshItems(serviceList)
 
                     }

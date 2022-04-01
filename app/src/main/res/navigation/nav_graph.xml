@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.smf.events.ui.splash.SplashFragment"
-        android:label="SplashFragment" >
+        android:label="SplashFragment">
         <action
             android:id="@+id/action_splashFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
@@ -22,7 +22,7 @@
     <fragment
         android:id="@+id/signInFragment"
         android:name="com.smf.events.ui.signin.SignInFragment"
-        android:label="SignInFragment" >
+        android:label="SignInFragment">
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
@@ -39,7 +39,7 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.smf.events.ui.signup.SignUpFragment"
-        android:label="SignUpFragment" >
+        android:label="SignUpFragment">
         <action
             android:id="@+id/action_signUpFragment_to_verificationCodeFrgment"
             app:destination="@id/verificationCodeFrgment" />
@@ -49,7 +49,7 @@
         android:id="@+id/verificationCodeFrgment"
         android:name="com.smf.events.ui.mobileverificationcode.MobileVerificationCodeFrgment"
         android:label="fragment_verification_code_frgment"
-        tools:layout="@layout/fragment_mobile_verification_code_frgment" >
+        tools:layout="@layout/fragment_mobile_verification_code_frgment">
         <action
             android:id="@+id/action_verificationCodeFrgment_to_signInFragment"
             app:destination="@id/signInFragment" />
@@ -60,7 +60,7 @@
     <fragment
         android:id="@+id/eMailOTPFragment"
         android:name="com.smf.events.ui.emailotp.EmailOTPFragment"
-        android:label="PhoneOTPFragment" >
+        android:label="PhoneOTPFragment">
 
         <action
             android:id="@+id/action_phoneOTPFragment_to_emailVerificationCodeFragment"
@@ -76,7 +76,7 @@
     <fragment
         android:id="@+id/emailVerificationCodeFragment"
         android:name="com.smf.events.ui.emailverificationcode.EmailVerificationCodeFragment"
-        android:label="EmailVerificationCodeFragment" >
+        android:label="EmailVerificationCodeFragment">
         <action
             android:id="@+id/action_emailVerificationCodeFragment_to_dashBoardFragment"
             app:destination="@id/dashBoardFragment" />
@@ -88,19 +88,19 @@
     <fragment
         android:id="@+id/dashBoardFragment"
         android:name="com.smf.events.ui.dashboard.DashBoardFragment"
-        android:label="DashBoardFragment" >
+        android:label="DashBoardFragment">
         <action
             android:id="@+id/action_dashBoardFragment_to_quoteBriefFragment"
             app:destination="@id/quoteBriefFragment" />
         <action
-            android:id="@+id/action_dashBoardFragment_to_splashFragment"
-            app:destination="@id/splashFragment" />
+            android:id="@+id/action_dashBoardFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
 
     </fragment>
     <fragment
         android:id="@+id/quoteBriefFragment"
         android:name="com.smf.events.ui.quotebrief.QuoteBriefFragment"
-        android:label="QuoteBriefFragment" >
+        android:label="QuoteBriefFragment">
         <action
             android:id="@+id/action_quoteBriefFragment_to_dashBoardFragment"
             app:destination="@id/dashBoardFragment" />

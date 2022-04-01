@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
@@ -19,6 +20,7 @@ import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
 import com.smf.events.ui.dashboard.DashBoardFragment
+import com.smf.events.ui.dashboard.DashBoardFragmentDirections
 import com.smf.events.ui.dashboard.adapter.StatusAdaptor
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
@@ -42,7 +44,6 @@ class ActionsAndStatusFragment :
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
-    var newRequestCount: Int = 0
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -113,39 +114,28 @@ class ActionsAndStatusFragment :
     override fun actionCardClick(myEvents: MyEvents) {
         when (myEvents.titleText) {
             "New request" -> {
-                apiTokenValidationNewRequest("newRequest")
+                goToActionDetailsFragment(AppConstants.BID_REQUESTED)
             }
             "Pending Quote" -> {
-                apiTokenValidationNewRequest("pendingQuote")
+                goToActionDetailsFragment(AppConstants.PENDING_FOR_QUOTE)
             }
             "Rejected" -> {
-                apiTokenValidationNewRequest("rejected")
+                goToActionDetailsFragment(AppConstants.BID_REJECTED)
             }
             "Bid Submitted" -> {
-                apiTokenValidationNewRequest("bidSubmitted")
+                goToActionDetailsFragment(AppConstants.BID_SUBMITTED)
             }
             else -> {
                 Log.d("TAG", "newRequestApiCallsample :else block")
             }
+
         }
 
-    }
-
-    // Token Validation For NewRequest Api Call
-    private fun apiTokenValidationNewRequest(status: String) {
-        if (idToken.isNotEmpty()) {
-            Log.d("TAG", "onResume: called")
-            tokens.checkTokenExpiry(
-                requireActivity().applicationContext as SMFApp,
-                status, idToken
-            )
-        }
     }
 
     // Method For AWS Token Validation Action And Status
     private fun apiTokenValidationActionAndStatus() {
         if (idToken.isNotEmpty()) {
-            Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
                 "actionAndStatus", idToken
@@ -241,19 +231,17 @@ class ActionsAndStatusFragment :
         Log.i("AuthQuickstart", "checkTokenExpiry refereshTokentime Signed out $caller")
         withContext(Dispatchers.Main) {
             when (caller) {
-                "newRequest" -> goToActionDetailsFragment(AppConstants.BID_REQUESTED)
-                "pendingQuote" -> goToActionDetailsFragment(AppConstants.PENDING_FOR_QUOTE)
-                "rejected" -> goToActionDetailsFragment(AppConstants.BID_REJECTED)
-                "bidSubmitted" -> goToActionDetailsFragment(AppConstants.BID_SUBMITTED)
                 "actionAndStatus" -> actionAndStatusApiCall()
-                "sign_out" -> moveToSignInScreen()
+                "signOut" -> moveToSignInScreen()
             }
         }
     }
 
+    // Method For User SignOut And Moved To SignIn Screen
     private fun moveToSignInScreen() {
         Log.d("TAG", "checkTokenExpiry refereshTokentime move to signIn screen 1")
-
+        val action = DashBoardFragmentDirections.actionDashBoardFragmentToSignInFragment()
+        findNavController().navigate(action)
 
     }
 

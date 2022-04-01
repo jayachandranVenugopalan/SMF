@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
@@ -22,6 +23,7 @@ import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter.CallBackInterface
+import com.smf.events.ui.dashboard.DashBoardFragmentDirections
 import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
@@ -278,16 +280,17 @@ class ActionDetailsFragment :
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
             when (caller) {
-
                 "bidStatus" -> bidActionsApiCall()
-                "sign_out" -> moveToSignInScreen()
+                "signOut" -> moveToSignInScreen()
             }
         }
     }
 
+    // Method For User SignOut And Moved To SignIn Screen
     private fun moveToSignInScreen() {
         Log.d("TAG", "checkTokenExpiry refereshTokentime move to signIn screen")
-
+        val action = DashBoardFragmentDirections.actionDashBoardFragmentToSignInFragment()
+        findNavController().navigate(action)
     }
 
 }

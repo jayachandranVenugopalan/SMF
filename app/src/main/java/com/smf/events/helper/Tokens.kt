@@ -20,59 +20,19 @@ class Tokens @Inject constructor() {
     fun checkTokenExpiry(application: SMFApp, caller: String, idToken: String) {
 
         val newTime = Date().time / 1000
-        Log.d("TAG", "checkTokenExpiry refereshTokentime current time: $newTime")
         val splitToken = idToken.split('.')
         val decodedBytes = Base64.getDecoder().decode(splitToken[1])
         val decodeToken = String(decodedBytes)
         val tokenObj = JSONObject(decodeToken)
         val tokenObjExp = tokenObj.getString("exp").toLong()
-        Log.d("TAG", "checkTokenExpiry refereshTokentime from aws: $tokenObjExp")
-        val newTimeMin = newTime + 8 * 60
-        Log.d("TAG", "checkTokenExpiry refereshTokentime newTimeMin: $newTimeMin")
+        val newTimeMin = newTime + 5 * 60
         if (newTimeMin > tokenObjExp) {
             Log.d("TAG", "checkTokenExpiry refereshTokentime inside if loop")
             //fetchSession(application, myLambFunc, caller)
-
-            signOutUser(application,myLambFunc)
+            signOutCurrentUser(application, myLambFunc)
         } else {
             Log.d("TAG", "checkTokenExpiry refereshTokentime else block")
             tokenNotExpired(idToken, myLambFunc, caller)
-        }
-
-    }
-
-    private fun signOutUser(application: SMFApp,
-                            myFunc: suspend (String, String) -> Unit) {
-        Amplify.Auth.signOut(
-            {
-                Log.i("AuthQuickstart", "checkTokenExpiry refereshTokentime Signed out successfully")
-                val sharedPreferences =
-                    application.applicationContext.getSharedPreferences(
-                        "MyUser",
-                        Context.MODE_PRIVATE
-                    )
-                val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                editor.putString("IdToken", "")
-                editor.apply()
-
-                GlobalScope.launch {
-                    myFunc("","sign_out")
-                }
-
-            },
-            { Log.e("AuthQuickstart", "Sign out failed", it) }
-        )
-    }
-
-
-    //Method for Sending Not Expired Token
-    private fun tokenNotExpired(
-        idToken: String,
-        myFunc: suspend (String, String) -> Unit,
-        caller: String
-    ) {
-        GlobalScope.launch {
-            myFunc(idToken, caller)
         }
     }
 
@@ -110,9 +70,48 @@ class Tokens @Inject constructor() {
 
     }
 
+
+    //Method for Sending Not Expired Token
+    private fun tokenNotExpired(
+        idToken: String,
+        myFunc: suspend (String, String) -> Unit,
+        caller: String
+    ) {
+        GlobalScope.launch {
+            myFunc(idToken, caller)
+        }
+    }
+
+    //Method for SignOut Current User
+    private fun signOutCurrentUser(
+        application: SMFApp,
+        myFunc: suspend (String, String) -> Unit
+    ) {
+        Amplify.Auth.signOut(
+            {
+                Log.i(
+                    "AuthQuickstart",
+                    "checkTokenExpiry refereshTokentime Signed out successfully"
+                )
+                val sharedPreferences =
+                    application.applicationContext.getSharedPreferences(
+                        "MyUser",
+                        Context.MODE_PRIVATE
+                    )
+                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                editor.putString("IdToken", "")
+                editor.apply()
+                GlobalScope.launch {
+                    myFunc("", "signOut")
+                }
+
+            },
+            { Log.e("AuthQuickstart", "Sign out failed", it) }
+        )
+    }
+
     // Lambda Function for callBack
     private val myLambFunc: suspend (String, String) -> Unit = { token, caller ->
-        Log.i("AuthQuickstart", "checkTokenExpiry refereshTokentime Signed out successfully inside lamda")
         idTokenCallBackInterface!!.tokenCallBack(token, caller)
     }
 
