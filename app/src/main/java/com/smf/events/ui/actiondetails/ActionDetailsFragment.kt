@@ -9,7 +9,6 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
@@ -24,7 +23,6 @@ import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter.CallBackInterface
-import com.smf.events.ui.dashboard.DashBoardFragmentDirections
 import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
@@ -193,39 +191,6 @@ class ActionDetailsFragment :
             })
     }
 
-    // Method For Set ActionDetails Frag Values From ActionAndStatusFrag And SharedPreferences
-    private fun actionDetailsVariableSetUp() {
-        val args = arguments
-        bidStatus = args?.getString("bidStatus").toString()
-
-         getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
-        spRegId = getSharedPreferences.getInt("spRegId", 0)
-
-        serviceCategoryIdAndServiceOnBoardingIdSetup(args)
-    }
-
-    // Method For Set ServiceCategoryId And ServiceOnboardId For Api Call
-    private fun serviceCategoryIdAndServiceOnBoardingIdSetup(args: Bundle?) {
-
-        if (args?.getInt("serviceCategoryId") == 0) {
-            if (args.getInt("serviceVendorOnboardingId") == 0) {
-                serviceCategoryId = null
-                serviceVendorOnboardingId = null
-            }
-        } else if (args?.getInt("serviceCategoryId") != 0 && args?.getInt("serviceVendorOnboardingId") == 0) {
-            serviceCategoryId = args.getInt("serviceCategoryId")
-            serviceVendorOnboardingId = null
-        } else {
-            serviceCategoryId = args?.getInt("serviceCategoryId")
-            serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
-
-        }
-    }
-
     // Method For AWS Token Validation
     private fun apiTokenValidationBidActions() {
         tokens.checkTokenExpiry(
@@ -235,7 +200,7 @@ class ActionDetailsFragment :
     }
 
     // Method For New Request Api Call
-    private fun bidActionsApiCall() {
+    private fun bidActionsApiCall(idToken: String) {
         getViewModel().getBidActions(
             idToken,
             spRegId,
@@ -285,18 +250,44 @@ class ActionDetailsFragment :
 
     // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        // Update Current IdToken
-        updateIdToken()
 
         withContext(Dispatchers.Main) {
             when (caller) {
-                "bidStatus" -> bidActionsApiCall()
+                "bidStatus" -> bidActionsApiCall(idToken)
             }
         }
     }
 
-    // Method For Update IdToken Value
-    private fun updateIdToken(){
+    // Method For Set ActionDetails Frag Values From ActionAndStatusFrag And SharedPreferences
+    private fun actionDetailsVariableSetUp() {
+        val args = arguments
+        bidStatus = args?.getString("bidStatus").toString()
+
+        getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
+            "MyUser",
+            Context.MODE_PRIVATE
+        )
         idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
+        spRegId = getSharedPreferences.getInt("spRegId", 0)
+
+        serviceCategoryIdAndServiceOnBoardingIdSetup(args)
+    }
+
+    // Method For Set ServiceCategoryId And ServiceOnboardId For Api Call
+    private fun serviceCategoryIdAndServiceOnBoardingIdSetup(args: Bundle?) {
+
+        if (args?.getInt("serviceCategoryId") == 0) {
+            if (args.getInt("serviceVendorOnboardingId") == 0) {
+                serviceCategoryId = null
+                serviceVendorOnboardingId = null
+            }
+        } else if (args?.getInt("serviceCategoryId") != 0 && args?.getInt("serviceVendorOnboardingId") == 0) {
+            serviceCategoryId = args.getInt("serviceCategoryId")
+            serviceVendorOnboardingId = null
+        } else {
+            serviceCategoryId = args?.getInt("serviceCategoryId")
+            serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
+
+        }
     }
 }

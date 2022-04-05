@@ -156,7 +156,7 @@ class QuoteDetailsDialog(
     }
 
     //Setting the value for put Call
-    private fun putQuoteDetails(bidStatus: String) {
+    private fun putQuoteDetails(bidStatus: String, idToken: String) {
         var bidValueQuote = mDataBinding?.costEstimationAmount?.text.toString()
         latestBidValueQuote = if (bidValueQuote == "") {
             0
@@ -191,11 +191,11 @@ class QuoteDetailsDialog(
                 "QUOTE_DETAILS",
                 latestBidValueQuote)
         }
-        putQuoteApiCall()
+        putQuoteApiCall(idToken)
     }
 
     //Put call Api For Cost and File Upload
-    private fun putQuoteApiCall() {
+    private fun putQuoteApiCall(idToken: String) {
         getViewModel().postQuoteDetails(idToken, bidRequestId, biddingQuote)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
@@ -220,31 +220,16 @@ class QuoteDetailsDialog(
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Main) {
             when (caller) {
-                "iHaveQuote" -> putQuoteDetails(AppConstants.BID_SUBMITTED)
-                "quoteLater" -> putQuoteDetails(AppConstants.PENDING_FOR_QUOTE)
+                "iHaveQuote" -> putQuoteDetails(AppConstants.BID_SUBMITTED, idToken)
+                "quoteLater" -> putQuoteDetails(AppConstants.PENDING_FOR_QUOTE, idToken)
             }
-
-
         }
     }
 
     private fun apiTokenValidationQuoteDetailsDialog(status: String) {
-        if (idToken.isNotEmpty()) {
-            Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
                 status, idToken)
-        }
-    }
-
-    //Setting Id Token
-    private fun setIdToken() {
-        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
-
     }
 
     //Setting Dialog Fragment Size
@@ -282,7 +267,6 @@ class QuoteDetailsDialog(
 
         view?.findViewById<Button>(R.id.btn_file_upload)?.setOnClickListener {
             try {
-
                 var gallaryIntent = Intent(Intent.ACTION_GET_CONTENT);
                 gallaryIntent.addCategory(Intent.CATEGORY_OPENABLE);
                 gallaryIntent.type = "*/*"
@@ -308,7 +292,7 @@ class QuoteDetailsDialog(
                     "onActivityResult: Base64string=" + Base64.encodeToString(bytes,
                         Base64.DEFAULT))
                 fileContent = Base64.encodeToString(bytes, Base64.DEFAULT)
-                fileSize = bytes?.size.toString()
+                fileSize = bytes.size.toString()
             } else {
                 Toast.makeText(activity, "upload file below 100kb", Toast.LENGTH_SHORT).show()
             }
@@ -331,5 +315,14 @@ class QuoteDetailsDialog(
         return byteBuffer.toByteArray()
     }
 
+    //Setting Id Token
+    private fun setIdToken() {
+        val getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
+            "MyUser",
+            Context.MODE_PRIVATE
+        )
+        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+
+    }
 }
 

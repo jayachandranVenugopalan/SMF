@@ -40,8 +40,6 @@ class BidRejectionDialogViewModel @Inject constructor(
                 callBackInterface?.callBack(resources[position])
                 resources.remove("Reason For Rejection")
 
-
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -52,7 +50,8 @@ class BidRejectionDialogViewModel @Inject constructor(
         // set simple layout resource file
         // for each item of spinner
         ad.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item)
+            android.R.layout.simple_spinner_dropdown_item
+        )
 
         // Set the ArrayAdapter (ad) data on the
         // Spinner which binds data to spinner
@@ -75,7 +74,8 @@ class BidRejectionDialogViewModel @Inject constructor(
         idToken: String,
         serviceProviderBidRequestDto: ServiceProviderBidRequestDto,
     ) = liveData(
-        Dispatchers.IO) {
+        Dispatchers.IO
+    ) {
         emit(bidRejectionRepository.putBidRejection(idToken, serviceProviderBidRequestDto))
     }
 }

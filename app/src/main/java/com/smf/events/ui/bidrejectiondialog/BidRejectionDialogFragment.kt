@@ -70,7 +70,7 @@ class BidRejectionDialogFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //shared preference token
+        // Initialize shared preference token
         setIdToken()
     }
 
@@ -80,7 +80,7 @@ class BidRejectionDialogFragment(
         dialogFragmentSize()
         //Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        //intitalizing callbackinterface in viewmodel
+        //BidRejectionDialog ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
     }
 
@@ -121,7 +121,7 @@ class BidRejectionDialogFragment(
     }
 
     // Method For Bid Rejection Api Call
-    private fun bidRejectionApiCall() {
+    private fun bidRejectionApiCall(idToken: String) {
         serviceProviderBidRequestDto = ServiceProviderBidRequestDto(
             bidRequestId!!,
             mDataBinding?.etComments?.text.toString(), reason
@@ -147,12 +147,12 @@ class BidRejectionDialogFragment(
     private fun actionDetailsFragmentListUpdate() {
         // Result to Send ActionDetails Fragment
         parentFragmentManager.setFragmentResult(
-            "1", // Same request key FragmentA used to register its listener
-            bundleOf("key" to "value") // The data to be passed to FragmentA
+            "1", // Same request key ActionDetailsFragment used to register its listener
+            bundleOf("key" to "value") // The data to be passed to ActionDetailsFragment
         )
     }
 
-
+    // Call Back From BidRejectionDialogViewModel
     override fun callBack(status: String) {
         reason = status
         if (reason != "Other") {
@@ -180,7 +180,7 @@ class BidRejectionDialogFragment(
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Main) {
-            bidRejectionApiCall()
+            bidRejectionApiCall(idToken)
         }
     }
 

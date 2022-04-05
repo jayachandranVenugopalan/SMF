@@ -23,7 +23,8 @@ import java.time.Month
 import javax.inject.Inject
 
 
-class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(), Tokens.IdTokenCallBackInterface {
+class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
+    Tokens.IdTokenCallBackInterface {
     companion object {
         const val TAG = "CustomDialogFragment"
 
@@ -44,7 +45,8 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     lateinit var idToken: String
     var expand = false
     lateinit var bidStatus: String
-    override fun getViewModel(): QuoteBriefDialogViewModel? =
+
+    override fun getViewModel(): QuoteBriefDialogViewModel =
         ViewModelProvider(this, factory).get(QuoteBriefDialogViewModel::class.java)
 
     override fun getBindingVariable(): Int = BR.quoteBriefDialogViewModel
@@ -58,7 +60,8 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogTheme)
+        setStyle(STYLE_NORMAL, R.style.FullScreenDialogTheme)
+        // Initialize Local Variables
         setIdTokenAndBidReqId()
     }
 
@@ -70,7 +73,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mDataBinding?.quoteBriefDialogLayout?.visibility=View.INVISIBLE
+        mDataBinding?.quoteBriefDialogLayout?.visibility = View.INVISIBLE
         // token CallBackInterface
         tokens.setCallBackInterface(this)
         //Back Button Pressed
@@ -89,15 +92,15 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     //Back Button Pressed
     private fun backButtonClickListener() {
         parentFragmentManager.setFragmentResult(
-            "1", // Same request key FragmentA used to register its listener
-            bundleOf("key" to "value") // The data to be passed to FragmentA
+            "1", // Same request key DashBoardFragment used to register its listener
+            bundleOf("key" to "value") // The data to be passed to DashBoardFragment
         )
         dismiss()
     }
 
     //Setting Bid Submitted Quote
     private fun setBidSubmitQuoteBrief(response: QuoteBrief) {
-        mDataBinding?.quoteBriefDialogLayout?.visibility=View.VISIBLE
+        mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         mDataBinding?.txJobTitle?.text = response.data.eventName
@@ -123,7 +126,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     //Setting Bid Pending Quote
     private fun setPendingQuoteBrief(response: QuoteBrief) {
-        mDataBinding?.quoteBriefDialogLayout?.visibility=View.VISIBLE
+        mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         mDataBinding?.txJobTitle?.text = response.data.eventName
@@ -147,7 +150,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     }
 
-    //Date Formated for setting details
+    //Date Formatted for setting details
     private fun dateFormat(input: String): String {
         var monthCount = input.substring(0, 2)
         val date = input.substring(3, 5)
@@ -166,14 +169,13 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
             Context.MODE_PRIVATE
         )
         bidRequestId = getSharedPreferences?.getInt("bidRequestId", 0)
-
         idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
     }
 
     //Get Api Call for getting the Quote Brief
-    private fun quoteBriefApiCall() {
-        getViewModel()?.getQuoteBrief(idToken, bidRequestId!!)
-            ?.observe(viewLifecycleOwner, Observer { apiResponse ->
+    private fun quoteBriefApiCall(idToken: String) {
+        getViewModel().getQuoteBrief(idToken, bidRequestId!!)
+            .observe(viewLifecycleOwner, Observer { apiResponse ->
 
                 when (apiResponse) {
                     is ApisResponse.Success -> {
@@ -203,16 +205,15 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     //Call Back From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
-            quoteBriefApiCall()
+            quoteBriefApiCall(idToken)
         }
     }
-     // Api Token Validation For Quote Brief Api Call
+
+    // Api Token Validation For Quote Brief Api Call
     private fun apiTokenValidationQuoteBrief() {
-        if (idToken.isNotEmpty()) {
-            Log.d("TAG", "onResume: called")
-            tokens.checkTokenExpiry(
-                requireActivity().applicationContext as SMFApp,
-                "quote_brief", idToken)
-        }
+        tokens.checkTokenExpiry(
+            requireActivity().applicationContext as SMFApp,
+            "quote_brief", idToken
+        )
     }
 }

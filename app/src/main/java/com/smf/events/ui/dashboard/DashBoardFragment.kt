@@ -22,9 +22,7 @@ import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.dashboard.adapter.MyEventsAdapter
 import com.smf.events.ui.dashboard.model.*
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -33,7 +31,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
     var spRegId: Int = 0
-    var idToken: String = ""
+    lateinit var idToken: String
     var roleId: Int = 0
     private lateinit var getSharedPreferences: SharedPreferences
     private lateinit var myEventsRecyclerView: RecyclerView
@@ -94,12 +92,11 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        // Update Current IdToken
-        updateIdToken()
+
         withContext(Main) {
             when (caller) {
-                "event_type" -> getAllServiceAndCounts()
-                "branches" -> getBranches(serviceCategoryId)
+                "event_type" -> getAllServiceAndCounts(idToken)
+                "branches" -> getBranches(idToken,serviceCategoryId)
                 else -> {}
             }
         }
@@ -215,7 +212,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     //Counts And AllService ApiCall
-    private fun getAllServiceAndCounts() {
+    private fun getAllServiceAndCounts(idToken: String) {
 
         // Getting Service Provider Service Counts Status
         getViewModel().getServiceCount(idToken, spRegId)
@@ -266,7 +263,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     //Branch ApiCall
-    private fun getBranches(serviceCategoryId: Int) {
+    private fun getBranches(idToken: String, serviceCategoryId: Int) {
 
         getViewModel().getServicesBranches(idToken, spRegId, serviceCategoryId)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
@@ -295,7 +292,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         getViewModel().branches(
                             mDataBinding,
                             branchData,
-                            idToken,
+                            this.idToken,
                             spRegId,
                             serviceCategoryId,
                             0
@@ -322,11 +319,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         spRegId = getSharedPreferences.getInt("spRegId", 0)
         idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
         roleId = getSharedPreferences.getInt("roleId", 0)
-    }
-
-    // Method For Update IdToken Value
-    private fun updateIdToken(){
-        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
     }
 
 

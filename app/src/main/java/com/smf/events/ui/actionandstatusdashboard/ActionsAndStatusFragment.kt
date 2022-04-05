@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
@@ -20,7 +19,6 @@ import com.smf.events.helper.AppConstants
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
-import com.smf.events.ui.dashboard.DashBoardFragmentDirections
 import com.smf.events.ui.dashboard.adapter.StatusAdaptor
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
@@ -146,7 +144,7 @@ class ActionsAndStatusFragment :
     }
 
     // Method For ApiCall For Action And Status Counts
-    private fun actionAndStatusApiCall() {
+    private fun actionAndStatusApiCall(idToken: String) {
         getViewModel().getActionAndStatus(
             idToken,
             spRegId,
@@ -219,12 +217,10 @@ class ActionsAndStatusFragment :
 
     // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        // Update Current IdToken
-        updateIdToken()
 
         withContext(Dispatchers.Main) {
             when (caller) {
-                "actionAndStatus" -> actionAndStatusApiCall()
+                "actionAndStatus" -> actionAndStatusApiCall(idToken)
             }
         }
     }
@@ -256,8 +252,4 @@ class ActionsAndStatusFragment :
         roleId = getSharedPreferences.getInt("roleId", 0)
     }
 
-    // Method For Update IdToken Value
-    private fun updateIdToken(){
-        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
-    }
 }
