@@ -11,8 +11,8 @@ import javax.inject.Inject
 class ActionsAndStatusViewModel @Inject constructor(
     private val actionsAndStatusRepository: ActionsAndStatusRepository,
     application: Application,
-) :
-    BaseViewModel(application) {
+) : BaseViewModel(application) {
+
     var newRequestCount: Int = 0
 
     // Prepare Action List Values

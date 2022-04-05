@@ -2,6 +2,7 @@ package com.smf.events.ui.dashboard
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -32,8 +33,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
     var spRegId: Int = 0
-    lateinit var idToken: String
+    var idToken: String = ""
     var roleId: Int = 0
+    private lateinit var getSharedPreferences: SharedPreferences
     private lateinit var myEventsRecyclerView: RecyclerView
     lateinit var adapter: MyEventsAdapter
     var serviceList = ArrayList<ServicesData>()
@@ -62,8 +64,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "onCreate: called")
         restrictBackButton()
+        // Initialize Local Variables
         setIdTokenAndSpRegId()
     }
 
@@ -85,21 +87,20 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     private fun idTokenValidation() {
-        if (idToken.isNotEmpty()) {
-            tokens.checkTokenExpiry(
-                requireActivity().applicationContext as SMFApp,
-                "event_type", idToken
-            )
-        }
+        tokens.checkTokenExpiry(
+            requireActivity().applicationContext as SMFApp,
+            "event_type", idToken
+        )
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        Log.d("TAG", "checkTokenExpiry refereshTokentime caller before $caller")
+        // Update Current IdToken
+        updateIdToken()
         withContext(Main) {
             when (caller) {
                 "event_type" -> getAllServiceAndCounts()
                 "branches" -> getBranches(serviceCategoryId)
-                else -> {Log.d("TAG", "checkTokenExpiry refereshTokentime caller else block")}
+                else -> {}
             }
         }
     }
@@ -136,29 +137,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
     }
 
-    override fun callBack(idToken: String) {
-        Log.d("AuthQuickStart", "Dashboard callBack called token $idToken")
-        CoroutineScope(Main).launch {
-            getViewModel().get184Types(idToken)
-                .observe(this@DashBoardFragment, Observer { apiResponse ->
-                    when (apiResponse) {
-                        is ApisResponse.Success -> {
-                            Log.d("TAG", "token 184 result: ${apiResponse.response.success}")
-                            Log.d("TAG", "token 184 result: ${apiResponse.response.result.info}")
-                            showToast("ok")
-                        }
-                        is ApisResponse.Error -> {
-                            Log.d("TAG", "token 184 result: ${apiResponse.exception}")
-                            showToast("Not ok")
-                        }
-                        else -> {
-                        }
-                    }
-                })
-        }
-
-    }
-
     //All Service spinner view clicked
     override fun itemClick(position: Int) {
         if (serviceList[position].serviceName == "All Service") {
@@ -177,16 +155,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
         }
         if (serviceList[position].serviceName != "All Service") {
-            serviceCategoryId = (serviceList[position].serviceCategoryId.toInt())
+            serviceCategoryId = (serviceList[position].serviceCategoryId)
             Log.d("TAG", "itemClick: $branchListSpinner")
 
-            if (idToken.isNotEmpty()) {
-                Log.d("TAG", "onResume: called")
-                tokens.checkTokenExpiry(
-                    requireActivity().applicationContext as SMFApp,
-                    "branches", idToken
-                )
-            }
+            tokens.checkTokenExpiry(
+                requireActivity().applicationContext as SMFApp,
+                "branches", idToken
+            )
+
             branchListSpinner.clear()
         }
     }
@@ -241,7 +217,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     //Counts And AllService ApiCall
     private fun getAllServiceAndCounts() {
 
-        // Getting Service Provider Reg Id and Role Id
+        // Getting Service Provider Service Counts Status
         getViewModel().getServiceCount(idToken, spRegId)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
@@ -266,14 +242,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     // Getting All Service
     private fun getAllServices() {
+
         getViewModel().getAllServices(idToken, spRegId)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
 
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        Log.d("TAG", "sample: ${apiResponse.response.success}")
-                        Log.d("TAG", "sample: ${apiResponse.response.data}")
-                        Log.d("TAG", "sample: ${apiResponse.response.data.size}")
 
                         serviceList.add(ServicesData("All Service", 0))
                         branchListSpinner.add(BranchDatas("Branches", 0))
@@ -339,15 +313,20 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     }
 
-    //Setting Id Token and SpRegId
+    //Setting IdToken, SpRegId And RollId
     private fun setIdTokenAndSpRegId() {
-        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
+        getSharedPreferences= requireActivity().applicationContext.getSharedPreferences(
             "MyUser",
             Context.MODE_PRIVATE
         )
         spRegId = getSharedPreferences.getInt("spRegId", 0)
-        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
         roleId = getSharedPreferences.getInt("roleId", 0)
+    }
+
+    // Method For Update IdToken Value
+    private fun updateIdToken(){
+        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
     }
 
 

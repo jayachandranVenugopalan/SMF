@@ -11,31 +11,26 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.smf.events.BR
 import com.smf.events.R
-import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailOtpBinding
 import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.Tokens
 import com.smf.events.ui.emailotp.model.GetLoginInfo
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.Main
 import javax.inject.Inject
 
 
 class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel>(),
-    EmailOTPViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
+    EmailOTPViewModel.CallBackInterface {
 
     private val args: EmailOTPFragmentArgs by navArgs()
     private lateinit var userName: String
+    private lateinit var getSharedPreferences: SharedPreferences
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var tokens: Tokens
-
-    override fun getViewModel(): EmailOTPViewModel? =
+    override fun getViewModel(): EmailOTPViewModel =
         ViewModelProvider(this, factory).get(EmailOTPViewModel::class.java)
 
     override fun getBindingVariable(): Int = BR.otpviewmodel
@@ -49,11 +44,10 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userName = args.userName
+        // Initialize Local Variables
+        setUserNameAndSharedPref()
         // Initialize CallBackInterface
-        getViewModel()?.setCallBackInterface(this)
-        // Initialize IdTokenCallBackInterface
-        tokens.setCallBackInterface(this)
+        getViewModel().setCallBackInterface(this)
         // Submit Button Listener
         submitBtnClicked()
         // Resend Text Listener
@@ -62,11 +56,20 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         autoSubmit()
     }
 
+    // Method For set UserName And SharedPreferences
+    private fun setUserNameAndSharedPref(){
+        userName = args.userName
+        getSharedPreferences= requireActivity().applicationContext.getSharedPreferences(
+            "MyUser",
+            Context.MODE_PRIVATE
+        )
+    }
+
     //For confirmSignIn aws
     private fun submitBtnClicked() {
-        var code = mDataBinding?.otpemail?.text.toString()
+        val code = mDataBinding?.otpemail?.text.toString()
         mDataBinding!!.submitBtn.setOnClickListener {
-            getViewModel()!!.confirmSignIn(code, mDataBinding!!)
+            getViewModel().confirmSignIn(code, mDataBinding!!)
         }
 
     }
@@ -74,16 +77,16 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     // Method for ResendingOTP
     private fun resendBtnClicked() {
         mDataBinding?.otpResend?.setOnClickListener {
-            getViewModel()?.reSendOTP(userName)
+            getViewModel().reSendOTP(userName)
         }
     }
 
     //AutoSubmitted when we Enter 4 digit
     private fun autoSubmit() {
-        getViewModel()?.userOtpNumber?.observe(viewLifecycleOwner, Observer {
+        getViewModel().userOtpNumber.observe(viewLifecycleOwner, Observer {
             if (it.length == 4) {
                 mDataBinding?.submitBtn?.visibility = View.INVISIBLE
-                getViewModel()!!.confirmSignIn(it, mDataBinding!!)
+                getViewModel().confirmSignIn(it, mDataBinding!!)
             } else {
                 mDataBinding?.submitBtn?.visibility = View.VISIBLE
             }
@@ -96,47 +99,26 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             // Navigate to EmailVerificationCodeFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionPhoneOTPFragmentToEmailVerificationCodeFragment())
         } else if (status == "EMailVerifiedTrueGoToDashBoard") {
-
-            val getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-                "MyUser",
-                Context.MODE_PRIVATE
-            )
-            val idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
-
-            withContext(Main) {
-                if (idToken.isNotEmpty()) {
-                    tokens.checkTokenExpiry(
-                        requireActivity().applicationContext as SMFApp,
-                        "event_type", idToken
-                    )
-                }
-            }
+            val idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
+            getLoginApiCall(idToken)
         }
     }
 
     //AWS Error response
-    override fun awsErrorreponse() {
-        getViewModel()?.toastMessage?.let { showToast(it) }
-    }
-
-    //Override Method for IdTokenCallBackInterface
-    override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Main) {
-            // Getting Service Provider Reg Id and Role Id
-            getLoginApiCall(idToken)
-        }
-
+    override fun awsErrorResponse() {
+        showToast(getViewModel().toastMessage)
     }
 
     //Login api call to Fetch RollId and SpRegId
     private fun getLoginApiCall(idToken: String) {
         // Getting Service Provider Reg Id and Role Id
-        getViewModel()?.getLoginInfo(idToken)
-            ?.observe(this@EmailOTPFragment, Observer { apiResponse ->
+        getViewModel().getLoginInfo(idToken)
+            .observe(this@EmailOTPFragment, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         // Initialize RegId And RoleId to Shared Preference
                         setSpRegIdAndRollID(apiResponse)
+                        // Navigate to DashBoardFragment
                         findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
                     }
                     is ApisResponse.Error -> {
@@ -148,13 +130,9 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             })
     }
 
+    // Method For Set SpRegId And RollID to SharedPreference From Login Api
     private fun setSpRegIdAndRollID(apiResponse: ApisResponse.Success<GetLoginInfo>) {
-        val sharedPreferences =
-            requireContext().getSharedPreferences(
-                "MyUser",
-                Context.MODE_PRIVATE
-            )
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        val editor: SharedPreferences.Editor = getSharedPreferences.edit()
         editor.putInt(
             "spRegId",
             apiResponse.response.data.spRegId

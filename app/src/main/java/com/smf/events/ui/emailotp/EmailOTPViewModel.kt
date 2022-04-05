@@ -29,8 +29,7 @@ class EmailOTPViewModel @Inject constructor(
     fun confirmSignIn(otp: String, mDataBinding: FragmentEmailOtpBinding) {
 
         Amplify.Auth.confirmSignIn(otp,
-            { result ->
-                Log.i("AuthQuickstart", "Confirmed signIn: ${result.nextStep.additionalInfo}")
+            {
                 // Aws method for Fetching Id Token
                 fetchIdToken()
                 //Aws Method for 6 digit Validation Check
@@ -43,10 +42,10 @@ class EmailOTPViewModel @Inject constructor(
                     it
                 )
                 viewModelScope.launch {
-                    var errMsg = mDataBinding.otpemail.text.toString()
+                    val errMsg = mDataBinding.otpemail.text.toString()
                     if (errMsg.isEmpty()) {
                         toastMessage = "Enter OTP"
-                        callBackInterface!!.awsErrorreponse()
+                        callBackInterface!!.awsErrorResponse()
                     }
                 }
             })
@@ -57,22 +56,27 @@ class EmailOTPViewModel @Inject constructor(
         Amplify.Auth.fetchAuthSession(
             {
                 val session = it as AWSCognitoAuthSession
-                Log.i("AuthDemo", "User attributes = $session")
-                idToken =
-                    AuthSessionResult.success(session.userPoolTokens.value?.idToken).value
-                Log.i("AuthDemo", "idToken = $idToken")
+                idToken = AuthSessionResult.success(session.userPoolTokens.value?.idToken).value
                 setTokenToSharedPref(idToken)
             },
             { Log.e("AuthQuickStart", "Failed to fetch session", it) }
         )
     }
 
+
+    // Method for save IdToken
+    private fun setTokenToSharedPref(token: String?) {
+        val sharedPreferences =
+            getApplication<SMFApp>().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+        var editor = sharedPreferences?.edit()
+        editor?.putString("IdToken", token)
+        editor?.apply()
+    }
+
     //Aws Method for 6 digit Validation Check
     private fun emailCodeValidationCheck() {
         Amplify.Auth.fetchUserAttributes(
             { result ->
-                Log.i("AuthDemo", "User attributes = $result")
-                Log.i("AuthDemo", "User attributes = ${result[0].key}")
                 if (result[1].value.equals("false")) {
                     eMailVerification()
                 } else {
@@ -86,18 +90,9 @@ class EmailOTPViewModel @Inject constructor(
                 Log.e("AuthDemo", "Failed to fetch user attributes", it)
                 viewModelScope.launch {
                     toastMessage = "Invalid OTP"
-                    callBackInterface!!.awsErrorreponse()
+                    callBackInterface!!.awsErrorResponse()
                 }
             })
-    }
-
-    // Method for save IdToken
-    private fun setTokenToSharedPref(token: String?) {
-        var sharedPreferences =
-            getApplication<SMFApp>().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        var editor = sharedPreferences?.edit()
-        editor?.putString("IdToken", token)
-        editor?.apply()
     }
 
     // Method For Getting Service Provider Reg Id and Role Id
@@ -109,7 +104,6 @@ class EmailOTPViewModel @Inject constructor(
     private fun eMailVerification() {
         Amplify.Auth.resendUserAttributeConfirmationCode(AuthUserAttributeKey.email(),
             {
-                Log.i("AuthDemo", "Code was sent again: $it")
                 viewModelScope.launch {
                     callBackInterface?.callBack("goToEmailVerificationCodePage")
                 }
@@ -119,7 +113,7 @@ class EmailOTPViewModel @Inject constructor(
                 viewModelScope.launch {
                     var errMsg = it.cause!!.message!!.split(".")[0]
                     toastMessage = errMsg
-                    callBackInterface!!.awsErrorreponse()
+                    callBackInterface!!.awsErrorResponse()
                 }
             })
     }
@@ -132,9 +126,9 @@ class EmailOTPViewModel @Inject constructor(
             {
                 Log.e("AuthQuickstart", "Failed to sign in", it)
                 viewModelScope.launch {
-                    var errMsg = it.cause!!.message!!.split(".")[0]
+                    val errMsg = it.cause!!.message!!.split(".")[0]
                     toastMessage = errMsg
-                    callBackInterface!!.awsErrorreponse()
+                    callBackInterface!!.awsErrorResponse()
                 }
             })
     }
@@ -149,7 +143,7 @@ class EmailOTPViewModel @Inject constructor(
     // CallBack Interface
     interface CallBackInterface {
         suspend fun callBack(status: String)
-        fun awsErrorreponse()
+        fun awsErrorResponse()
     }
 
 

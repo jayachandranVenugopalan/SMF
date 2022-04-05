@@ -24,9 +24,6 @@ interface ApiStories {
     @GET("epm-no-auth/api/authentication/user-info")
     suspend fun getUserDetails(@Query("loginName") loginName: String): GetUserDetails
 
-    @GET("epm-event/api/events/event-template-questionnaire/184")
-    suspend fun get184Types(@Header("Authorization") idToken: String): EvenTypes
-
     @GET("epm-user/api/app-authentication/login")
     suspend fun getLoginInfo(@Header("Authorization") idToken: String): GetLoginInfo
 

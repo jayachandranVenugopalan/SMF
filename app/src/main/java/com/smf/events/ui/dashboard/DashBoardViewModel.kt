@@ -3,16 +3,10 @@ package com.smf.events.ui.dashboard
 import android.R
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.lifecycle.liveData
-import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
-import com.amplifyframework.auth.result.AuthSessionResult
-import com.amplifyframework.core.Amplify
-import com.smf.events.SMFApp
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentDashBoardBinding
 import com.smf.events.ui.dashboard.model.Datas
@@ -25,13 +19,9 @@ class DashBoardViewModel @Inject constructor(
     private val dashBoardRepository: DashBoardRepository,
     application: Application,
 ) : BaseViewModel(application), AdapterView.OnItemSelectedListener {
+
     var name: String? = null
     var allServiceposition: Int? = 0
-
-    // EventType Api
-    fun get184Types(idToken: String) = liveData(Dispatchers.IO) {
-        emit(dashBoardRepository.get184Types(idToken))
-    }
 
     @SuppressLint("ResourceType")
     fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: ArrayList<String>) {
@@ -58,7 +48,8 @@ class DashBoardViewModel @Inject constructor(
         // set simple layout resource file
         // for each item of spinner
         ad.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item)
+            android.R.layout.simple_spinner_dropdown_item
+        )
 
         // Set the ArrayAdapter (ad) data on the
         // Spinner which binds data to spinner
@@ -76,42 +67,20 @@ class DashBoardViewModel @Inject constructor(
     ) {
         resources.forEach {
             name = it
-
         }
+
         var spin = mDataBinding!!.spnBranches
 
         spin.onItemSelectedListener = this
 
         var ad: ArrayAdapter<*> =
-            ArrayAdapter<Any?>(getApplication(), android.R.layout.simple_spinner_item,
-                resources as List<Any?>)
-        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            ArrayAdapter<Any?>(
+                getApplication(), R.layout.simple_spinner_item,
+                resources as List<Any?>
+            )
+        ad.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         ad.notifyDataSetChanged()
         mDataBinding.spnBranches.adapter = ad
-    }
-
-    // Fetch tokens
-    fun fetchSession() {
-        Amplify.Auth.fetchAuthSession(
-            {
-                val session = it as AWSCognitoAuthSession
-                var idToken =
-                    AuthSessionResult.success(session.userPoolTokens.value!!.idToken).value
-                Log.d("AuthQuickStart", "Dashboard view model fetch token $idToken")
-                setToken(idToken!!)
-                callBackInterface?.callBack("Bearer $idToken")
-            },
-            { Log.e("AuthQuickStart", "Failed to fetch session", it) }
-        )
-    }
-
-    // Method for save IdToken
-    private fun setToken(token: String) {
-        var sharedPreferences =
-            getApplication<SMFApp>().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        var editor = sharedPreferences?.edit()
-        editor?.putString("IdToken", token)
-        editor?.apply()
     }
 
     private var callBackInterface: CallBackInterface? = null
@@ -123,7 +92,6 @@ class DashBoardViewModel @Inject constructor(
 
     // CallBack Interface
     interface CallBackInterface {
-        fun callBack(token: String)
         fun itemClick(msg: Int)
         fun branchItemClick(serviceVendorOnboardingId: Int, name: String?, allServiceposition: Int?)
     }
@@ -137,6 +105,7 @@ class DashBoardViewModel @Inject constructor(
 
     }
 
+    // Getting Service Provider Service List Counts
     fun getServiceCountList(data: Datas): ArrayList<MyEvents> {
         var list = ArrayList<MyEvents>()
         list.add(MyEvents("${data.activeServiceCount}", "Active"))

@@ -34,7 +34,8 @@
                 "profile",
                 "openid",
                 "aws.cognito.signin.user.admin"
-              ]
+              ],
+              "responseType": "code"
             }
           }
         }

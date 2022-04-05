@@ -25,51 +25,57 @@ class Tokens @Inject constructor() {
         val decodeToken = String(decodedBytes)
         val tokenObj = JSONObject(decodeToken)
         val tokenObjExp = tokenObj.getString("exp").toLong()
-        val newTimeMin = newTime + 5 * 60
-        if (newTimeMin > tokenObjExp) {
-            Log.d("TAG", "checkTokenExpiry refereshTokentime inside if loop")
-            //fetchSession(application, myLambFunc, caller)
-            signOutCurrentUser(application, myLambFunc)
+        val newTimeMin = newTime + 1 * 60
+
+        if (newTimeMin < tokenObjExp) {
+            Log.d("TAG", "checkTokenExpiry refereshTokentime inside if block")
+            tokenNotExpired(idToken, myLambFunc, caller)
         } else {
             Log.d("TAG", "checkTokenExpiry refereshTokentime else block")
-            tokenNotExpired(idToken, myLambFunc, caller)
+            fetchNewIdToken(application, myLambFunc, caller)
         }
+
     }
 
     //Method for fetching token
-    private fun fetchSession(
+    private fun fetchNewIdToken(
         application: SMFApp,
         myFunc: suspend (String, String) -> Unit,
         caller: String
     ) {
+        Amplify.Auth.fetchAuthSession(
+            {
+                val session = it as AWSCognitoAuthSession
+                val idToken =
+                    AuthSessionResult.success(session.userPoolTokens.value?.idToken).value
 
-        Amplify.Auth.fetchUserAttributes({
-            Log.d("AuthQuickStart", "fetch UserAttributes $it")
-            Amplify.Auth.fetchAuthSession(
-                {
-                    val session = it as AWSCognitoAuthSession
-                    val idToken =
-                        AuthSessionResult.success(session.userPoolTokens.value?.idToken).value
-                    Log.d("TAG", "token idToken token class: $idToken")
+                updateTokenToShardPreferences(application, idToken, myFunc, caller)
 
-                    val sharedPreferences =
-                        application.applicationContext.getSharedPreferences(
-                            "MyUser",
-                            Context.MODE_PRIVATE
-                        )
-                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                    editor.putString("IdToken", idToken)
-                    editor.apply()
-                    GlobalScope.launch {
-                        myFunc("Bearer ${sharedPreferences?.getString("IdToken", "")}", caller)
-                    }
-                },
-                { Log.e("AuthQuickStart", "Failed to fetch session", it) })
+            },
+            { Log.e("AuthQuickStart", "Failed to fetch session", it) })
 
-        }, { Log.e("AuthQuickStart", "Failed to fetch UserAttributes", it) })
 
     }
 
+    // Method For Update New IdToken to Shared Preference
+    private fun updateTokenToShardPreferences(
+        application: SMFApp,
+        idToken: String?,
+        myFunc: suspend (String, String) -> Unit,
+        caller: String
+    ) {
+        val sharedPreferences =
+            application.applicationContext.getSharedPreferences(
+                "MyUser",
+                Context.MODE_PRIVATE
+            )
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString("IdToken", idToken)
+        editor.apply()
+        GlobalScope.launch {
+            myFunc("Bearer ${sharedPreferences?.getString("IdToken", "")}", caller)
+        }
+    }
 
     //Method for Sending Not Expired Token
     private fun tokenNotExpired(

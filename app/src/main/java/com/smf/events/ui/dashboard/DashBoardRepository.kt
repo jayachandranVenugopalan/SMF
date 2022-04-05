@@ -11,17 +11,6 @@ import javax.inject.Inject
 
 class DashBoardRepository @Inject constructor(var apiStories: ApiStories) {
 
-    suspend fun get184Types(idToken: String): ApisResponse<EvenTypes> {
-        return try {
-
-            val getResponse = apiStories.get184Types(idToken)
-            ApisResponse.Success(getResponse)
-
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
-    }
-
     suspend fun getServiceCount(idToken: String, spRegId: Int): ApisResponse<ServiceCount> {
 
         return try {

@@ -1,6 +1,7 @@
 package com.smf.events.ui.actiondetails
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -46,6 +47,7 @@ class ActionDetailsFragment :
     var bidStatus: String = ""
     lateinit var idToken: String
     var spRegId: Int = 0
+    private lateinit var getSharedPreferences: SharedPreferences
 
     @Inject
     lateinit var tokens: Tokens
@@ -68,8 +70,8 @@ class ActionDetailsFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //Action Details required Variable setUp
-        actionDeatilsVariableSetUp()
+        //Action Details Local Variable Initialization
+        actionDetailsVariableSetUp()
 
     }
 
@@ -79,7 +81,6 @@ class ActionDetailsFragment :
         tokens.setCallBackInterface(this)
         //Method For Token Validation
         apiTokenValidationBidActions()
-
 
     }
 
@@ -193,16 +194,22 @@ class ActionDetailsFragment :
     }
 
     // Method For Set ActionDetails Frag Values From ActionAndStatusFrag And SharedPreferences
-    private fun actionDeatilsVariableSetUp() {
+    private fun actionDetailsVariableSetUp() {
         val args = arguments
         bidStatus = args?.getString("bidStatus").toString()
 
-        val getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
+         getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
             "MyUser",
             Context.MODE_PRIVATE
         )
-        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
         spRegId = getSharedPreferences.getInt("spRegId", 0)
+
+        serviceCategoryIdAndServiceOnBoardingIdSetup(args)
+    }
+
+    // Method For Set ServiceCategoryId And ServiceOnboardId For Api Call
+    private fun serviceCategoryIdAndServiceOnBoardingIdSetup(args: Bundle?) {
 
         if (args?.getInt("serviceCategoryId") == 0) {
             if (args.getInt("serviceVendorOnboardingId") == 0) {
@@ -278,19 +285,18 @@ class ActionDetailsFragment :
 
     // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
+        // Update Current IdToken
+        updateIdToken()
+
         withContext(Dispatchers.Main) {
             when (caller) {
                 "bidStatus" -> bidActionsApiCall()
-                "signOut" -> moveToSignInScreen()
             }
         }
     }
 
-    // Method For User SignOut And Moved To SignIn Screen
-    private fun moveToSignInScreen() {
-        Log.d("TAG", "checkTokenExpiry refereshTokentime move to signIn screen")
-        val action = DashBoardFragmentDirections.actionDashBoardFragmentToSignInFragment()
-        findNavController().navigate(action)
+    // Method For Update IdToken Value
+    private fun updateIdToken(){
+        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
     }
-
 }

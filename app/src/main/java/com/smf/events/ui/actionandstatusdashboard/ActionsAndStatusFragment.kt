@@ -1,6 +1,7 @@
 package com.smf.events.ui.actionandstatusdashboard
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -19,12 +20,10 @@ import com.smf.events.helper.AppConstants
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
-import com.smf.events.ui.dashboard.DashBoardFragment
 import com.smf.events.ui.dashboard.DashBoardFragmentDirections
 import com.smf.events.ui.dashboard.adapter.StatusAdaptor
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
-import com.smf.events.ui.splash.SplashFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -42,6 +41,7 @@ class ActionsAndStatusFragment :
     var spRegId: Int = 0
     lateinit var idToken: String
     var roleId: Int = 0
+    private lateinit var getSharedPreferences: SharedPreferences
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
 
@@ -65,8 +65,10 @@ class ActionsAndStatusFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Initialize Local Variables
         setIdTokenAndSpRegId()
-        serviceCategoryIdAndServiceOnboardingIdSetup()
+        // Set Category Id And ServiceOnBoarding Id
+        serviceCategoryIdAndServiceOnBoardingIdSetup()
 
     }
 
@@ -143,17 +145,6 @@ class ActionsAndStatusFragment :
         }
     }
 
-    // Method For Set IdToken And SpRegId From SharedPreferences
-    private fun setIdTokenAndSpRegId() {
-        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        spRegId = getSharedPreferences.getInt("spRegId", 0)
-        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
-        roleId = getSharedPreferences.getInt("roleId", 0)
-    }
-
     // Method For ApiCall For Action And Status Counts
     private fun actionAndStatusApiCall() {
         getViewModel().getActionAndStatus(
@@ -207,8 +198,8 @@ class ActionsAndStatusFragment :
     }
 
 
-    // Method For ServiceCategoryId And ServiceOnboardId Initialization
-    private fun serviceCategoryIdAndServiceOnboardingIdSetup() {
+    // Method For Set ServiceCategoryId And ServiceOnboardId For Api Call
+    private fun serviceCategoryIdAndServiceOnBoardingIdSetup() {
 
         val args = arguments
         if (args?.getInt("serviceCategoryId") == 0) {
@@ -228,21 +219,14 @@ class ActionsAndStatusFragment :
 
     // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        Log.i("AuthQuickstart", "checkTokenExpiry refereshTokentime Signed out $caller")
+        // Update Current IdToken
+        updateIdToken()
+
         withContext(Dispatchers.Main) {
             when (caller) {
                 "actionAndStatus" -> actionAndStatusApiCall()
-                "signOut" -> moveToSignInScreen()
             }
         }
-    }
-
-    // Method For User SignOut And Moved To SignIn Screen
-    private fun moveToSignInScreen() {
-        Log.d("TAG", "checkTokenExpiry refereshTokentime move to signIn screen 1")
-        val action = DashBoardFragmentDirections.actionDashBoardFragmentToSignInFragment()
-        findNavController().navigate(action)
-
     }
 
     // Method For Calling ActionDetailsFragment With Action Details
@@ -259,5 +243,21 @@ class ActionsAndStatusFragment :
             .replace(R.id.action_and_status_layout, actionDetailsFragment)
             .addToBackStack(ActionsAndStatusFragment::class.java.name)
             .commit()
+    }
+
+    // Method For Set IdToken And SpRegId From SharedPreferences
+    private fun setIdTokenAndSpRegId() {
+        getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
+            "MyUser",
+            Context.MODE_PRIVATE
+        )
+        spRegId = getSharedPreferences.getInt("spRegId", 0)
+        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
+        roleId = getSharedPreferences.getInt("roleId", 0)
+    }
+
+    // Method For Update IdToken Value
+    private fun updateIdToken(){
+        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
     }
 }
