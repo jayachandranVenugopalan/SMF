@@ -88,6 +88,7 @@
     <string name="cost_is_mandatory">Cost is mandatory !</string>
     <string name="you_rejected_a_catering_1000045">You Rejected a Catering #1000045</string>
     <string name="change_of_mind">Change of Mind ?</string>
+    <string name="amount">Amount</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>
@@ -101,6 +102,12 @@
         <item>@string/partnership</item>
         <item>@string/llc</item>
 
+    </string-array>
+
+    <string-array name="currency_type">
+        <item>USD($)</item>
+        <item>GBP(\u00a3)</item>
+        <item>INR(\u20B9)</item>
     </string-array>
 
 

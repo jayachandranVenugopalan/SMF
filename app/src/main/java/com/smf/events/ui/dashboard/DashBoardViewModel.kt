@@ -48,7 +48,7 @@ class DashBoardViewModel @Inject constructor(
         // set simple layout resource file
         // for each item of spinner
         ad.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item
+            R.layout.simple_spinner_dropdown_item
         )
 
         // Set the ArrayAdapter (ad) data on the

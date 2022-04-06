@@ -210,7 +210,7 @@
                 android:layout_width="@dimen/size_150dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/blue"
-                android:layout_marginStart="@dimen/size_10dp"
+                android:layout_marginStart="@dimen/size_2dp"
                 android:fontFamily="@font/poppins_medium"
                 android:text="@string/change_of_mind"
                 android:textSize="@dimen/size_14sp" />

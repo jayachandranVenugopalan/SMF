@@ -1,7 +1,11 @@
 package com.smf.events.ui.quotedetailsdialog
 
+import android.R
+import android.annotation.SuppressLint
 import android.app.Application
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.lifecycle.liveData
@@ -15,6 +19,8 @@ class QuoteDetailsDialogViewModel @Inject constructor(
     private val quoteDetailsRepository: QuoteDetailsRepository,
     application: Application,
 ) : BaseDialogViewModel(application) {
+
+    var costposition: Int? = 0
 
     //When i have Quote is clicked
     fun iHaveQuoteClicked(view: View, mDataBinding: FragmentQuoteDetailsDialogBinding?) {
@@ -44,7 +50,7 @@ class QuoteDetailsDialogViewModel @Inject constructor(
                 // Toast.makeText(activity,"Nothing selected", Toast.LENGTH_SHORT).show();
             } else {
                 mDataBinding.alertCost.visibility = View.INVISIBLE
-                mDataBinding?.constraint2?.visibility = View.GONE
+                mDataBinding.constraint2.visibility = View.GONE
                 onCLickOk(mDataBinding, quoteRadioButton.text as String)
             }
         }
@@ -65,6 +71,34 @@ class QuoteDetailsDialogViewModel @Inject constructor(
 
     }
 
+    // Insert CurrencyType Spinner Value
+    @SuppressLint("ResourceType")
+    fun getCurrencyType(mDataBinding: FragmentQuoteDetailsDialogBinding?, resources: ArrayList<String>) {
+
+        val spin = mDataBinding!!.currencyType
+        // Spinner ClickListener
+        spin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long,
+            ) {
+                costposition = position
+                callBackInterface?.getCurrencyTypePosition(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        val ad: ArrayAdapter<String> =
+            ArrayAdapter<String>(getApplication(), R.layout.simple_spinner_item, resources)
+        ad.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        // Spinner which binds data to spinner
+        spin.adapter = ad
+
+    }
+
     private var callBackInterface: CallBackInterface? = null
 
     // Initializing CallBack Interface Method
@@ -75,6 +109,7 @@ class QuoteDetailsDialogViewModel @Inject constructor(
     // CallBack Interface
     interface CallBackInterface {
         fun callBack(status: String)
+        fun getCurrencyTypePosition(position: Int)
     }
 
     fun postQuoteDetails(idToken: String, bidRequestId: Int, biddingQuote: BiddingQuotDto) =

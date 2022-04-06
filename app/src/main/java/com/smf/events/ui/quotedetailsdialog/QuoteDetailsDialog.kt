@@ -55,9 +55,11 @@ class QuoteDetailsDialog(
     var fileSize: String? = null
     var fileContent: String? = null
     lateinit var idToken: String
+    var currencyTypeList = ArrayList<String>()
 
     companion object {
         const val TAG = "CustomDialogFragment"
+        var currencyType = "USD($)"
         fun newInstance(
             bidRequestId: Int,
             costingType: String,
@@ -67,12 +69,14 @@ class QuoteDetailsDialog(
             branchName: String,
         ): QuoteDetailsDialog {
 
-            return QuoteDetailsDialog(bidRequestId,
+            return QuoteDetailsDialog(
+                bidRequestId,
                 costingType,
                 bidStatus,
                 cost,
                 latestBidValue,
-                branchName)
+                branchName
+            )
         }
 
     }
@@ -94,12 +98,12 @@ class QuoteDetailsDialog(
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }
-    //tasks that need to be done after the creation of Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //getting IdToken
         setIdToken()
+
     }
 
     override fun onStart() {
@@ -113,6 +117,11 @@ class QuoteDetailsDialog(
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Update CurrencyType ArrayList
+        currencyTypeList =
+            resources.getStringArray(R.array.currency_type).toList() as ArrayList<String>
+        //CurrencyType SetUp
+        getViewModel().getCurrencyType(mDataBinding, currencyTypeList)
         // Quote ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
         //file uploader
@@ -155,6 +164,11 @@ class QuoteDetailsDialog(
         }
     }
 
+    //Call back from Quote Details Dialog View Model For CurrencyType Position
+    override fun getCurrencyTypePosition(position: Int) {
+        currencyType = currencyTypeList[position]
+    }
+
     //Setting the value for put Call
     private fun putQuoteDetails(bidStatus: String, idToken: String) {
         var bidValueQuote = mDataBinding?.costEstimationAmount?.text.toString()
@@ -165,7 +179,8 @@ class QuoteDetailsDialog(
         }
 
         if (bidStatus == AppConstants.PENDING_FOR_QUOTE) {
-            biddingQuote = BiddingQuotDto(bidRequestId,
+            biddingQuote = BiddingQuotDto(
+                bidRequestId,
                 bidStatus,
                 branchName,
                 null,
@@ -176,20 +191,23 @@ class QuoteDetailsDialog(
                 null,
                 null,
                 "QUOTE_DETAILS",
-                latestBidValueQuote)
+                latestBidValueQuote
+            )
         } else {
-            biddingQuote = BiddingQuotDto(bidRequestId,
+            biddingQuote = BiddingQuotDto(
+                bidRequestId,
                 bidStatus,
                 branchName,
                 mDataBinding?.etComments?.text.toString(),
                 null,
                 costingType,
-                "USD($)",
+                currencyType,
                 fileContent,
                 fileName,
                 fileSize,
                 "QUOTE_DETAILS",
-                latestBidValueQuote)
+                latestBidValueQuote
+            )
         }
         putQuoteApiCall(idToken)
     }
@@ -203,8 +221,10 @@ class QuoteDetailsDialog(
                         Log.d("TAG", " quote for dialog Success: ${(apiResponse.response)}")
 
                         QuoteBriefDialog.newInstance()
-                            .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                QuoteBriefDialog.TAG)
+                            .show(
+                                (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                QuoteBriefDialog.TAG
+                            )
                         dismiss()
                     }
                     is ApisResponse.Error -> {
@@ -227,9 +247,10 @@ class QuoteDetailsDialog(
     }
 
     private fun apiTokenValidationQuoteDetailsDialog(status: String) {
-            tokens.checkTokenExpiry(
-                requireActivity().applicationContext as SMFApp,
-                status, idToken)
+        tokens.checkTokenExpiry(
+            requireActivity().applicationContext as SMFApp,
+            status, idToken
+        )
     }
 
     //Setting Dialog Fragment Size
@@ -254,8 +275,11 @@ class QuoteDetailsDialog(
                     if (!filePath.isNullOrEmpty()) {
                         mDataBinding?.btnFileUpload?.text = "File Uploaded"
                         mDataBinding?.btnFileUpload?.setTextColor(Color.WHITE)
-                        mDataBinding?.btnFileUpload?.setBackgroundColor(ContextCompat.getColor(
-                            context?.applicationContext!!, R.color.green))
+                        mDataBinding?.btnFileUpload?.setBackgroundColor(
+                            ContextCompat.getColor(
+                                context?.applicationContext!!, R.color.green
+                            )
+                        )
                     }
                     fileName = filePath?.substring(filePath.lastIndexOf("/") + 1);
                     Log.d(TAG, "logoUploader: $fileUri")
@@ -272,8 +296,10 @@ class QuoteDetailsDialog(
                 gallaryIntent.type = "*/*"
                 logoUploadActivity.launch(Intent.createChooser(gallaryIntent, "Choose a file"))
             } catch (ex: android.content.ActivityNotFoundException) {
-                Toast.makeText(activity, "Please install a File Manager.",
-                    Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                    activity, "Please install a File Manager.",
+                    Toast.LENGTH_SHORT
+                ).show();
             }
 
         }
@@ -288,9 +314,13 @@ class QuoteDetailsDialog(
             var bytes = getBytes(input!!)
             Log.d("data", "onActivityResult: bytes size=" + bytes?.size)
             if (bytes?.size!! <= 181204) {
-                Log.d("data",
-                    "onActivityResult: Base64string=" + Base64.encodeToString(bytes,
-                        Base64.DEFAULT))
+                Log.d(
+                    "data",
+                    "onActivityResult: Base64string=" + Base64.encodeToString(
+                        bytes,
+                        Base64.DEFAULT
+                    )
+                )
                 fileContent = Base64.encodeToString(bytes, Base64.DEFAULT)
                 fileSize = bytes.size.toString()
             } else {

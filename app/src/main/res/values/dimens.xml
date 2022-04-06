@@ -32,7 +32,10 @@
     <dimen name="size_85dp">85dp</dimen>
     <dimen name="size_90dp">90dp</dimen>
     <dimen name="size_95dp">95dp</dimen>
+    <dimen name="size_105dp">105dp</dimen>
     <dimen name="size_120dp">120dp</dimen>
+    <dimen name="size_125dp">125dp</dimen>
+    <dimen name="size_130dp">130dp</dimen>
     <dimen name="size_140dp">140dp</dimen>
     <dimen name="size_150dp">150dp</dimen>
     <dimen name="size_160dp">160dp</dimen>
