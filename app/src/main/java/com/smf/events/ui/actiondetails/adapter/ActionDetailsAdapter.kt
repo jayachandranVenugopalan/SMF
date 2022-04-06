@@ -138,6 +138,7 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
             var cost: String? = position.cost
             var latestBidValue: String? = position.latestBidValue
             var branchName: String = position.branchName
+            var serviceName: String =position.serviceName
 
             val sharedPreferences =
                 context.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
@@ -162,7 +163,8 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
                     bidStatus,
                     cost,
                     latestBidValue,
-                    branchName
+                    branchName,
+                    serviceName
                 )
                     .show(
                         (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,

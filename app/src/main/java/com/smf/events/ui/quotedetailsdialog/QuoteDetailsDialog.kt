@@ -47,6 +47,7 @@ class QuoteDetailsDialog(
     var cost: String?,
     var latestBidValue: String?,
     var branchName: String,
+    var serviceName: String
 ) : BaseDialogFragment<FragmentQuoteDetailsDialogBinding, QuoteDetailsDialogViewModel>(),
     QuoteDetailsDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
     lateinit var biddingQuote: BiddingQuotDto
@@ -67,6 +68,7 @@ class QuoteDetailsDialog(
             cost: String?,
             latestBidValue: String?,
             branchName: String,
+            serviceName: String
         ): QuoteDetailsDialog {
 
             return QuoteDetailsDialog(
@@ -75,7 +77,8 @@ class QuoteDetailsDialog(
                 bidStatus,
                 cost,
                 latestBidValue,
-                branchName
+                branchName,
+                serviceName
             )
         }
 
@@ -117,6 +120,8 @@ class QuoteDetailsDialog(
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mDataBinding?.ForksSpoon?.text = branchName
+        mDataBinding?.quoteTitleServiceName?.text = serviceName
         // Update CurrencyType ArrayList
         currencyTypeList =
             resources.getStringArray(R.array.currency_type).toList() as ArrayList<String>

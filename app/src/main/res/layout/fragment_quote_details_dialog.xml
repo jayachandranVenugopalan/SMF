@@ -30,10 +30,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="Quote details for catering"
+                android:text="Quote details for "
                 android:textSize="@dimen/size_20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/quote_title_service_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="Catering"
+                android:textSize="@dimen/size_20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/quote_title"
+                app:layout_constraintStart_toEndOf="@+id/quote_title"
+                app:layout_constraintTop_toTopOf="@+id/quote_title" />
 
             <RadioGroup
                 android:id="@+id/radiogroup"
